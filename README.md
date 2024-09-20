@@ -2,6 +2,7 @@
 The world's greatest website for college students needing to share and collaborate on study material!
 
 Vision: 
+
 HiveMind is a website where college students can collaborate and share their study materials in a single, protected environment. When the moderator (teacher, TA, etc.) creates a new class server, students can join and post their study resources to the forum based on the section.
 
 Functionality: 
