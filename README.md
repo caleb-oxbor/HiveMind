@@ -14,6 +14,7 @@ Functionality:
 - If a student reaches a certain number of downvotes, your post will be removed, you lose access to other user's posts, and you may resubmit a revised version.
 - Users with high amounts of upvotes will be rewarded with customizable avatar features.
 - Moderators have the ability to remove posts they deem to be cheating, inappropriate, or spam. They will also have the ability to remove students from the class.
+- Users can leave comments on posts to promote discussion.
 
 Software, Tools and Programming Languages:
 - Node.js
