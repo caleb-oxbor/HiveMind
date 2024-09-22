@@ -1,0 +1,15 @@
+{
+  "name": "hivemind",
+  "version": "1.0.0",
+  "description": "The world's greatest website for college students needing to share and collaborate on study material!",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
