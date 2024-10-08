@@ -8,4 +8,4 @@ const pool = new Pool({
     database: "hivemind"
 });
 
-modules.exports = pool;
+module.exports = pool;
