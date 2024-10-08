@@ -57,6 +57,13 @@
 --     word TEXT NOT NULL
 -- );
 
+-- CREATE TABLE enrollments (
+--     enrollment_id SERIAL PRIMARY KEY,
+--     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+--     course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
+--     UNIQUE (user_id, course_id) -- One user can enroll in each course only once
+-- );
+
 -- -- Optional: Table for additional information about users and their activity
 -- CREATE TABLE user_activity (
 --     activity_id SERIAL PRIMARY KEY,
