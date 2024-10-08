@@ -25,30 +25,53 @@
 -- CREATE TABLE courses (
 --     course_id SERIAL PRIMARY KEY,
 --     course_name TEXT NOT NULL,
---     uni_id INT REFERENCES universities(
+--     uni_id INT REFERENCES universities(uni_id) ON DELETE CASCADE
+-- );
 
--- ALTER TABLE enrollments
--- DROP COLUMN user_id;
+-- -- Table to store modules within each course
+-- CREATE TABLE modules (
+--     module_id SERIAL PRIMARY KEY,
+--     module_name TEXT NOT NULL,
+--     course_id INT REFERENCES courses(course_id) ON DELETE CASCADE
+-- );
 
--- ALTER TABLE enrollments
--- ADD COLUMN user_id uuid;
+-- -- Table to store post information (PDFs, JPEGs, PNGs)
+-- CREATE TABLE posts (
+--     post_id SERIAL PRIMARY KEY,
+--     post_type TEXT CHECK (post_type IN ('pdf', 'jpeg', 'png')) NOT NULL,
+--     post_content BYTEA NOT NULL, -- Can store binary files like PDFs or images
+--     module_id INT REFERENCES modules(module_id) ON DELETE CASCADE,
+--     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE, -- Changed to UUID
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
 
--- ALTER TABLE posts
--- ADD CONSTRAINT posts_user_id_fkey
--- FOREIGN KEY (user_id) REFERENCES users(user_id);
+-- -- Table to store upvotes and downvotes for posts
+-- CREATE TABLE post_votes (
+--     vote_id SERIAL PRIMARY KEY,
+--     post_id INT REFERENCES posts(post_id) ON DELETE CASCADE,
+--     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE, -- Changed to UUID
+--     vote_type BOOLEAN NOT NULL, -- TRUE for upvote, FALSE for downvote
+--     UNIQUE (post_id, user_id) -- Ensure one vote per post per user
+-- );
 
--- ALTER TABLE post_votes
--- ADD CONSTRAINT post_votes_user_id_fkey
--- FOREIGN KEY (user_id) REFERENCES users(user_id);
+-- -- Table to store random words for username and password generation
+-- CREATE TABLE words (
+--     word_id SERIAL PRIMARY KEY,
+--     word TEXT NOT NULL
+-- );
 
--- ALTER TABLE user_activity
--- ADD CONSTRAINT user_activity_user_id_fkey
--- FOREIGN KEY (user_id) REFERENCES users(user_id);
+-- -- Table to store course enrollments
+-- CREATE TABLE enrollments (
+--     enrollment_id SERIAL PRIMARY KEY,
+--     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE, -- Changed to UUID
+--     course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
+--     UNIQUE (user_id, course_id) -- One user can enroll in each course only once
+-- );
 
--- ALTER TABLE enrollments
--- ADD CONSTRAINT enrollments_user_id_fkey
--- FOREIGN KEY (user_id) REFERENCES users(user_id);
-
-
-INSERT INTO users (username, email, password)
-VALUES ('alina', 'alina123@ufl.edu', '143033');
+-- -- Optional: Table for additional information about users and their activity
+-- CREATE TABLE user_activity (
+--     activity_id SERIAL PRIMARY KEY,
+--     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE, -- Changed to UUID
+--     last_login TIMESTAMP,
+--     account_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
