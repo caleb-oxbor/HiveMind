@@ -1,24 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { Fragment } from "react";
+
+import {BrowserRouter as Router, 
+  Switch, 
+  Route, 
+  Redirect
+}  from "react-router-dom";
+
+//components
+
+import Welcome from './components/Welcome';
+import createAccount from './components/CreateAccount';
+import logIn from './components/LogIn';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <Router>
+        <div className='container'>
+        <Switch>
+          <Route exact path="/login" render={props => <logIn{...props}/>} />
+          <Route exact path="/register" render={props => <createAccount{...props}/>} />
+          <Route exact path="/welcome" render={props => <Welcome{...props}/>} />
+        </Switch>
+        </div>
+      </Router>
+    </Fragment>
   );
 }
 
