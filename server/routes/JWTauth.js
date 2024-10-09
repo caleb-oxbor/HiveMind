@@ -29,7 +29,7 @@ async function generateRandomUsername() {
 router.post("/register",validInfo, async (req, res) => {
     try {
         // 1 destructure req.body (name, email, pw)
-        const {name, email, password} = req.body;
+        const {email, password} = req.body;
         // 2 check if user exists, else throw error
         const user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         

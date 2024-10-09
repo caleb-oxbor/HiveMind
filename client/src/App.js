@@ -1,28 +1,37 @@
 import './App.css';
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 
 import {BrowserRouter as Router, 
-  Switch, 
+  Routes,
   Route, 
-  Redirect
+  Navigate
 }  from "react-router-dom";
 
 //components
-
-import Welcome from './components/Welcome';
-import createAccount from './components/CreateAccount';
-import logIn from './components/LogIn';
+import CreateAccount from './components/CreateAccount';
+import LogIn from './components/LogIn';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const setAuth = (boolean) => {
+    setIsAuthenticated(boolean);
+  };
+  
   return (
     <Fragment>
       <Router>
         <div className='container'>
-        <Switch>
-          <Route exact path="/login" render={props => <logIn{...props}/>} />
-          <Route exact path="/register" render={props => <createAccount{...props}/>} />
-          <Route exact path="/welcome" render={props => <Welcome{...props}/>} />
-        </Switch>
+          <Routes>
+            <Route path="/login" element={<LogIn />} />
+
+            <Route 
+              path="/register" 
+              element={<CreateAccount setAuth={setAuth} />} 
+            />
+
+            {/* Add other routes here */}
+          </Routes>
         </div>
       </Router>
     </Fragment>
