@@ -77,27 +77,27 @@
 -- );
 
 
-INSERT INTO words (word, type) VALUES
-('astronaut', 'noun'), ('galaxy', 'noun'), ('hive', 'noun'), ('honey', 'noun'), ('nebula', 'noun'),
-('pollen', 'noun'), ('queen', 'noun'), ('planet', 'noun'), ('satellite', 'noun'), ('pupil', 'noun'),
-('beam', 'noun'), ('alien', 'noun'), ('adventurer', 'noun'), ('solar', 'noun'), ('rocket', 'noun'),
-('quiz', 'noun'), ('cosmos', 'noun'), ('constellation', 'noun'), ('library', 'noun'), ('asteroid', 'noun'),
-('drone', 'noun'), ('beehive', 'noun'), ('star', 'noun'), ('horizon', 'noun'), ('scholar', 'noun'),
-('explorer', 'noun'), ('comet', 'noun'), ('moon', 'noun'), ('apiary', 'noun'), ('neuron', 'noun'),
-('force', 'noun'), ('eclipse', 'noun'), ('king', 'noun'), ('spaceship', 'noun'), ('shuttle', 'noun'),
-('switch', 'noun'), ('gravity', 'noun'), ('experiment', 'noun'), ('lab', 'noun'), ('planetarium', 'noun'),
-('adventure', 'noun'), ('universe', 'noun'), ('innovation', 'noun'), ('mentorship', 'noun'), ('diploma', 'noun'),
-('encyclopedia', 'noun'), ('blackhole', 'noun'), ('stardust', 'noun'), ('cat', 'noun'), ('colony', 'noun'),
-('cow', 'noun'), ('blueprint', 'noun'), ('hound', 'noun'), ('wold', 'noun'), ('discovery', 'noun'),
-('puzzle', 'noun'), ('thinker', 'noun'), ('meteor', 'noun'), ('dream', 'noun'), ('book', 'noun'),
-('prodigy', 'noun'), ('focus', 'noun'), ('journey', 'noun'), ('mission', 'noun'), ('game', 'noun'),
-('void', 'noun'), ('framework', 'noun'), ('guardian', 'noun'), ('strategy', 'noun'), ('spectrum', 'noun'),
-('wolf', 'noun'), ('particle', 'noun'), ('theory', 'noun'), ('mate', 'noun'), ('buddy', 'noun'),
-('workshop', 'noun'), ('ocean', 'noun'), ('wizard', 'noun'), ('synapse', 'noun'), ('spacecraft', 'noun'),
-('capsule', 'noun'), ('suit', 'noun'), ('leader', 'noun'), ('ruler', 'noun'), ('peasant', 'noun'),
-('weakling', 'noun'), ('jedi', 'noun'), ('padawan', 'noun'), ('worker', 'noun'), ('ewok', 'noun'),
-('conference', 'noun'), ('lecture', 'noun'), ('diagram', 'noun'), ('formula', 'noun'), ('hypothesis', 'noun'),
-('fire', 'noun'), ('ice', 'noun'), ('prince', 'noun'), ('princess', 'noun'), ('quizmaster', 'noun');
+-- INSERT INTO words (word, type) VALUES
+-- ('astronaut', 'noun'), ('galaxy', 'noun'), ('hive', 'noun'), ('honey', 'noun'), ('nebula', 'noun'),
+-- ('pollen', 'noun'), ('queen', 'noun'), ('planet', 'noun'), ('satellite', 'noun'), ('pupil', 'noun'),
+-- ('beam', 'noun'), ('alien', 'noun'), ('adventurer', 'noun'), ('solar', 'noun'), ('rocket', 'noun'),
+-- ('quiz', 'noun'), ('cosmos', 'noun'), ('constellation', 'noun'), ('library', 'noun'), ('asteroid', 'noun'),
+-- ('drone', 'noun'), ('beehive', 'noun'), ('star', 'noun'), ('horizon', 'noun'), ('scholar', 'noun'),
+-- ('explorer', 'noun'), ('comet', 'noun'), ('moon', 'noun'), ('apiary', 'noun'), ('neuron', 'noun'),
+-- ('force', 'noun'), ('eclipse', 'noun'), ('king', 'noun'), ('spaceship', 'noun'), ('shuttle', 'noun'),
+-- ('switch', 'noun'), ('gravity', 'noun'), ('experiment', 'noun'), ('lab', 'noun'), ('planetarium', 'noun'),
+-- ('adventure', 'noun'), ('universe', 'noun'), ('innovation', 'noun'), ('mentorship', 'noun'), ('diploma', 'noun'),
+-- ('encyclopedia', 'noun'), ('blackhole', 'noun'), ('stardust', 'noun'), ('cat', 'noun'), ('colony', 'noun'),
+-- ('cow', 'noun'), ('blueprint', 'noun'), ('hound', 'noun'), ('wold', 'noun'), ('discovery', 'noun'),
+-- ('puzzle', 'noun'), ('thinker', 'noun'), ('meteor', 'noun'), ('dream', 'noun'), ('book', 'noun'),
+-- ('prodigy', 'noun'), ('focus', 'noun'), ('journey', 'noun'), ('mission', 'noun'), ('game', 'noun'),
+-- ('void', 'noun'), ('framework', 'noun'), ('guardian', 'noun'), ('strategy', 'noun'), ('spectrum', 'noun'),
+-- ('wolf', 'noun'), ('particle', 'noun'), ('theory', 'noun'), ('mate', 'noun'), ('buddy', 'noun'),
+-- ('workshop', 'noun'), ('ocean', 'noun'), ('wizard', 'noun'), ('synapse', 'noun'), ('spacecraft', 'noun'),
+-- ('capsule', 'noun'), ('suit', 'noun'), ('leader', 'noun'), ('ruler', 'noun'), ('peasant', 'noun'),
+-- ('weakling', 'noun'), ('jedi', 'noun'), ('padawan', 'noun'), ('worker', 'noun'), ('ewok', 'noun'),
+-- ('conference', 'noun'), ('lecture', 'noun'), ('diagram', 'noun'), ('formula', 'noun'), ('hypothesis', 'noun'),
+-- ('fire', 'noun'), ('ice', 'noun'), ('prince', 'noun'), ('princess', 'noun'), ('quizmaster', 'noun');
 
 
 -- INSERT INTO words (word, type) VALUES
