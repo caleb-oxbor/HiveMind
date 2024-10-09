@@ -6,7 +6,7 @@ function Welcome() {
     <div>
       <h1>Welcome to HiveMind!</h1>
       <p>Click below to redirect:</p>
-      <Link to="/create-account">
+      <Link to="/register">
         <button>Create Account</button>
       </Link>
       <Link to="/login">
