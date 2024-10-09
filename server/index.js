@@ -7,13 +7,13 @@
  app.use(cors());
 
  //get data from client
- app.use(express.json());
+ app.use(express.json()); //req.body
 
  //ROUTES
 
- //create accouunt 
-
- //get account 
+ //registration and login
+ app.use("/auth", require("./routes/JWTauth"));
+ 
 
  app.listen(5000, () => {
     console.log("server has started on port 5000");
