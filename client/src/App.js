@@ -10,6 +10,7 @@ import {BrowserRouter as Router,
 //components
 import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -29,7 +30,10 @@ function App() {
               path="/register" 
               element={<CreateAccount setAuth={setAuth} />} 
             />
-
+            <Route
+              path="/dashboard"
+              element={<Dashboard/>}
+            />
             {/* Add other routes here */}
           </Routes>
         </div>

@@ -13,6 +13,7 @@
 
  //registration and login
  app.use("/auth", require("./routes/JWTauth"));
+ app.use('/dashboard', require('./routes/dashboard'));
  
 
  app.listen(5000, () => {
