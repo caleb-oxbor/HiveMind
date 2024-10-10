@@ -1,21 +1,22 @@
-module.exports = function async(req, res, next){
-    const {email, password} = req.body;
-
+module.exports = function async(req, res, next) {
+    const { email, password } = req.body;
     function validEmail(userEmail) {
-        const regex = /^\w+([\.-]?\w+)*@ufl\.edu$/; //regex to enforce @ufl.edu domain
-        if (!regex.test(userEmail)) {
-            return false;
-        }
-        return regex.test(userEmail);
+        const generalEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; 
+        return generalEmailRegex.test(userEmail);
+    }
+    //ufl check
+    function isUFLEmail(userEmail) {
+        const uflEmailRegex = /^\w+([\.-]?\w+)*@ufl\.edu$/; 
+        return uflEmailRegex.test(userEmail);
     }
 
     if (req.path === "/register") {
-        console.log(!email.length);
         if (![email, password].every(Boolean)) {
-            return res.status(401).json("Missing Credentials");
+            return res.status(401).json("Missing Credentials.");
         } else if (!validEmail(email)) {
             return res.status(401).json("Invalid Email");
-        }
+        } else if (!isUFLEmail(email)) {
+            return res.status(403).json("Email must end in @ufl.edu."); 
     } 
 
     else if (req.path === "/login") {
@@ -30,3 +31,4 @@ module.exports = function async(req, res, next){
     next();
     
 };
+
