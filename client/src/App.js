@@ -52,14 +52,15 @@ function App() {
         <ToastContainer style={{ zIndex: 9999 }}/>
         <div className='container'>
           <Routes>
+            <Route path="/" element={<Welcome />} />
+
             <Route 
               path="/login" 
               element = {<LogIn setAuth={setAuth} />}
               />
 
             <Route 
-              path="/register" 
-              element={<CreateAccount setAuth={setAuth} />} 
+              path="/register" element={<CreateAccount setAuth={setAuth} />} 
             />
 
             {/* Add other routes here */}
