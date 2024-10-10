@@ -13,7 +13,7 @@ async function generateRandomUsername() {
     }
     const adjective = adjectiveResult.rows[0].word;
 
-    //]one random noun
+    //one random noun
     const nounResult = await pool.query("SELECT word FROM words WHERE type = 'noun' ORDER BY RANDOM() LIMIT 1");
     if (nounResult.rows.length === 0) {
         throw new Error('No nouns found in the database');
@@ -27,14 +27,14 @@ async function generateRandomUsername() {
 //registering
 
 router.post("/register",validInfo, async (req, res) => {
+    // 1 destructure req.body (name, email, pw)
+    const {email, password} = req.body;
     try {
-        // 1 destructure req.body (name, email, pw)
-        const {email, password} = req.body;
         // 2 check if user exists, else throw error
         const user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         
-        if (user.rows.length !== 0){
-            return res.status(401).send("User already exists.") //unauthorized
+        if (user.rows.length > 0){
+            return res.status(401).json("User already exists.") //unauthorized
         }
 
         const username = await generateRandomUsername();
@@ -51,14 +51,14 @@ router.post("/register",validInfo, async (req, res) => {
             [username, email, bcryptPw]
         );
 
-        console.log(newUser.rows[0]);
-
         // generating jwt token
         const token = jwtGenerator(newUser.rows[0].user_id);
 
         res.json({ token, username: newUser.rows[0].username });
-
     } catch (err) {
+        // if (err.code === '23505') { // PostgreSQL error code for unique constraint violation
+        //     return res.status(400).json("Email already exists.");
+        // }
         console.error(err.message);
         res.status(500).send("Server Error");
     }

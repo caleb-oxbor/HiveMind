@@ -6,11 +6,13 @@ const CreateAccount = ({setAuth}) => {
         password: "",
     })
 
-    const [generatedUser, setGerneratedUser] = useState("");
+    const [generatedUser, setGeneratedUser] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const {email, password} = inputs;
 
     const onChange = (e) => {
+        setErrorMessage('');
         setInputs({...inputs, [e.target.name]
             : e.target.value});
     };
@@ -26,17 +28,22 @@ const CreateAccount = ({setAuth}) => {
                 headers: {"Content-Type": "application/json"},
                 body:  JSON.stringify(body)
             });
-            console.log("Response received:", response);
+
 
             const parseRes = await response.json();
 
-            console.log(parseRes);
-            localStorage.setItem("token", parseRes.token);
-            setAuth(true);
-            setGerneratedUser(parseRes.username);
+            if (parseRes.token) {
+                localStorage.setItem("token", parseRes.token);
+                setAuth(true);
+                setGeneratedUser(parseRes.username); // Display the generated username
+            } else {
+                setAuth(false);
+                setErrorMessage(parseRes);
+            }       
 
         } catch(err) {
-            console.err(err.message);
+            console.error(err.message);
+            setErrorMessage(err.message);
         }
     }
 
@@ -57,11 +64,15 @@ const CreateAccount = ({setAuth}) => {
                 onChange={e => onChange(e)}/>
 
                 <button className="btn btn-success btn-block">create account</button>
-                <button className="btn btn-success btn-block form-control my-3">generate userame</button> 
             </form>
             {generatedUser && (
                 <div className="alert alert-success mt-3">
                     Your account has been created! Your username is: <strong>{generatedUser}</strong>
+                </div>
+            )}
+            {errorMessage && (
+                <div className="alert alert-danger mt-3">
+                    Error: <strong>{errorMessage}</strong>
                 </div>
             )}
         </Fragment>
