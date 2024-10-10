@@ -29,6 +29,6 @@ module.exports = function async(req, res, next) {
     }
     
     next();
-    
+}
 };
 
