@@ -6,6 +6,10 @@ const validInfo = require("../middleware/validinfo");
 
 //function to generate a random username
 async function generateRandomUsername() {
+    let isUnique = false;
+    let username;
+
+    while (!isUnique){
     //one random adjective
     const adjectiveResult = await pool.query("SELECT word FROM words WHERE type = 'adjective' ORDER BY RANDOM() LIMIT 1");
     if (adjectiveResult.rows.length === 0) {
@@ -20,7 +24,25 @@ async function generateRandomUsername() {
     }
     const noun = nounResult.rows[0].word;
 
-    return adjective + noun; // combine the words to create a random username
+    username = adjective + noun; // combine the words to create a random username
+
+    const userResult = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+
+    if (userResult.rows.length === 0) {
+        isUnique = true;
+    } else {
+        // If username exists, append a random number (e.g., between 100 and 999)
+        const randomNumber = Math.floor(Math.random() * 900) + 100; // Generates a number between 100 and 999
+        username = username + randomNumber;
+        // Re-check with the new username
+        const finalCheck = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+        if (finalCheck.rows.length === 0) {
+            isUnique = true;
+        }
+    }
+
+    }   
+    return username;
 }
 
 
@@ -56,9 +78,6 @@ router.post("/register",validInfo, async (req, res) => {
 
         res.json({ token, username: newUser.rows[0].username });
     } catch (err) {
-        // if (err.code === '23505') { // PostgreSQL error code for unique constraint violation
-        //     return res.status(400).json("Email already exists.");
-        // }
         console.error(err.message);
         res.status(500).send("Server Error");
     }
