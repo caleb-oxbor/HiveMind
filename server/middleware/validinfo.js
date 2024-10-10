@@ -17,6 +17,7 @@ module.exports = function async(req, res, next) {
             return res.status(401).json("Invalid Email");
         } else if (!isUFLEmail(email)) {
             return res.status(403).json("Email must end in @ufl.edu."); 
+        }
     } 
 
     else if (req.path === "/login") {
@@ -31,4 +32,3 @@ module.exports = function async(req, res, next) {
     next();
     
 };
-
