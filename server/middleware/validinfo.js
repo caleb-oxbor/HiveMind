@@ -14,14 +14,21 @@ module.exports = function async(req, res, next) {
         if (![email, password].every(Boolean)) {
             return res.status(401).json("Missing Credentials.");
         } else if (!validEmail(email)) {
-            return res.status(401).json("Invalid Email."); 
+            return res.status(401).json("Invalid Email");
         } else if (!isUFLEmail(email)) {
             return res.status(403).json("Email must end in @ufl.edu."); 
-    } else if (req.path === "/login") {
-        // Add login validation logic here if needed
+    } 
+
+    else if (req.path === "/login") {
+        if (![email, password].every(Boolean)) {
+            return res.status(401).json("Missing Credentials");
+        } 
+        else if (!validEmail(email)) {
+            return res.status(401).json("Invalid Email");
+        }
     }
-
-}
-
+    
     next();
+    
 };
+

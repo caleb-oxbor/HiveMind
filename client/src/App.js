@@ -1,5 +1,8 @@
 import './App.css';
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 import {BrowserRouter as Router, 
   Routes,
@@ -10,7 +13,9 @@ import {BrowserRouter as Router,
 //components
 import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
-import Welcome from './components/Welcome';
+
+toast.configure();
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,16 +23,41 @@ function App() {
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);
   };
+
+  async function isAuth(){
+    try {
+      const response = await fetch("http://localhost:5000/auth/is-verify", {
+        method: "GET",
+        headers: {token : localStorage.token }
+      });
+
+      const parseRes = await response.json();
+
+      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+
+    } 
+    catch (err) {
+      console.error(err.message);
+      
+    }
+  }
+
+  useEffect(() => {
+    isAuth();
+  }, []);
   
   return (
     <Fragment>
       <Router>
+        <ToastContainer style={{ zIndex: 9999 }}/>
         <div className='container'>
           <Routes>
-
             <Route path="/" element={<Welcome />} />
 
-            <Route path="/login" element={<LogIn />} />
+            <Route 
+              path="/login" 
+              element = {<LogIn setAuth={setAuth} />}
+              />
 
             <Route 
               path="/register" element={<CreateAccount setAuth={setAuth} />} 
