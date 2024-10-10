@@ -15,8 +15,6 @@ import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
 import Welcome from './components/Welcome';
 
-toast.configure();
-
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
