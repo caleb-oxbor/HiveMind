@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import './CreateAccount.css';
+import { Link } from 'react-router-dom';
 
 const CreateAccount = ({setAuth}) => {
     const[inputs, setInputs] = useState({
@@ -54,6 +55,9 @@ const CreateAccount = ({setAuth}) => {
     return (
         <Fragment>
         <div className="fullscreen-background">  
+            <Link to="/login">
+                <button className="btn btn-dark btn-large btn-block font-dotgothic mb-10">Return to Login</button>
+            </Link>
             <h1 className="font-tiny5 font-bold text-center text-white text-7xl m1-10 mb-1">BECOME ONE WITH THE BEES...</h1>
             <h3 className="font-dotgothic text-center text-white text-3xl my-5">Create your account to get started</h3>
             <form onSubmit={onSubmitForm}>
