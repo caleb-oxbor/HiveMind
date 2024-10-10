@@ -1,11 +1,9 @@
-import React, { Fragment } from "react";
+import React from 'react';
 
-const LogIn = () => {
-    return (
-        <Fragment>
-            <h1>LogIn</h1>
-        </Fragment>
-    );
-};
+function LogIn() {
+  return(
+    <h1>LOG IN !!!</h1>
+  )
+}
 
 export default LogIn;

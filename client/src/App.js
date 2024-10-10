@@ -10,6 +10,7 @@ import {BrowserRouter as Router,
 //components
 import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
+import Welcome from './components/Welcome';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,11 +24,13 @@ function App() {
       <Router>
         <div className='container'>
           <Routes>
+
+            <Route path="/" element={<Welcome />} />
+
             <Route path="/login" element={<LogIn />} />
 
             <Route 
-              path="/register" 
-              element={<CreateAccount setAuth={setAuth} />} 
+              path="/register" element={<CreateAccount setAuth={setAuth} />} 
             />
 
             {/* Add other routes here */}
