@@ -13,8 +13,7 @@ import {BrowserRouter as Router,
 //components
 import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
-
-toast.configure();
+import Welcome from './components/Welcome';
 
 
 function App() {
