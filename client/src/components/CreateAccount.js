@@ -55,10 +55,10 @@ const CreateAccount = ({setAuth}) => {
     return (
         <Fragment>
         <div className="fullscreen-background">  
-            <Link to="/login">
-                <button className="btn btn-dark btn-large btn-block font-dotgothic mb-10">Return to Login</button>
-            </Link>
-            <h1 className="font-tiny5 font-bold text-center text-white text-7xl m1-10 mb-1">BECOME ONE WITH THE BEES...</h1>
+        <Link to="/" className="font-dotgothic mt-2" style={{ color: 'white' }}>
+            Return home
+        </Link>
+            <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-1 heading-shadow">BECOME ONE WITH THE BEES...</h1>
             <h3 className="font-dotgothic text-center text-white text-3xl my-5">Create your account to get started</h3>
             <form onSubmit={onSubmitForm}>
                 <input type="email" name="email" 
@@ -85,6 +85,7 @@ const CreateAccount = ({setAuth}) => {
                     Error: <strong>{errorMessage}</strong>
                 </div>
             )}
+            <Link to="/login" className="font-dotgothic mt-2">Return to Login</Link>
         </div>
         </Fragment>
     );
