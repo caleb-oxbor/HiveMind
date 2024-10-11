@@ -58,7 +58,7 @@ const CreateAccount = ({setAuth}) => {
         <Link to="/" className="font-dotgothic mt-2" style={{ color: 'white' }}>
             Return home
         </Link>
-            <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-1 heading-shadow">BECOME ONE WITH THE BEES...</h1>
+            <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-1 heading-shadow">Become One With The Bees...</h1>
             <h3 className="font-dotgothic text-center text-white text-3xl my-5">Create your account to get started</h3>
             <form onSubmit={onSubmitForm}>
                 <input type="email" name="email" 

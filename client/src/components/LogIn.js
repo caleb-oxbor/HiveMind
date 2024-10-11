@@ -54,7 +54,7 @@ const LogIn = ({setAuth}) => {
             <Link to="/" className="font-dotgothic mt-2" style={{ color: 'white' }}>
                 Return home
             </Link> 
-            <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-1 heading-shadow">HELLO AGAIN</h1>
+            <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-1 heading-shadow">Hello Again</h1>
             <h3 className="font-dotgothic text-center text-white text-3xl my-5">Login and return to your colony</h3>
             <form onSubmit={onSubmitForm}>
                 <input 
