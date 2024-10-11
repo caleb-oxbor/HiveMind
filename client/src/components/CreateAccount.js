@@ -73,7 +73,7 @@ const CreateAccount = ({setAuth}) => {
                 value={password}
                 onChange={e => onChange(e)}/>
 
-                <button className="btn btn-success btn-block font-dotgothic">Create Account</button>
+                <button className="btn custom-button font-dotgothic">Create Account</button>
             </form>
             {generatedUser && (
                 <div className="alert alert-success mt-3">

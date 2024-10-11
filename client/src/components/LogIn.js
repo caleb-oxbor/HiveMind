@@ -75,7 +75,7 @@ const LogIn = ({setAuth}) => {
                     onChange={e => onChange(e)}
                 />
 
-                <button className="btn btn-success btn-block font-dotgothic">Login</button>
+                <button className="btn custom-button font-dotgothic">Login</button>
             </form>
             <Link to="/register" className="font-dotgothic mt-2">Don't have account? Register here.</Link>
         </div>
