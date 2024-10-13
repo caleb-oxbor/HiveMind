@@ -50,13 +50,18 @@ const LogIn = ({setAuth}) => {
 
     return (
         <Fragment>
-            <h1 className= "text-center my-5">Login</h1>
+            <div className="fullscreen-background">  
+            <Link to="/" className="font-dotgothic mt-2" style={{ color: 'white' }}>
+                Return home
+            </Link> 
+            <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-1 heading-shadow">Hello Again</h1>
+            <h3 className="font-dotgothic text-center text-white text-3xl my-5">Login and return to your colony</h3>
             <form onSubmit={onSubmitForm}>
                 <input 
                     type="email" 
                     name = "email" 
                     placeholder="email"
-                    className="form-control my-3"
+                    className="form-control my-3 font-dotgothic"
                     value={email}
                     onChange={e => onChange(e)}
                 />
@@ -65,14 +70,15 @@ const LogIn = ({setAuth}) => {
                     type="password" 
                     name = "password" 
                     placeholder="password"
-                    className="form-control my-3"
+                    className="form-control my-3 font-dotgothic"
                     value={password}
                     onChange={e => onChange(e)}
                 />
 
-                <button className="btn btn-success btn-block">Login</button>
+                <button className="btn custom-button font-dotgothic">Login</button>
             </form>
-            <Link to="/register">Don't have account? Register here.</Link>
+            <Link to="/register" className="font-dotgothic mt-2">Don't have account? Register here.</Link>
+        </div>
         </Fragment>
     );
 };

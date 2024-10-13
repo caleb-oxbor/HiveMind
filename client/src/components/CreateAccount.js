@@ -11,7 +11,7 @@ const CreateAccount = ({setAuth}) => {
     const [generatedUser, setGeneratedUser] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const {email, password} = inputs;
+    const {email, password, passwordconfirm} = inputs;
 
     const onChange = (e) => {
         setErrorMessage('');
@@ -26,7 +26,7 @@ const CreateAccount = ({setAuth}) => {
         e.preventDefault()
 
         try{
-            const body = {email, password};
+            const body = {email, password, passwordconfirm};
 
             const response = await fetch("http://localhost:5000/auth/register", {
                 method: "POST",
@@ -55,10 +55,10 @@ const CreateAccount = ({setAuth}) => {
     return (
         <Fragment>
         <div className="fullscreen-background">  
-            <Link to="/login">
-                <button className="btn btn-dark btn-large btn-block font-dotgothic mb-10">Return to Login</button>
-            </Link>
-            <h1 className="font-tiny5 font-bold text-center text-white text-7xl m1-10 mb-1">BECOME ONE WITH THE BEES...</h1>
+        <Link to="/" className="font-dotgothic mt-2" style={{ color: 'white' }}>
+            Return home
+        </Link>
+            <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-1 heading-shadow">Become One With The Bees...</h1>
             <h3 className="font-dotgothic text-center text-white text-3xl my-5">Create your account to get started</h3>
             <form onSubmit={onSubmitForm}>
                 <input type="email" name="email" 
@@ -73,7 +73,13 @@ const CreateAccount = ({setAuth}) => {
                 value={password}
                 onChange={e => onChange(e)}/>
 
-                <button className="btn btn-success btn-block font-dotgothic">Create Account</button>
+                <input type="password" name="passwordconfirm" 
+                placeholder="confirm password"
+                className="form-control my-3 font-dotgothic"
+                value={passwordconfirm}
+                onChange={e => onChange(e)}/>
+
+                <button className="btn custom-button font-dotgothic">Create Account</button>
             </form>
             {generatedUser && (
                 <div className="alert alert-success mt-3">
@@ -85,6 +91,7 @@ const CreateAccount = ({setAuth}) => {
                     Error: <strong>{errorMessage}</strong>
                 </div>
             )}
+            <Link to="/login" className="font-dotgothic mt-2">Return to Login</Link>
         </div>
         </Fragment>
     );

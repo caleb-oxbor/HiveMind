@@ -16,7 +16,6 @@ import LogIn from './components/LogIn';
 import Welcome from './components/Welcome';
 
 
-
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
