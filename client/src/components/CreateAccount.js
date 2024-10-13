@@ -11,7 +11,7 @@ const CreateAccount = ({setAuth}) => {
     const [generatedUser, setGeneratedUser] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const {email, password} = inputs;
+    const {email, password, passwordconfirm} = inputs;
 
     const onChange = (e) => {
         setErrorMessage('');
@@ -26,7 +26,7 @@ const CreateAccount = ({setAuth}) => {
         e.preventDefault()
 
         try{
-            const body = {email, password};
+            const body = {email, password, passwordconfirm};
 
             const response = await fetch("http://localhost:5000/auth/register", {
                 method: "POST",
@@ -71,6 +71,12 @@ const CreateAccount = ({setAuth}) => {
                 placeholder="password"
                 className="form-control my-3 font-dotgothic"
                 value={password}
+                onChange={e => onChange(e)}/>
+
+                <input type="password" name="passwordconfirm" 
+                placeholder="confirm password"
+                className="form-control my-3 font-dotgothic"
+                value={passwordconfirm}
                 onChange={e => onChange(e)}/>
 
                 <button className="btn custom-button font-dotgothic">Create Account</button>

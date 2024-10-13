@@ -1,5 +1,5 @@
 module.exports = function async(req, res, next) {
-    const { email, password } = req.body;
+    const { email, password, passwordconfirm } = req.body;
     function validEmail(userEmail) {
         const generalEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; 
         return generalEmailRegex.test(userEmail);
@@ -11,6 +11,9 @@ module.exports = function async(req, res, next) {
     }
 
     if (req.path === "/register") {
+        if(passwordconfirm != password){
+            return res.status(401).json("Passwords must match.");
+        }
         if (![email, password].every(Boolean)) {
             return res.status(401).json("Missing Credentials.");
         } else if (!validEmail(email)) {
