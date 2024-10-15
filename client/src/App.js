@@ -61,7 +61,10 @@ function App() {
             <Route 
               path="/register" element={<CreateAccount setAuth={setAuth} />} 
             />
-
+            <Route
+              path="/dashboard"
+              element={<Dashboard/>}
+            />
             {/* Add other routes here */}
           </Routes>
         </div>
