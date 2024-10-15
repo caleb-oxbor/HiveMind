@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import supabase from "../supabaseClient"
 
 function Welcome() {
+  console.log(supabase)
   return (
     <div className="fullscreen-background"> 
       <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-1 heading-shadow">Welcome To HiveMind!</h1>
