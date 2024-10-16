@@ -1,6 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
+import { slide as Menu } from "react-burger-menu";
+import './Dashboard.css'
+
 
 const Dashboard = ({ setAuth }) => {
   const [name, setUsername] = useState("");
@@ -41,14 +44,20 @@ const Dashboard = ({ setAuth }) => {
   }, []);
 
   return (
-    <div>
-      <h1 className="mt-5">Dashboard</h1>
-      <h2>Welcome {name}</h2>
-      <button onClick={e => logout(e)} className="btn btn-primary">
-        Logout
-      </button>
-    </div>
+    <div className="dashboard-container">
+      <div className="burger-menu-container">
+        <Menu >
+          <Link to="/">Home</Link>
+          <a onClick={logout}>Logout</a>
+        </Menu>
+      </div>
 
+      <header>
+        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
+      </header>
+
+      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">{name}</h2>
+    </div>
   );
 };
 
