@@ -3,3 +3,4 @@ npm i pg jsonwebtoken bcrypt
 npm install --save-dev nodemon
 npm i dotenv
 npm i react-router-dom react-toastify
+npm install react-burger-menu
