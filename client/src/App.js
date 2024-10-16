@@ -8,7 +8,6 @@ import {BrowserRouter as Router,
   Routes,
   Route, 
   Navigate,
-  redirect
 }  from "react-router-dom";
 
 //components

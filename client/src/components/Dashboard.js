@@ -8,12 +8,15 @@ const Dashboard = ({ setAuth }) => {
     
   const getName = async () => {
     try {
-      const response = await fetch("http://localhost:5000/dashboard/", {
-        method: "POST",
-        headers: { jwt_token: localStorage.token }
-      });
+      const response = await fetch("http://localhost:5000/dashboard/", 
+        {
+        method: "GET",
+        headers: {token: localStorage.token }
+        });
 
       const parseData = await response.json();
+      console.log(parseData);
+      console.log(setAuth);
       setUsername(parseData.username);
     } catch (err) {
       console.error(err.message);
