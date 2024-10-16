@@ -7,13 +7,15 @@ import { ToastContainer } from "react-toastify";
 import {BrowserRouter as Router, 
   Routes,
   Route, 
-  Navigate
+  Navigate,
+  redirect
 }  from "react-router-dom";
 
 //components
 import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
 import Welcome from './components/Welcome';
+import Dashboard from './components/Dashboard';
 
 
 function App() {
@@ -51,19 +53,43 @@ function App() {
         <ToastContainer style={{ zIndex: 9999 }}/>
         <div className='container'>
           <Routes>
+            {/* Welcome Page */}
             <Route path="/" element={<Welcome />} />
 
-            <Route 
-              path="/login" 
-              element = {<LogIn setAuth={setAuth} />}
-              />
-
-            <Route 
-              path="/register" element={<CreateAccount setAuth={setAuth} />} 
+            {/* Login Page */}
+            <Route
+              path="/login"
+              element={
+                !isAuthenticated ? (
+                  <LogIn setAuth={setAuth} />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
             />
+
+            {/* Register Page */}
+              <Route
+              path="/register"
+              element={
+                !isAuthenticated ? (
+                  <CreateAccount setAuth={setAuth} />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
+            />
+
+            {/* Dashboard Page */}
             <Route
               path="/dashboard"
-              element={<Dashboard/>}
+              element={
+                isAuthenticated ? (
+                  <Dashboard setAuth={setAuth} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
             />
             {/* Add other routes here */}
           </Routes>
