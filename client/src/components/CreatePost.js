@@ -1,10 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 
-const CreatePost = () => {
+const CreatePost = ({setCreated}) => {
     const [newPost, setNewPost] = useState(null);
     const [title, setTitle] = useState("");
+    const navigate = useNavigate();
     
     const onSubmitForm = async e => {
         e.preventDefault();
@@ -12,19 +14,19 @@ const CreatePost = () => {
             const formData = new FormData();
             formData.append("newPost", newPost);
             formData.append("title", title);
-
-            const token = localStorage.getItem("token");
             
             const response = await fetch("http://localhost:5000/dashboard/create-post", {
                 method: "POST",
                 headers: {
-                    "token": token, 
+                    "token": localStorage.token, 
                 },
                 body: formData,
             });
 
             if (response.ok) {
                 console.log("Post created successfully!");
+                setCreated(true); 
+                navigate("/view-posts"); 
             } else {
                 console.error("Failed to create post.");
             }

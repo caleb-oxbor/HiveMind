@@ -55,4 +55,16 @@ router.post('/create-post', [authorization, upload.single('newPost')], async (re
   }
 });
 
+router.get("/is-posted", authorization, async (req, res) => {
+  try {
+    const post = await pool.query(
+      "SELECT post_id FROM posts WHERE user_id = $1",
+      [req.user]
+    );
+  } catch(err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
