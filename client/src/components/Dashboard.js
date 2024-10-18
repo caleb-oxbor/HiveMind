@@ -47,7 +47,8 @@ const Dashboard = ({ setAuth }) => {
     <div className="dashboard-container">
       <div className="burger-menu-container">
         <Menu >
-          <Link to="/">Home</Link>
+          <Link to="/dashboard">Home</Link>
+          <Link to="/profile">Profile</Link>
           <a onClick={logout}>Logout</a>
         </Menu>
       </div>
