@@ -47,7 +47,7 @@ const Dashboard = ({ setAuth }) => {
     <div className="dashboard-container">
       <div className="burger-menu-container">
         <Menu >
-          <Link to="/">Home</Link>
+          <Link to="/dashboard">Home</Link>
           <a onClick={logout}>Logout</a>
         </Menu>
       </div>
@@ -56,7 +56,9 @@ const Dashboard = ({ setAuth }) => {
         <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
       </header>
 
-      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">{name}</h2>
+      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">
+        <Link to="/profile" className="text-white">{name}</Link>
+      </h2>
     </div>
   );
 };

@@ -15,6 +15,7 @@ import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
 import Welcome from './components/Welcome';
 import Dashboard from './components/Dashboard';
+import Profile from './components/ProfilePage';
 
 
 function App() {
@@ -90,6 +91,19 @@ function App() {
                 )
               }
             />
+
+            {/* Profile Page */}
+            <Route
+              path="/profile"
+              element={
+                isAuthenticated ? (
+                  <Profile setAuth={setAuth} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+
             {/* Add other routes here */}
           </Routes>
         </div>
