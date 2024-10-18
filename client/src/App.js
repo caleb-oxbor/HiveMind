@@ -15,6 +15,7 @@ import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
 import Welcome from './components/Welcome';
 import Dashboard from './components/Dashboard';
+import CreatePost from './components/CreatePost';
 
 
 function App() {
@@ -88,6 +89,13 @@ function App() {
                 ) : (
                   <Navigate to="/login" />
                 )
+              }
+            />
+
+            {/* Create post Page */}
+            <Route
+              path="/create-post"
+              element={<CreatePost></CreatePost>
               }
             />
             {/* Add other routes here */}

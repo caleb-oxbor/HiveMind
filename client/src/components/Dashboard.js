@@ -56,7 +56,11 @@ const Dashboard = ({ setAuth }) => {
         <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
       </header>
 
+      
       <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">{name}</h2>
+      <div>
+      <Link to="/create-post">Create Post</Link>
+      </div>
     </div>
   );
 };

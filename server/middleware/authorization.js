@@ -13,6 +13,7 @@ module.exports = async(req, res, next) => {
         }
 
         const payload = jwt.verify(jwtToken, process.env.jwtSecret);
+        console.log("Token verified, payload:", payload);
 
         req.user = payload.user;
 
