@@ -17,6 +17,7 @@ import Welcome from './components/Welcome';
 import Dashboard from './components/Dashboard';
 import CreatePost from './components/CreatePost';
 import ViewPosts from './components/ViewPosts';
+import Classes from './components/ClassesPage';
 
 
 function App() {
@@ -119,6 +120,7 @@ function App() {
             <Route path="/create-post" element={<CreatePost setCreated={setCreated} />} />
             <Route path="/view-posts" element={<ViewPosts />} />
             {/* Add other routes here */}
+            <Route path="/class" element={<Classes />} />
           </Routes>
         </div>
       </Router>

@@ -2,6 +2,8 @@ const router = require("express").Router();
 const pool = require("../db");
 const authorization = require("../middleware/authorization");
 const multer = require('multer');
+const path = require("path");
+const express = require("express");
 
 router.get('/', authorization, async (req, res) => {
   try {
@@ -17,32 +19,36 @@ router.get('/', authorization, async (req, res) => {
   }
 });
 
-const upload = multer();
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, "uploads/"); // Save files in 'uploads/' directory
+  },
+  filename: (req, file, cb) => {
+      const uniqueName = Date.now() + path.extname(file.originalname); // Unique filename
+      cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage }); 
 
 router.post('/create-post', [authorization, upload.single('newPost')], async (req, res) => {
   try {
     const { title } = req.body;
-    const file = req.file;
+    const filePath = req.file.path;
     const userId = req.user;
 
-    if (!file || !title) {
+    if (!req.file || !title) {
         return res.status(400).json({ error: "Missing title or file" });
     }
 
     console.log(`Received title: ${title}`);
-    console.log(`Received file: ${file.originalname}`);
+    console.log(`Received file: ${req.file.originalname}`);
     console.log(`Received user: ${userId}`);
-
-    const fileType = file.mimetype.split('/')[1];
-
-    if (!['pdf', 'jpeg', 'png'].includes(fileType)) {
-      return res.status(400).json({ error: "Invalid file type" });
-    }
 
     // Insert the new post into the 'posts' table
     const newPost = await pool.query(
-        "INSERT INTO posts (post_title, post_content, post_type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
-        [title, file.buffer, fileType, userId]
+      "INSERT INTO posts (post_title, post_content, post_type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [title, filePath, req.file.mimetype, userId]
     );
 
     res.status(201).json({
@@ -61,10 +67,30 @@ router.get("/is-posted", authorization, async (req, res) => {
       "SELECT post_id FROM posts WHERE user_id = $1",
       [req.user]
     );
+
+    if (post.rows.length > 0) {
+      return res.status(200).json({ isPosted: true });
+    } else {
+      return res.status(200).json({ isPosted: false });
+    }
+
+
   } catch(err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
+});
+
+router.get("/posts", authorization, async (req, res) => {
+    try {
+        const posts = await pool.query(
+            "SELECT * FROM posts ORDER BY created_at DESC"
+        );
+        res.json(posts.rows); // Send posts as JSON
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server Error" });
+    }
 });
 
 module.exports = router;
