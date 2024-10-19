@@ -60,13 +60,12 @@ const Dashboard = ({ setAuth }) => {
 
   const handleNavigation = async () => {
     try {
-      // Fetch the post status before navigating
       await getPost(); 
   
       if (isPosted) {
-        navigate("/view-posts", { replace: true }); // Navigate to view-posts if isPosted is true
+        navigate("/view-posts", { replace: true }); 
       } else {
-        navigate("/class", { replace: true }); // Navigate to class if isPosted is false
+        navigate("/class", { replace: true }); 
       }
     } catch (err) {
       console.error("Failed to navigate:", err.message);

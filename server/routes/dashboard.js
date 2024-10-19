@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
       cb(null, "uploads/"); // Save files in 'uploads/' directory
   },
   filename: (req, file, cb) => {
-      const uniqueName = Date.now() + path.extname(file.originalname); // Unique filename
+      const uniqueName = Date.now() + path.extname(file.originalname);
       cb(null, uniqueName);
   },
 });
@@ -45,7 +45,6 @@ router.post('/create-post', [authorization, upload.single('newPost')], async (re
     console.log(`Received file: ${req.file.originalname}`);
     console.log(`Received user: ${userId}`);
 
-    // Insert the new post into the 'posts' table
     const newPost = await pool.query(
       "INSERT INTO posts (post_title, post_content, post_type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
       [title, filePath, req.file.mimetype, userId]
@@ -86,11 +85,12 @@ router.get("/posts", authorization, async (req, res) => {
         const posts = await pool.query(
             "SELECT * FROM posts ORDER BY created_at DESC"
         );
-        res.json(posts.rows); // Send posts as JSON
+        res.json(posts.rows); 
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ error: "Server Error" });
     }
 });
+
 
 module.exports = router;
