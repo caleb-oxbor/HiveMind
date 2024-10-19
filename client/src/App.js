@@ -15,13 +15,21 @@ import CreateAccount from './components/CreateAccount';
 import LogIn from './components/LogIn';
 import Welcome from './components/Welcome';
 import Dashboard from './components/Dashboard';
+import CreatePost from './components/CreatePost';
+import ViewPosts from './components/ViewPosts';
+import Classes from './components/ClassesPage';
 
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [createdPost, setCreatedPost] = useState(false);
 
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);
+  };
+
+  const setCreated = (boolean) => {
+    setCreatedPost(boolean);
   };
 
   async function isAuth(){
@@ -38,12 +46,29 @@ function App() {
     } 
     catch (err) {
       console.error(err.message);
-      
+    }
+  }
+
+  async function isCreated() {
+    try {
+      const response = await fetch("http://localhost:5000/dashboard/is-posted", {
+        method: "GET",
+        headers: {token : localStorage.token }
+      });
+
+      const parseRes = await response.json();
+      setCreatedPost(parseRes); 
+    } catch (err) {
+      console.error(err.message);
     }
   }
 
   useEffect(() => {
     isAuth();
+  }, []);
+
+  useEffect(() => {
+    isCreated();
   }, []);
   
   return (
@@ -90,7 +115,12 @@ function App() {
                 )
               }
             />
+
+            {/* Create post Page */}
+            <Route path="/create-post" element={<CreatePost setCreated={setCreated} />} />
+            <Route path="/view-posts" element={<ViewPosts />} />
             {/* Add other routes here */}
+            <Route path="/class" element={<Classes />} />
           </Routes>
         </div>
       </Router>
