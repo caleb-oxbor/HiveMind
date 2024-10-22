@@ -39,6 +39,7 @@
 -- CREATE TABLE posts (
 --     post_id SERIAL PRIMARY KEY,
 --     post_type TEXT CHECK (post_type IN ('pdf', 'jpeg', 'png')) NOT NULL,
+--     post_title TEXT,
 --     post_content BYTEA NOT NULL, -- Can store binary files like PDFs or images
 --     module_id INT REFERENCES modules(module_id) ON DELETE CASCADE,
 --     user_id uuid REFERENCES users(user_id) ON DELETE CASCADE, -- Changed to UUID
