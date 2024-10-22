@@ -19,6 +19,9 @@ import CreatePost from './components/CreatePost';
 import ViewPosts from './components/ViewPosts';
 import Classes from './components/ClassesPage';
 
+import Profile from './components/ProfilePage';
+
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -116,9 +119,24 @@ function App() {
               }
             />
 
+
             {/* Create post Page */}
             <Route path="/create-post" element={<CreatePost setCreated={setCreated} />} />
             <Route path="/view-posts" element={<ViewPosts />} />
+
+            {/* Profile Page */}
+            <Route
+              path="/profile"
+              element={
+                isAuthenticated ? (
+                  <Profile setAuth={setAuth} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+
+
             {/* Add other routes here */}
             <Route path="/class" element={<Classes />} />
           </Routes>
