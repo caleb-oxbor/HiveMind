@@ -76,7 +76,6 @@ const ViewPosts = ({ setAuth }) => {
                     src={fileUrl}
                     title={post.post_title}
                     className="post-pdf"
-                    frameBorder="0"
                 />
             );
         } 
@@ -103,7 +102,6 @@ const ViewPosts = ({ setAuth }) => {
                     src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
                     title={post.post_title}
                     className="post-doc"
-                    frameBorder="0"
                 />
             );
         } 
@@ -114,7 +112,6 @@ const ViewPosts = ({ setAuth }) => {
                     src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
                     title={post.post_title}
                     className="post-doc"
-                    frameBorder="0"
                 />
             );
         } 
@@ -125,7 +122,6 @@ const ViewPosts = ({ setAuth }) => {
                     src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
                     title={post.post_title}
                     className="post-doc"
-                    frameBorder="0"
                 />
             );
         } 
@@ -136,7 +132,6 @@ const ViewPosts = ({ setAuth }) => {
                     src={fileUrl}
                     title={post.post_title}
                     className="post-html"
-                    frameBorder="0"
                 />
             );
         } 
@@ -148,6 +143,27 @@ const ViewPosts = ({ setAuth }) => {
             );
         }
     };
+
+    const handleDownload = async (post) => {
+        try {
+            const response = await fetch(getFileUrl(post.post_content), {
+                headers: { token: localStorage.token },
+            });
+    
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = post.post_title || 'download';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Download failed', err);
+        }
+    };
+    
 
     return (
     <div>
@@ -189,11 +205,11 @@ const ViewPosts = ({ setAuth }) => {
 
                             {/* Download button for all files */}
                             <a
-                                href={getFileUrl(post.post_content)}
-                                download
-                                className="download-button"
+                            onClick={() => handleDownload(post)}
+                            className="download-button"
+                            style={{ cursor: 'pointer' }}
                             >
-                                Download
+                            Download
                             </a>
                         </li>
                     ))}
