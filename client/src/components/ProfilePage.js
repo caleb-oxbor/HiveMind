@@ -23,7 +23,6 @@ const Profile = ({ setAuth }) => {
       console.log(parseData);
       console.log(setAuth);
       setUsername(parseData.username);
-      // setUsername(parseData);
       setUserId(parseData.user_id);
       // console.log("current user ID: ", parseData.user_id);
     } catch (err) {
@@ -195,11 +194,11 @@ return (
         <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">
             View Your Posts
         </h1>
-        {posts.length === 0 ? (
+        {userPosts.length === 0 ? (
             <p>No posts available</p>
         ) : (
             <ul className="posts-list">
-                {posts.map((post) => (
+                {userPosts.map((post) => (
                     <li key={post.post_id} className="post-item">
                         <h2 className="font-dotgothic text-white text-2xl">
                             {post.post_title}
