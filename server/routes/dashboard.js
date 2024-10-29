@@ -36,6 +36,7 @@ router.post('/create-post', [authorization, upload.single('newPost')], async (re
     const { title } = req.body;
     const filePath = req.file.path;
     const userId = req.user;
+    const filetype = req.file.mimetype;
 
     if (!req.file || !title) {
         return res.status(400).json({ error: "Missing title or file" });
@@ -44,6 +45,7 @@ router.post('/create-post', [authorization, upload.single('newPost')], async (re
     console.log(`Received title: ${title}`);
     console.log(`Received file: ${req.file.originalname}`);
     console.log(`Received user: ${userId}`);
+    console.log({filetype});
 
     const newPost = await pool.query(
       "INSERT INTO posts (post_title, post_content, post_type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",

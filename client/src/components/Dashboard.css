@@ -1,54 +1,64 @@
 .dashboard-container {
   display: flex;
-  align-items: center; /* Vertically center the elements */
-  justify-content: space-between; /* Space between elements */
-  width: 100%; /* Use 100% to prevent overflow */
-  padding: 10px 0; /* Optional padding */
+  align-items: center; 
+  justify-content: space-between; 
+  width: 100%; 
+  padding-top: 10px;
+  padding-left: 60px;
+  padding-bottom: 4px;
   border-bottom: 4px solid white;
-  box-sizing: border-box; /* Ensure padding and borders are included in the width */
+  box-sizing: border-box; 
 }
 
-.burger-menu-container {
+.your-classes-container {
   display: flex;
-  align-items: center;
-  margin-right: 10px;
-  padding-right: 20px;
-  background: rgba(255, 255, 255, 0.2);
+  flex-direction: column;
+  width: 100%;
+  padding-top: 10px;
+  justify-content: center;
+  align-items: center;  
+  box-sizing: border-box;
 }
-  .bm-burger-bars {
-  background: #FFFFFF;
+
+.bm-burger-button {
+  position: fixed;
+  width: 36px;
+  height: 30px;
+  top: 30px;
+}
+.bm-burger-bars {
+  background: #ffffff;
   transition: all 0.3s ease-in-out;
-  
 }
 
 .bm-cross {
-  background-color: red; /* Use background to color the cross */
+  background-color: rgb(234, 0, 255);
 }
 
 .bm-burger-bars-hover {
   background: rgba(255,0,255,0.6);
 }
 .bm-menu {
-  background: #FFFFFF;
+  background: #f6c1f5;
   font-size: 30px;
-  width: 200px;
+  font-family: 'DotGothic16', sans-serif; 
+  padding-left: 50px;
+  padding-top: 30px;
+}
+.bm-item-list a {
+  text-decoration: none; 
+  color: white;
+  padding: 10px 0; 
+  transition: color 0.3s ease, text-decoration 0.3s ease; 
 }
 
-.bm-burger-button {
-  position: fixed;
-  width: 36px;
-  left: 10px; /* Positioned on the left */
-  height: 30px;
-  top: 30px;
+.bm-item-list a:hover {
+  color: #ff80fd; 
+  text-decoration: underline; 
 }
 
-header {
-  flex-grow: 1;
+a {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start; 
+  align-items: center; 
 }
 
-h2 {
-  padding-right: 10px;
-}

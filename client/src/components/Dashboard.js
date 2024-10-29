@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
+import logoutIcon from '../images/logout.png'; 
+import hivemindLogo from '../images/spacebee.png'; 
 
 
 const Dashboard = ({ setAuth }) => {
@@ -79,30 +81,35 @@ const Dashboard = ({ setAuth }) => {
 
   return (
     <div>
-    <div className="dashboard-container">
-      <div className="burger-menu-container">
-        <Menu >
-          <Link to="/dashboard">Home</Link>
-          <a onClick={logout}>Logout</a>
+        <Menu>
+          <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+          </a>
         </Menu>
+
+        <div className="dashboard-container">
+          <header>
+            <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
+          </header>
+
+          <img src={hivemindLogo} alt="Hivemind Logo" style={{ width: '70px', height: '70px' }} /> 
+
+          <h2 className="font-tiny5 font-bold text-right text-white text-5xl heading-shadow">
+            <Link to="/profile" className="text-white">{name}</Link>
+          </h2>
+        </div>
+
+      <div className="your-classes-container">
+        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Your Classes</h1>
       </div>
 
-      <header>
-        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
-      </header>
+        <Link to="/class">
+          <button 
+            onClick={handleNavigation}
+            className="mt-10 font-dotgothic custom-button"> Class Example
+            </button>
+        </Link>
       
-      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">{name}</h2>
-      </div>
-      <Link to="/class">
-        <button 
-          onClick={handleNavigation}
-          className="mt-10 font-dotgothic custom-button">
-        Class Example</button>
-      </Link>
-
-      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">
-        <Link to="/profile" className="text-white">{name}</Link>
-      </h2>
     </div>
   );
 };
