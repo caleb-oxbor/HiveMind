@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
-import './Profile.css'
+// import './Profile.css'
 
 
 const Profile = ({ setAuth }) => {
