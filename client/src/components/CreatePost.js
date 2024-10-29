@@ -107,14 +107,16 @@ const CreatePost = ({setCreated, setAuth}) => {
         <div className="dashboard-container">
         <div className="burger-menu-container">
             <Menu >
-                <Link to="/">Home</Link>
+                <Link to="/dashboard">Home</Link>
                 <a onClick={logout}>Logout</a>
             </Menu>
         </div>
         <header>
             <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
         </header>  
-        <h2 className="font-tiny5 font-bold text-right text-white text-2xl">{name}</h2>
+        <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
+        <Link to="/profile" className="text-white">{name}</Link>
+      </h2>
         </div>
         <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-3 heading-shadow">Create Post</h1>
         <form onSubmit={onSubmitForm}>

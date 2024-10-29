@@ -109,7 +109,6 @@ const Dashboard = ({ setAuth }) => {
             className="mt-10 font-dotgothic custom-button"> Class Example
             </button>
         </Link>
-      
     </div>
   );
 };
