@@ -9,6 +9,17 @@
   border-bottom: 4px solid white;
   box-sizing: border-box; 
 }
+
+.your-classes-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 10px;
+  justify-content: center;
+  align-items: center;  
+  box-sizing: border-box;
+}
+
 .bm-burger-button {
   position: fixed;
   width: 36px;
@@ -21,7 +32,7 @@
 }
 
 .bm-cross {
-  background-color: rgb(234, 0, 255); /* Use background to color the cross */
+  background-color: rgb(234, 0, 255);
 }
 
 .bm-burger-bars-hover {
@@ -35,19 +46,19 @@
   padding-top: 30px;
 }
 .bm-item-list a {
-  text-decoration: none; /* No underline by default */
-  color: white; /* Default text color */
-  padding: 10px 0; /* Adjust padding as needed */
-  transition: color 0.3s ease, text-decoration 0.3s ease; /* Smooth transition */
+  text-decoration: none; 
+  color: white;
+  padding: 10px 0; 
+  transition: color 0.3s ease, text-decoration 0.3s ease; 
 }
 
-/* Hover effect for menu items */
 .bm-item-list a:hover {
-  color: #ff80fd; /* Change to your desired hover color */
-  text-decoration: underline; /* Underline on hover */
+  color: #ff80fd; 
+  text-decoration: underline; 
 }
 
 a {
   display: flex;
   align-items: center; 
 }
+
