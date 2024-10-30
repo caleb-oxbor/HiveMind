@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import './CreateAccount.css';
 import { Link } from 'react-router-dom';
-import supabase from "../supabaseClient";
+// import supabase from "../supabaseClient";
 
 const CreateAccount = ({setAuth}) => {
     const[inputs, setInputs] = useState({

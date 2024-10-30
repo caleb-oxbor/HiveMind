@@ -4,6 +4,7 @@ const authorization = require("../middleware/authorization");
 const multer = require('multer');
 const path = require("path");
 const express = require("express");
+const supabase = require("../supabaseClient");
 
 router.get('/', authorization, async (req, res) => {
   try {
