@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from "react";
 import './CreateAccount.css';
 import { Link } from 'react-router-dom';
-// import supabase from "../supabaseClient";
 
 const CreateAccount = ({setAuth}) => {
     const[inputs, setInputs] = useState({
@@ -43,8 +42,6 @@ console.log(response)
             // }
 
             const parseRes = await response.json();
-
-            console.log("json parsed")
 
             if (parseRes.token) {
                 localStorage.setItem("token", parseRes.token);

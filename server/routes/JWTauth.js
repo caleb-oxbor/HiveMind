@@ -6,8 +6,6 @@ const validInfo = require("../middleware/validinfo");
 const authorization = require("../middleware/authorization");
 const supabase = require("../supabaseClient");
 
-console.log("entered JWTauth")
-
 //function to generate a random username
 async function generateRandomUsername() {
     let isUnique = false;
@@ -18,18 +16,21 @@ async function generateRandomUsername() {
             .from('words')
             .select('word')
             .eq('type', 'adjective')
-            .order('random')
+            //.order('RANDOM()')
             .limit(1);
 
         const nounResult = await supabase
             .from('words')
             .select('word')
             .eq('type', 'noun')
-            .order('random')
+            //.order('RANDOM()')
             .limit(1);
 
-        const adjective = adjectiveResult.data[0]?.word;
-        const noun = nounResult.data[0]?.word;
+        console.log("stuff:")
+        console.log(adjectiveResult)
+
+        const adjective = adjectiveResult.data?.[0]?.word;
+        const noun = nounResult.data?.[0]?.word;
 
         if (!adjective || !noun) {
             throw new Error('No words found in the database');
@@ -78,7 +79,7 @@ router.post("/register",validInfo, async (req, res) => {
             .from('users')
             .select('*')
             .eq('email', email)
-            .single();
+            .maybeSingle();
 
             if (userError && userError.code !== 'PGRST105') {
                 // Handles any other Supabase error
@@ -90,14 +91,8 @@ router.post("/register",validInfo, async (req, res) => {
             if (existingUser) {
                 return res.status(401).json("User already exists 1.");
             }
-        
-        if (user.rows.length > 0){
-            return res.status(401).json("User already exists 2.") //unauthorized
-        }
 
-        console.log("made it here")
         const username = await generateRandomUsername();
-        console.log(username)
 
         // 3 becrypt user password
         const saltRounds = 10;
@@ -108,21 +103,17 @@ router.post("/register",validInfo, async (req, res) => {
         const { data: newUser, error: insertError } = await supabase
             .from('users')
             .insert([{username, password: bcryptPw, email}])
-            .single();
+            .maybeSingle();
 
         if (insertError) throw insertError;
 
-
-        // 4 enter user inside database 
-        // const newUser = await pool.query(
-        //     "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *",
-        //     [username, email, bcryptPw]
-        // );
+        console.log(username)
+        //console.log()
 
         // generating jwt token
-        const token = jwtGenerator(newUser.rows[0].user_id);
+        const token = jwtGenerator(newUser?.user_id);
 
-        res.json({ token, username: newUser.rows[0].username });
+        res.json({ token, username: newUser?.username });
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");
