@@ -6,28 +6,48 @@ const validInfo = require("../middleware/validinfo");
 const authorization = require("../middleware/authorization");
 const supabase = require("../supabaseClient");
 
+//get random row from supabase table
+async function getRandomWord(wordType) {
+    randIndex = Math.floor(Math.random() * 100);
+    if (wordType == 'adjective') {
+        randIndex += 100;
+    }
+    const { data: rowData, error: rowError } = await supabase
+        .from('words')
+        .select('word')
+        .range(randIndex, randIndex)
+        .limit(1);
+
+    return rowData[0]?.word
+}
+
+
 //function to generate a random username
 async function generateRandomUsername() {
     let isUnique = false;
     let username;
 
     while (!isUnique) {
-        const adjectiveResult = await supabase
-            .from('words')
-            .select('word')
-            .eq('type', 'adjective')
-            //.order('RANDOM()')
-            .limit(1);
+        // const { data: adjectiveData, error: adjectiveError } = await supabase
+        //     .from('words')
+        //     .select('word')
+        //     .eq('type', 'adjective')
+        //     .limit(1)
+        //     .single();
+        const adjective = await getRandomWord('adjective');
+        const noun = await getRandomWord('noun');
 
-        const nounResult = await supabase
-            .from('words')
-            .select('word')
-            .eq('type', 'noun')
-            //.order('RANDOM()')
-            .limit(1);
+        // const { data: nounData, error: nounError } = await supabase
+        //     .from('words')
+        //     .select('word')
+        //     .eq('type', 'noun')
+        //     .limit(1)
+        //     .single();
 
-        const adjective = adjectiveResult.data?.[0]?.word;
-        const noun = nounResult.data?.[0]?.word;
+        // const adjective = adjectiveResult.data?.[0]?.word;
+        // const noun = nounResult.data?.[0]?.word;
+        //const adjective = adjectiveData.word;
+        //const noun = nounData.word;
 
         if (!adjective || !noun) {
             throw new Error('No words found in the database');
