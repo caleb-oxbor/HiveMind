@@ -28,15 +28,23 @@ const CreateAccount = ({setAuth}) => {
 
         try {
             const body = {email, password, passwordconfirm};
-
             const response = await fetch("http://localhost:5000/auth/register", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body:  JSON.stringify(body)
             });
+console.log(response)
 
+            // if (!response.ok) {
+            //     // If the response is not ok, log the response status and text
+            //     const errorText = await response.text(); // Get the response text
+            //     console.error("Error response:", response.status, errorText);
+            //     throw new Error("Failed to create account: " + errorText); // You can customize the error message
+            // }
 
             const parseRes = await response.json();
+
+            console.log("json parsed")
 
             if (parseRes.token) {
                 localStorage.setItem("token", parseRes.token);

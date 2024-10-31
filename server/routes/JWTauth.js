@@ -6,6 +6,8 @@ const validInfo = require("../middleware/validinfo");
 const authorization = require("../middleware/authorization");
 const supabase = require("../supabaseClient");
 
+console.log("entered JWTauth")
+
 //function to generate a random username
 async function generateRandomUsername() {
     let isUnique = false;
@@ -83,15 +85,19 @@ router.post("/register",validInfo, async (req, res) => {
                 throw userError;
             }
 
+            // console.log("made it thru PGSRT105")
+
             if (existingUser) {
-                return res.status(401).json("User already exists.");
+                return res.status(401).json("User already exists 1.");
             }
         
         if (user.rows.length > 0){
-            return res.status(401).json("User already exists.") //unauthorized
+            return res.status(401).json("User already exists 2.") //unauthorized
         }
 
+        console.log("made it here")
         const username = await generateRandomUsername();
+        console.log(username)
 
         // 3 becrypt user password
         const saltRounds = 10;
