@@ -125,7 +125,7 @@ router.post("/register",validInfo, async (req, res) => {
 
         if (insertError) throw insertError;
 
-        console.log(newUser)
+        //console.log(newUser)
 
         // generating jwt token
         const token = jwtGenerator(newUser?.user_id);
@@ -144,7 +144,7 @@ router.post("/login", validInfo, async(req, res) => {
         //1. destructure the req.body
 
         const {email, password} = req.body;
-        console.log("req body:" + email + " " + password);
+        //console.log("req body:" + email + " " + password);
 
         //2. check if user doesn't exist (throw error if so)
 
@@ -162,7 +162,7 @@ router.post("/login", validInfo, async(req, res) => {
                 return res.status(401).json("Password or Email is incorrect");
             }
         
-        console.log(user);
+        //console.log(user);
 
         //3. check if incoming password is the same as database password.
 
@@ -171,7 +171,8 @@ router.post("/login", validInfo, async(req, res) => {
             return res.status(401).json("Password or Email is incorrect");
         }
 
-        const token = jwtGenerator(user.id); // Use the correct field for user ID
+        const token = jwtGenerator(user.user_id); // Use the correct field for user ID
+        console.log("user_id: " + user.user_id);
         res.json({ token });
     } catch (err) {
         console.error(err.message);

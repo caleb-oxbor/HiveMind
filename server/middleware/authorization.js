@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config()
 
-
-
 module.exports = async(req, res, next) => {
     try {
 
@@ -15,6 +13,7 @@ module.exports = async(req, res, next) => {
         const payload = jwt.verify(jwtToken, process.env.jwtSecret);
 
         req.user = payload.user;
+        //console.log("Payload content:", JSON.stringify(payload, null, 2));
 
         next();
 
