@@ -26,9 +26,6 @@ async function generateRandomUsername() {
             //.order('RANDOM()')
             .limit(1);
 
-        console.log("stuff:")
-        console.log(adjectiveResult)
-
         const adjective = adjectiveResult.data?.[0]?.word;
         const noun = nounResult.data?.[0]?.word;
 
@@ -103,12 +100,12 @@ router.post("/register",validInfo, async (req, res) => {
         const { data: newUser, error: insertError } = await supabase
             .from('users')
             .insert([{username, password: bcryptPw, email}])
-            .maybeSingle();
+            .select('*')
+            .single();
 
         if (insertError) throw insertError;
 
-        console.log(username)
-        //console.log()
+        console.log(newUser)
 
         // generating jwt token
         const token = jwtGenerator(newUser?.user_id);
