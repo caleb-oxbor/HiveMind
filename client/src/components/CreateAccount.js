@@ -34,13 +34,6 @@ const CreateAccount = ({setAuth}) => {
             });
 console.log(response)
 
-            // if (!response.ok) {
-            //     // If the response is not ok, log the response status and text
-            //     const errorText = await response.text(); // Get the response text
-            //     console.error("Error response:", response.status, errorText);
-            //     throw new Error("Failed to create account: " + errorText); // You can customize the error message
-            // }
-
             const parseRes = await response.json();
 
             if (parseRes.token) {
@@ -51,10 +44,6 @@ console.log(response)
                 setAuth(false);
                 setErrorMessage(parseRes);
             }
-            
-            // const { data, error } = await supabase
-            //     .from('users')
-            //     .insert([{}])
 
         } catch(err) {
             console.error(err.message);

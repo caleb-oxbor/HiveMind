@@ -6,7 +6,7 @@ const validInfo = require("../middleware/validinfo");
 const authorization = require("../middleware/authorization");
 const supabase = require("../supabaseClient");
 
-//get random row from supabase table
+// get random word from words table
 async function getRandomWord(wordType) {
     randIndex = Math.floor(Math.random() * 100);
     if (wordType == 'adjective') {
@@ -22,7 +22,7 @@ async function getRandomWord(wordType) {
 }
 
 
-//function to generate a random username
+// generate a random username
 async function generateRandomUsername() {
     let isUnique = false;
     let username;
@@ -144,6 +144,7 @@ router.post("/login", validInfo, async(req, res) => {
         //1. destructure the req.body
 
         const {email, password} = req.body;
+        console.log("req body:" + email + " " + password);
 
         //2. check if user doesn't exist (throw error if so)
 
@@ -151,15 +152,17 @@ router.post("/login", validInfo, async(req, res) => {
         //     email
         // ]);
 
-        const user = await supabase
+        const {data: user, error: userError} = await supabase
             .from('users')
             .select('*')
             .eq('email', email)
-            .single();
+            .maybeSingle();
 
-            if (error || !user) {
+            if (userError || !user) {
                 return res.status(401).json("Password or Email is incorrect");
             }
+        
+        console.log(user);
 
         //3. check if incoming password is the same as database password.
 
