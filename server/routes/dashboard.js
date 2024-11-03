@@ -3,7 +3,7 @@ const pool = require("../db");
 const authorization = require("../middleware/authorization");
 const multer = require('multer');
 const path = require("path");
-const express = require("express");
+//const express = require("express");
 const supabase = require("../supabaseClient");
 
 router.get('/', authorization, async (req, res) => {
@@ -14,8 +14,6 @@ router.get('/', authorization, async (req, res) => {
       .eq('user_id', req.user)
       .single();
     
-    //console.log(req.user)
-    //console.log(user);
     res.json(user);
   }
   catch (err) {
