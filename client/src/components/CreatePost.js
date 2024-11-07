@@ -3,6 +3,12 @@ import { toast } from "react-toastify";
 import { slide as Menu } from "react-burger-menu";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+
+import supabase from '../supabaseClient'
+
+console.log('Supabase URL:', process.env.REACT_APP_SUPABASE_URL);
+console.log('Supabase Anon Key:', process.env.REACT_APP_SUPABASE_ANON_KEY);
 
 const CreatePost = ({setCreated, setAuth}) => {
     const [name, setUsername] = useState("");
@@ -67,40 +73,88 @@ const CreatePost = ({setCreated, setAuth}) => {
         }
     };
     
+    const uploadFileToSupabase = async () => {
+        const filePath = name + "/" + uuidv4();
+        const { data, error } = await supabase
+          .storage
+          .from('posts')
+          .upload(filePath, newPost);
     
-    const onSubmitForm = async e => {
+        if (error) {
+          console.error("Supabase upload error:", error);
+          setError("File upload failed.");
+          return null;
+        }
+    
+        return filePath; 
+      };
+    
+    const onSubmitForm = async (e) => {
         e.preventDefault();
         if (!newPost) {
+          setError("Please select a valid file before submitting.");
+          return;
+        }
+    
+        const filePath = await uploadFileToSupabase();
+        if (!filePath) {
             setError("Please select a valid file before submitting.");
             return;
         }
+        
+        const { data, error } = await supabase
+        .from('posts')
+        .insert([
+          {
+            title,
+            file_path: filePath,
+            file_type: newPost.type,
+            user_id: name,
+          }
+        ]);
+  
+      if (error) {
+        console.error("Failed to save post metadata:", error);
+        setError("Failed to create post metadata.");
+      } else {
+        toast.success("Post created successfully!");
+      }
+      };
 
-        try {
-            const formData = new FormData();
-            formData.append("newPost", newPost);
-            formData.append("title", title);
+
+    // const onSubmitForm = async e => {
+    //     e.preventDefault();
+    //     if (!newPost) {
+    //         setError("Please select a valid file before submitting.");
+    //         return;
+    //     }
+
+    //     try {
+    //         const formData = new FormData();
+    //         formData.append("newPost", newPost);
+    //         formData.append("title", title);
             
-            const response = await fetch("http://localhost:5000/dashboard/create-post", {
-                method: "POST",
-                headers: {
-                    "token": localStorage.token, 
-                },
-                body: formData,
-            });
+    //         const response = await fetch("http://localhost:5000/dashboard/create-post", {
+    //             method: "POST",
+    //             headers: {
+    //                 "token": localStorage.token, 
+    //             },
+    //             body: formData,
+    //         });
 
-            if (response.ok) {
-                console.log("Post created successfully!");
-                setCreated(true); 
-                navigate("/dashboard", { replace: true }); 
-                navigate("/view-posts", {replace: true}); 
-            } else {
-                console.error("Failed to create post.");
-            }
+    //         if (response.ok) {
+    //             console.log("Post created successfully!");
+    //             setCreated(true); 
+    //             navigate("/dashboard", { replace: true }); 
+    //             navigate("/view-posts", {replace: true}); 
+    //         } else {
+    //             console.error("Failed to create post.");
+    //         }
 
-        }catch (err){
-            console.error(err.message);
-        }
-    }
+    //     }catch (err){
+    //         console.error(err.message);
+    //     }
+    // }
 
     return (
     <Fragment>
