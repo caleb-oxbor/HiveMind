@@ -6,8 +6,6 @@ const path = require("path");
 //const express = require("express");
 const supabase = require("../supabaseClient");
 
-console.log('Supabase URL dash:', process.env.REACT_APP_SUPABASE_URL);
-console.log('Supabase Anon Key dash:', process.env.REACT_APP_SUPABASE_ANON_KEY);
 
 router.get('/', authorization, async (req, res) => {
   try {

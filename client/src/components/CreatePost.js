@@ -7,9 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import supabase from '../supabaseClient'
 
-console.log('Supabase URL:', process.env.REACT_APP_SUPABASE_URL);
-console.log('Supabase Anon Key:', process.env.REACT_APP_SUPABASE_ANON_KEY);
-
 const CreatePost = ({setCreated, setAuth}) => {
     const [name, setUsername] = useState("");
     const [newPost, setNewPost] = useState(null);
@@ -74,20 +71,23 @@ const CreatePost = ({setCreated, setAuth}) => {
     };
     
     const uploadFileToSupabase = async () => {
-        const filePath = name + "/" + uuidv4();
+        const filePath = `${name}/${uuidv4()}`;
+        const { data: { user } } = await supabase.auth.getUser();
+        console.log("User:", user);
+
         const { data, error } = await supabase
           .storage
-          .from('posts')
+          .from('noauth')
           .upload(filePath, newPost);
-    
+
         if (error) {
           console.error("Supabase upload error:", error);
           setError("File upload failed.");
           return null;
         }
-    
+
         return filePath; 
-      };
+    };
     
     const onSubmitForm = async (e) => {
         e.preventDefault();
@@ -97,28 +97,26 @@ const CreatePost = ({setCreated, setAuth}) => {
         }
     
         const filePath = await uploadFileToSupabase();
+        console.log('Filepath', filePath);
         if (!filePath) {
-            setError("Please select a valid file before submitting.");
+            setError("Please select a valid file before submitting. Meow.");
             return;
         }
         
-        const { data, error } = await supabase
-        .from('posts')
-        .insert([
-          {
-            title,
-            file_path: filePath,
-            file_type: newPost.type,
-            user_id: name,
-          }
-        ]);
+    //     const { data, error } = await supabase
+    //     .from('posts')
+    //     .insert([
+    //       {
+    //         post_type: newPost.user_id,
+    //       }
+    //     ]);
   
-      if (error) {
-        console.error("Failed to save post metadata:", error);
-        setError("Failed to create post metadata.");
-      } else {
-        toast.success("Post created successfully!");
-      }
+    //   if (error) {
+    //     console.error("Failed to save post metadata:", error);
+    //     setError("Failed to create post metadata.");
+    //   } else {
+    //     toast.success("Post created successfully!");
+    //   }
       };
 
 
