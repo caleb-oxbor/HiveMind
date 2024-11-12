@@ -13,6 +13,7 @@ const CreatePost = ({setCreated, setAuth}) => {
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const post_id = uuidv4();
 
     const getName = async () => {
         try {
@@ -71,7 +72,7 @@ const CreatePost = ({setCreated, setAuth}) => {
     };
     
     const uploadFileToSupabase = async () => {
-        const filePath = `${name}/${uuidv4()}`;
+        const filePath = `${name}/${post_id}`;
         const { data: { user } } = await supabase.auth.getUser();
         console.log("User:", user);
 
@@ -103,20 +104,19 @@ const CreatePost = ({setCreated, setAuth}) => {
             return;
         }
         
-    //     const { data, error } = await supabase
-    //     .from('posts')
-    //     .insert([
-    //       {
-    //         post_type: newPost.user_id,
-    //       }
-    //     ]);
+        const { data : insertedPost, error : insertedPostError } = await supabase
+        .from('posts_duplicate')
+        // currently, post_extension and class_id are hard coded
+        .insert([{file_extension:"pdf", class_id:123, author_username:name, post_title:title, filepath:post_id}])
+        .select('*')
+        .single();
   
-    //   if (error) {
-    //     console.error("Failed to save post metadata:", error);
-    //     setError("Failed to create post metadata.");
-    //   } else {
-    //     toast.success("Post created successfully!");
-    //   }
+      if (insertedPostError) {
+        console.error("Failed to save post metadata:", insertedPostError);
+        setError("Failed to create post metadata.");
+      } else {
+        toast.success("Post created successfully!");
+      }
       };
 
 
