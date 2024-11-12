@@ -132,6 +132,7 @@ const CreatePost = ({setCreated, setAuth}) => {
       }
 
     };
+
     const onSubmitForm = async (e) => {
         e.preventDefault();
         if (!newPost) {
@@ -158,43 +159,13 @@ const CreatePost = ({setCreated, setAuth}) => {
         setError("Failed to create post metadata.");
       } else {
         toast.success("Post created successfully!");
+        // setCreated(true); 
+        // navigate("/dashboard", { replace: true }); 
+        // navigate("/view-posts", {replace: true}); 
       }
-      };
+    };
 
 
-    // const onSubmitForm = async e => {
-    //     e.preventDefault();
-    //     if (!newPost) {
-    //         setError("Please select a valid file before submitting.");
-    //         return;
-    //     }
-
-    //     try {
-    //         const formData = new FormData();
-    //         formData.append("newPost", newPost);
-    //         formData.append("title", title);
-            
-    //         const response = await fetch("http://localhost:5000/dashboard/create-post", {
-    //             method: "POST",
-    //             headers: {
-    //                 "token": localStorage.token, 
-    //             },
-    //             body: formData,
-    //         });
-
-    //         if (response.ok) {
-    //             console.log("Post created successfully!");
-    //             setCreated(true); 
-    //             navigate("/dashboard", { replace: true }); 
-    //             navigate("/view-posts", {replace: true}); 
-    //         } else {
-    //             console.error("Failed to create post.");
-    //         }
-
-    //     }catch (err){
-    //         console.error(err.message);
-    //     }
-    // }
 
     return (
     <Fragment>
@@ -230,14 +201,14 @@ const CreatePost = ({setCreated, setAuth}) => {
             <button className="mt-10 font-dotgothic custom-button">Submit</button>
         </form>
 
-        {media.map((media) => {
+        {/* {media.map((media) => {
           return (<>
             <div>
-              <img src={`https://jbqwoenlfrfgsrkimwyx.supabase.co/storage/v1/object/public/userPosts/dynamicmentorship/${media.name}`} />
+              <iframe src={`https://jbqwoenlfrfgsrkimwyx.supabase.co/storage/v1/object/public/userPosts/${name}/${media.name}`} />
             </div>
           </>
           )
-        })}
+        })} */}
 
         </Fragment>
     );
