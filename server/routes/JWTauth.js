@@ -1,48 +1,83 @@
 const router = require("express").Router();
-const pool = require("../db");
 const bcrypt = require("bcrypt");
 const jwtGenerator = require("../utils/jwtGenerator");
 const validInfo = require("../middleware/validinfo");
 const authorization = require("../middleware/authorization");
+const supabase = require("../supabaseClient");
 
-//function to generate a random username
+// get random word from words table
+async function getRandomWord(wordType) {
+    randIndex = Math.floor(Math.random() * 100);
+    if (wordType == 'adjective') {
+        randIndex += 100;
+    }
+    const { data: rowData, error: rowError } = await supabase
+        .from('words')
+        .select('word')
+        .range(randIndex, randIndex)
+        .limit(1);
+
+    return rowData[0]?.word
+}
+
+
+// generate a random username
 async function generateRandomUsername() {
     let isUnique = false;
     let username;
 
-    while (!isUnique){
-    //one random adjective
-    const adjectiveResult = await pool.query("SELECT word FROM words WHERE type = 'adjective' ORDER BY RANDOM() LIMIT 1");
-    if (adjectiveResult.rows.length === 0) {
-        throw new Error('No adjectives found in the database');
-    }
-    const adjective = adjectiveResult.rows[0].word;
+    while (!isUnique) {
+        // const { data: adjectiveData, error: adjectiveError } = await supabase
+        //     .from('words')
+        //     .select('word')
+        //     .eq('type', 'adjective')
+        //     .limit(1)
+        //     .single();
+        const adjective = await getRandomWord('adjective');
+        const noun = await getRandomWord('noun');
 
-    //one random noun
-    const nounResult = await pool.query("SELECT word FROM words WHERE type = 'noun' ORDER BY RANDOM() LIMIT 1");
-    if (nounResult.rows.length === 0) {
-        throw new Error('No nouns found in the database');
-    }
-    const noun = nounResult.rows[0].word;
+        // const { data: nounData, error: nounError } = await supabase
+        //     .from('words')
+        //     .select('word')
+        //     .eq('type', 'noun')
+        //     .limit(1)
+        //     .single();
 
-    username = adjective + noun; // combine the words to create a random username
+        // const adjective = adjectiveResult.data?.[0]?.word;
+        // const noun = nounResult.data?.[0]?.word;
+        //const adjective = adjectiveData.word;
+        //const noun = nounData.word;
 
-    const userResult = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+        if (!adjective || !noun) {
+            throw new Error('No words found in the database');
+        }
 
-    if (userResult.rows.length === 0) {
-        isUnique = true;
-    } else {
-        // If username exists, append a random number (e.g., between 100 and 999)
-        const randomNumber = Math.floor(Math.random() * 900) + 100; // Generates a number between 100 and 999
-        username = username + randomNumber;
-        // Re-check with the new username
-        const finalCheck = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
-        if (finalCheck.rows.length === 0) {
+        username = adjective + noun;
+
+        const { data: existingUser } = await supabase
+            .from('users')
+            .select('*')
+            .eq('username', username)
+            .single();
+
+        if (!existingUser) {
             isUnique = true;
+        } else {
+            const randomNumber = Math.floor(Math.random() * 900) + 100;
+            username = username + randomNumber;
+
+            const { data: finalCheck } = await supabase
+                .from('users')
+                .select('*')
+                .eq('username', username)
+                .single();
+
+            if (!finalCheck) {
+                isUnique = true;
+            }
         }
     }
 
-    }   
     return username;
 }
 
@@ -54,11 +89,24 @@ router.post("/register",validInfo, async (req, res) => {
     const {email, password} = req.body;
     try {
         // 2 check if user exists, else throw error
-        const user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-        
-        if (user.rows.length > 0){
-            return res.status(401).json("User already exists.") //unauthorized
-        }
+        //const user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+
+        const { data: existingUser, error: userError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .maybeSingle();
+
+            if (userError && userError.code !== 'PGRST105') {
+                // Handles any other Supabase error
+                throw userError;
+            }
+
+            // console.log("made it thru PGSRT105")
+
+            if (existingUser) {
+                return res.status(401).json("User already exists 1.");
+            }
 
         const username = await generateRandomUsername();
 
@@ -68,16 +116,20 @@ router.post("/register",validInfo, async (req, res) => {
 
         const bcryptPw = await bcrypt.hash(password, salt);
         
-        // 4 enter user inside database 
-        const newUser = await pool.query(
-            "INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *",
-            [username, email, bcryptPw]
-        );
+        const { data: newUser, error: insertError } = await supabase
+            .from('users')
+            .insert([{username, password: bcryptPw, email}])
+            .select('*')
+            .single();
+
+        if (insertError) throw insertError;
+
+        //console.log(newUser)
 
         // generating jwt token
-        const token = jwtGenerator(newUser.rows[0].user_id);
+        const token = jwtGenerator(newUser?.user_id);
 
-        res.json({ token, username: newUser.rows[0].username });
+        res.json({ token, username: newUser?.username });
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");
@@ -91,32 +143,37 @@ router.post("/login", validInfo, async(req, res) => {
         //1. destructure the req.body
 
         const {email, password} = req.body;
+        //console.log("req body:" + email + " " + password);
 
         //2. check if user doesn't exist (throw error if so)
 
-        const user = await pool.query("SELECT * FROM users WHERE email = $1", [
-            email
-        ]);
+        // const user = await pool.query("SELECT * FROM users WHERE email = $1", [
+        //     email
+        // ]);
 
-        if (user.rows.length === 0){
-            return res.status(401).json("Password or Email is incorrect");
-        }
+        const {data: user, error: userError} = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .maybeSingle();
+
+            if (userError || !user) {
+                return res.status(401).json("Password or Email is incorrect");
+            }
+        
+        //console.log(user);
 
         //3. check if incoming password is the same as database password.
 
-        const validPassword = await bcrypt.compare(password, user.rows[0].password);
-        console.log(validPassword);
-
-        if (!validPassword){
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
             return res.status(401).json("Password or Email is incorrect");
         }
 
-        const token = jwtGenerator(user.rows[0].user_id);
-
+        const token = jwtGenerator(user.user_id); // Use the correct field for user ID
+        console.log("user_id: " + user.user_id);
         res.json({ token });
-
-        //4. give them the jwt token
-    } catch(err) {        
+    } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");
     }

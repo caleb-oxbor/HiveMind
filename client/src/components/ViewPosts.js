@@ -2,7 +2,7 @@ import React, { useEffect, useState} from "react";
 import { slide as Menu } from "react-burger-menu";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
-
+import supabase from '../supabaseClient'
 
 const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");

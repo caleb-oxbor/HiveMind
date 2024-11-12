@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from "react";
 import './CreateAccount.css';
 import { Link } from 'react-router-dom';
-import supabase from "../supabaseClient";
 
 const CreateAccount = ({setAuth}) => {
     const[inputs, setInputs] = useState({
@@ -28,13 +27,12 @@ const CreateAccount = ({setAuth}) => {
 
         try {
             const body = {email, password, passwordconfirm};
-
             const response = await fetch("http://localhost:5000/auth/register", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body:  JSON.stringify(body)
             });
-
+console.log(response)
 
             const parseRes = await response.json();
 
@@ -46,10 +44,6 @@ const CreateAccount = ({setAuth}) => {
                 setAuth(false);
                 setErrorMessage(parseRes);
             }
-            
-            // const { data, error } = await supabase
-            //     .from('users')
-            //     .insert([{}])
 
         } catch(err) {
             console.error(err.message);

@@ -3,15 +3,19 @@ const pool = require("../db");
 const authorization = require("../middleware/authorization");
 const multer = require('multer');
 const path = require("path");
-const express = require("express");
+//const express = require("express");
+const supabase = require("../supabaseClient");
+
 
 router.get('/', authorization, async (req, res) => {
   try {
-    const user = await pool.query(
-      "SELECT username FROM users WHERE user_id = $1",
-      [req.user]
-    );
-    res.json(user.rows[0]);
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('username')
+      .eq('user_id', req.user)
+      .single();
+    
+    res.json(user);
   }
   catch (err) {
     console.error(err.message);

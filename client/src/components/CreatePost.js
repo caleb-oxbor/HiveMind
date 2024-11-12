@@ -3,13 +3,18 @@ import { toast } from "react-toastify";
 import { slide as Menu } from "react-burger-menu";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+
+import supabase from '../supabaseClient'
 
 const CreatePost = ({setCreated, setAuth}) => {
     const [name, setUsername] = useState("");
     const [newPost, setNewPost] = useState(null);
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
+    const [media, setMedia] = useState([[]]);
     const navigate = useNavigate();
+    const post_id = uuidv4();
 
     const getName = async () => {
         try {
@@ -28,6 +33,7 @@ const CreatePost = ({setCreated, setAuth}) => {
 
       useEffect(() => {
         getName();
+        getMedia();
       }, []);
     
       
@@ -67,40 +73,99 @@ const CreatePost = ({setCreated, setAuth}) => {
         }
     };
     
+    const uploadFileToSupabase = async () => {
+        const userFilePath = `${name}/${post_id}`;
+        const classFilePath = `classID/${post_id}`;
+
+        const { data: { user } } = await supabase.auth.getUser();
+        console.log("User:", user);
+
+        const { data, error } = await supabase
+          .storage
+          .from('userPosts')
+          .upload(userFilePath, newPost);
+
+        if (error) {
+          console.error("Supabase upload error:", error);
+          setError("File upload failed.");
+          return null;
+        }
+
+        if(data){
+          getMedia();
+          console.log("got media");
+        }else{
+          console.log(error);
+        }
+
+        const {data2, error2 } = await supabase
+          .storage
+          .from('classPosts')
+          .upload(classFilePath, newPost);
+        
+        if (error2) {
+          console.error("Supabase upload error:", error);
+          setError("File upload failed.");
+          return null;
+        }
+
+        return classFilePath; 
+    };
     
-    const onSubmitForm = async e => {
+    const getMedia = async () => {
+      const{data, error} = await supabase
+        .storage
+        .from('userPosts')
+        .list(name + '/',{
+          limit: 10,
+          offset: 0,
+          sortBy: {
+            column: 'name', order:
+              'asc'
+          }
+        });
+      
+      if(data){
+        setMedia(data);
+      }else{
+        console.log('meow: ',error);
+      }
+
+    };
+
+    const onSubmitForm = async (e) => {
         e.preventDefault();
         if (!newPost) {
-            setError("Please select a valid file before submitting.");
+          setError("Please select a valid file before submitting.");
+          return;
+        }
+    
+        const filePath = await uploadFileToSupabase();
+        console.log('Filepath', filePath);
+        if (!filePath) {
+            setError("Please select a valid file before submitting. Meow.");
             return;
         }
+        
+        const { data : insertedPost, error : insertedPostError } = await supabase
+        .from('posts_duplicate')
+        // currently, post_extension and class_id are hard coded
+        .insert([{file_extension:"pdf", class_id:123, author_username:name, post_title:title, filepath:post_id}])
+        .select('*')
+        .single();
+  
+      if (insertedPostError) {
+        console.error("Failed to save post metadata:", insertedPostError);
+        setError("Failed to create post metadata.");
+      } else {
+        toast.success("Post created successfully!");
+        // setCreated(true); 
+        // navigate("/dashboard", { replace: true }); 
+        // navigate("/view-posts", {replace: true}); 
+      }
+    };
 
-        try {
-            const formData = new FormData();
-            formData.append("newPost", newPost);
-            formData.append("title", title);
-            
-            const response = await fetch("http://localhost:5000/dashboard/create-post", {
-                method: "POST",
-                headers: {
-                    "token": localStorage.token, 
-                },
-                body: formData,
-            });
 
-            if (response.ok) {
-                console.log("Post created successfully!");
-                setCreated(true); 
-                navigate("/dashboard", { replace: true }); 
-                navigate("/view-posts", {replace: true}); 
-            } else {
-                console.error("Failed to create post.");
-            }
-
-        }catch (err){
-            console.error(err.message);
-        }
-    }
 
     return (
     <Fragment>
@@ -135,6 +200,16 @@ const CreatePost = ({setCreated, setAuth}) => {
             )}
             <button className="mt-10 font-dotgothic custom-button">Submit</button>
         </form>
+
+        {/* {media.map((media) => {
+          return (<>
+            <div>
+              <iframe src={`https://jbqwoenlfrfgsrkimwyx.supabase.co/storage/v1/object/public/userPosts/${name}/${media.name}`} />
+            </div>
+          </>
+          )
+        })} */}
+
         </Fragment>
     );
 };
