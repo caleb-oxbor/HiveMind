@@ -12,6 +12,7 @@ const CreatePost = ({setCreated, setAuth}) => {
     const [newPost, setNewPost] = useState(null);
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
+    const [media, setMedia] = useState([[]]);
     const navigate = useNavigate();
     const post_id = uuidv4();
 
@@ -32,6 +33,7 @@ const CreatePost = ({setCreated, setAuth}) => {
 
       useEffect(() => {
         getName();
+        getMedia();
       }, []);
     
       
@@ -72,14 +74,16 @@ const CreatePost = ({setCreated, setAuth}) => {
     };
     
     const uploadFileToSupabase = async () => {
-        const filePath = `${name}/${post_id}`;
+        const userFilePath = `${name}/${post_id}`;
+        const classFilePath = `classID/${post_id}`;
+
         const { data: { user } } = await supabase.auth.getUser();
         console.log("User:", user);
 
         const { data, error } = await supabase
           .storage
-          .from('noauth')
-          .upload(filePath, newPost);
+          .from('userPosts')
+          .upload(userFilePath, newPost);
 
         if (error) {
           console.error("Supabase upload error:", error);
@@ -87,9 +91,47 @@ const CreatePost = ({setCreated, setAuth}) => {
           return null;
         }
 
-        return filePath; 
+        if(data){
+          getMedia();
+          console.log("got media");
+        }else{
+          console.log(error);
+        }
+
+        const {data2, error2 } = await supabase
+          .storage
+          .from('classPosts')
+          .upload(classFilePath, newPost);
+        
+        if (error2) {
+          console.error("Supabase upload error:", error);
+          setError("File upload failed.");
+          return null;
+        }
+
+        return classFilePath; 
     };
     
+    const getMedia = async () => {
+      const{data, error} = await supabase
+        .storage
+        .from('userPosts')
+        .list(name + '/',{
+          limit: 10,
+          offset: 0,
+          sortBy: {
+            column: 'name', order:
+              'asc'
+          }
+        });
+      
+      if(data){
+        setMedia(data);
+      }else{
+        console.log('meow: ',error);
+      }
+
+    };
     const onSubmitForm = async (e) => {
         e.preventDefault();
         if (!newPost) {
@@ -187,6 +229,16 @@ const CreatePost = ({setCreated, setAuth}) => {
             )}
             <button className="mt-10 font-dotgothic custom-button">Submit</button>
         </form>
+
+        {media.map((media) => {
+          return (<>
+            <div>
+              <img src={`https://jbqwoenlfrfgsrkimwyx.supabase.co/storage/v1/object/public/userPosts/dynamicmentorship/${media.name}`} />
+            </div>
+          </>
+          )
+        })}
+
         </Fragment>
     );
 };
