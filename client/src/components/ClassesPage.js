@@ -45,7 +45,7 @@ const Classes = ({ setAuth }) => {
     <div>
     <div className="dashboard-container">
       <div className="burger-menu-container">
-        <Menu >
+        <Menu>
           <Link to="/">Home</Link>
           <a onClick={logout}>Logout</a>
         </Menu>
@@ -54,7 +54,9 @@ const Classes = ({ setAuth }) => {
       <header>
         <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Class Example</h1>
       </header>
-      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">{name}</h2>
+      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">
+      <Link to="/profile" className="text-white">{name}</Link>
+      </h2>
     </div>
       <Link to="/create-post">
         <button className="mt-10 font-dotgothic custom-button">Create Post</button>

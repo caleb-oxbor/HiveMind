@@ -53,7 +53,7 @@ const Dashboard = ({ setAuth }) => {
     try{
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logout successfully");
+        toast.success("Logout successful!");
     }
     catch(err){
         console.error(err.message);
@@ -94,7 +94,7 @@ const Dashboard = ({ setAuth }) => {
 
           <img src={hivemindLogo} alt="Hivemind Logo" style={{ width: '70px', height: '70px' }} /> 
 
-          <h2 className="font-tiny5 font-bold text-right text-white text-5xl heading-shadow">
+          <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">
             <Link to="/profile" className="text-white">{name}</Link>
           </h2>
         </div>

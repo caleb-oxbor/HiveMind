@@ -1,7 +1,5 @@
 module.exports = function async(req, res, next) {
 
-    console.log("Validating info:");
-
     const { email, password, passwordconfirm } = req.body;
     function validEmail(userEmail) {
         const generalEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; 

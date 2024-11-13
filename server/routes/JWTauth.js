@@ -171,7 +171,6 @@ router.post("/login", validInfo, async(req, res) => {
         }
 
         const token = jwtGenerator(user.user_id); // Use the correct field for user ID
-        console.log("user_id: " + user.user_id);
         res.json({ token });
     } catch (err) {
         console.error(err.message);
