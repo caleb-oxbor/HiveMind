@@ -77,7 +77,7 @@ const LogIn = ({setAuth}) => {
 
                 <button className="btn custom-button font-dotgothic">Login</button>
             </form>
-            <Link to="/register" className="font-dotgothic mt-2">Don't have account? Register here.</Link>
+            <Link to="/register" className="font-dotgothic mt-2">New user? Register here.</Link>
         </div>
         </Fragment>
     );
