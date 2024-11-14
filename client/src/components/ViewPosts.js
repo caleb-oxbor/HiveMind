@@ -56,8 +56,6 @@ const ViewPosts = ({ setAuth }) => {
         }
     };
 
-    //const getFileUrl = (filePath) => `http://localhost:5000/${filePath}`;
-
     const getFileUrl = (file_name) =>
         supabase.storage
           .from("classPosts")
@@ -65,25 +63,21 @@ const ViewPosts = ({ setAuth }) => {
 
 
     const handleDownload = async (file_path, file_name) => {
-        try {
-            const { data, error } = await supabase.storage
-            .from("classPosts")
-            .download(file_path);
-      
-          if (error) throw error;
-      
-          const url = window.URL.createObjectURL(data);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = file_name || "download";
-      
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-      
-          window.URL.revokeObjectURL(url);
-        } catch (err) {
-          console.error("Download failed:", err.message);
+        try {    
+            const data = getFileUrl(file_name);
+        
+            const url = window.URL.createObjectURL(data);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = file_name || "download";
+        
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        
+            window.URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error("Download failed:", err.message);
         }
     };
 
@@ -136,8 +130,8 @@ const ViewPosts = ({ setAuth }) => {
                             />
                             </div>
                             <button
-                            onClick={() => handleDownload(`${name}/${item.name}`, item.post_title)}
-                            className="download-button"
+                            onClick={() => handleDownload(item.post_title)}
+                            className="download-button font-dotgothic"
                             >
                             Download
                             </button>
@@ -150,5 +144,7 @@ const ViewPosts = ({ setAuth }) => {
             </Fragment>
     );
 };
+
+//need to query from post table to get metadata, and from bucket for viewing post
 
 export default ViewPosts;
