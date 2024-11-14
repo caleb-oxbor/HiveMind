@@ -12,27 +12,26 @@ const Dashboard = ({ setAuth }) => {
   const [isPosted, setIsPosted] = useState(false);
   const navigate = useNavigate();
 
-  const getPost = async () => {
+  //have to check if user posts has given classes ID
+  const checkIsPosted = async (userID, classID) => {
     try {
-        const response = await fetch("http://localhost:5000/dashboard/is-posted",
-        {
-            method: "GET",
-            headers: {token: localStorage.token }
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.isPosted) {
-          setIsPosted(true);
-        } else {
-          setIsPosted(false);
-        }
-
-    } catch (err){
-        console.error(err.message);
+      const { data, error } = await supabase
+        .from("posts") // Replace "posts" with your actual table name
+        .select("*") // Adjust columns if needed (e.g., 'id' or specific fields)
+        .eq("user_id", userID) // Filter by user ID
+        .eq("class_id", classID); // Filter by class ID
+  
+      if (error) throw error;
+  
+      if (data.length > 0) {
+        setIsPosted(true); 
+      } else {
+        setIsPosted(false); 
+      }
+    } catch (err) {
+      console.error("Error checking if user has posted:", err.message);
     }
-  }
-
+  };
   const getName = async () => {
     try {
       const response = await fetch("http://localhost:5000/dashboard/", 
@@ -62,7 +61,7 @@ const Dashboard = ({ setAuth }) => {
 
   const handleNavigation = async () => {
     try {
-      await getPost(); 
+      await checkIsPosted(); 
   
       if (isPosted) {
         navigate("/view-posts", { replace: true }); 
@@ -76,7 +75,6 @@ const Dashboard = ({ setAuth }) => {
 
   useEffect(() => {
     getName();
-    getPost();
   }, []);
 
   return (
@@ -105,7 +103,7 @@ const Dashboard = ({ setAuth }) => {
 
         <Link to="/class">
           <button 
-            onClick={handleNavigation}
+            onClick={[handleNavigation, checkIsPosted]}
             className="mt-10 font-dotgothic custom-button"> Class Example
             </button>
         </Link>

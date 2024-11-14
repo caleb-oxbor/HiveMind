@@ -1,13 +1,14 @@
-import React, { useEffect, useState} from "react";
+import React, { Fragment, useEffect, useState} from "react";
 import { slide as Menu } from "react-burger-menu";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import supabase from '../supabaseClient'
 
-const ViewPosts = ({ setAuth }) => {
+const ViewPosts = ({ setAuth, classID }) => {
     const [name, setUsername] = useState("");
-    const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
+    const [media, setMedia] = useState([[]]);
+
 
     const getName = async () => {
         try {
@@ -23,15 +24,12 @@ const ViewPosts = ({ setAuth }) => {
           console.error(err.message);
         }
       };
-
-      useEffect(() => {
-        getName();
-      }, []);
     
       
-      const logout = async e => {
+    const logout = async e => {
         e.preventDefault();
-        try{
+        try{ 
+            // await supabase.auth.signOut(); if we want to use supabase auth
             localStorage.removeItem("token");
             setAuth(false);
             toast.success("Logout successfully");
@@ -41,185 +39,116 @@ const ViewPosts = ({ setAuth }) => {
         }
       };
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await fetch("http://localhost:5000/dashboard/posts", {
-                    headers: { token: localStorage.token },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setPosts(data); // Store posts in state
-                } else {
-                    console.error("Failed to fetch posts");
-                }
-            } catch (err) {
-                console.error(err.message);
-            }
-        };
-
-        fetchPosts();
-    }, []);
-
-    const getFileUrl = (filePath) => `http://localhost:5000/${filePath}`;
-
-    const renderFile = (post) => {
-        const fileUrl = getFileUrl(post.post_content);
-
-        if (post.post_type.startsWith("image/")) {
-            return <img src={fileUrl} alt={post.post_title} className="post-image" />;
-        } 
-        else if (post.post_type === "application/pdf") {
-            return (
-                <iframe
-                    src={fileUrl}
-                    title={post.post_title}
-                    className="post-pdf"
-                />
-            );
-        } 
-        else if (post.post_type.startsWith("video/")) {
-            return (
-                <video controls className="post-video">
-                    <source src={fileUrl} type={post.post_type} />
-                    Your browser does not support the video tag.
-                </video>
-            );
-        } 
-        else if (post.post_type.startsWith("audio/")) {
-            return (
-                <audio controls className="post-audio">
-                    <source src={fileUrl} type={post.post_type} />
-                    Your browser does not support the audio element.
-                </audio>
-            );
-        } 
-        else if (post.post_type === "application/msword" || post.post_type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-            // Word document
-            return (
-                <iframe
-                    src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                    title={post.post_title}
-                    className="post-doc"
-                />
-            );
-        } 
-        else if (post.post_type === "application/vnd.ms-excel" || post.post_type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-            // Excel document
-            return (
-                <iframe
-                    src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                    title={post.post_title}
-                    className="post-doc"
-                />
-            );
-        } 
-        else if (post.post_type === "application/vnd.ms-powerpoint" || post.post_type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
-            // PowerPoint presentation
-            return (
-                <iframe
-                    src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                    title={post.post_title}
-                    className="post-doc"
-                />
-            );
-        } 
-        else if (post.post_type === "text/html") {
-            // HTML file
-            return (
-                <iframe
-                    src={fileUrl}
-                    title={post.post_title}
-                    className="post-html"
-                />
-            );
-        } 
-        else {
-            return (
-                <p>
-                    Unsupported file type. <a href={fileUrl} download>Download the file</a> to view it.
-                </p>
-            );
+    const getMedia = async () => {
+        const{data, error} = await supabase
+          .storage
+          .from('classPosts')
+          .list(`${classID}/`,{
+            limit: 10,
+            offset: 0,
+            sortBy: {column: 'name', order: 'asc'}
+          });
+        
+        if(data){
+          setMedia(data);
+        }else{
+          console.log('meow: ',error);
         }
     };
 
-    const handleDownload = async (post) => {
+    //const getFileUrl = (filePath) => `http://localhost:5000/${filePath}`;
+
+    const getFileUrl = (file_name) =>
+        supabase.storage
+          .from("classPosts")
+          .getPublicUrl(`${classID}/${file_name}`).data.publicUrl;
+
+
+    const handleDownload = async (file_path, file_name) => {
         try {
-            const response = await fetch(getFileUrl(post.post_content), {
-                headers: { token: localStorage.token },
-            });
-    
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = post.post_title || 'download';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(url);
+            const { data, error } = await supabase.storage
+            .from("classPosts")
+            .download(file_path);
+      
+          if (error) throw error;
+      
+          const url = window.URL.createObjectURL(data);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = file_name || "download";
+      
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+      
+          window.URL.revokeObjectURL(url);
         } catch (err) {
-            console.error('Download failed', err);
+          console.error("Download failed:", err.message);
         }
+      };
     };
+
+    
+    useEffect(() => {
+        getName();
+        if (classID) { //ensure that classID and name are available before attempting to get media
+          getMedia();
+        }
+    }, [classID]);
     
 
     return (
-    <div>
-    <div className="dashboard-container">
-      <div className="burger-menu-container">
-        <Menu >
-          <Link to="/dashboard">Home</Link>
-          <a onClick={logout}>Logout</a>
-        </Menu>
-      </div>
+        <Fragment>
+        <div>
+        <div className="dashboard-container">
+        <div className="burger-menu-container">
+            <Menu >
+            <Link to="/dashboard">Home</Link>
+            <a onClick={logout}>Logout</a>
+            </Menu>
+        </div>
 
-      <header>
-        <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
-      </header>  
-      <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
-        <Link to="/profile" className="text-white">{name}</Link>
-      </h2>
-      </div>
-        <div className="posts-container">
-        <Link to="/create-post">
-            <button className="font-dotgothic custom-button">Add a Post</button>
-        </Link>
-            <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">
-                Class Example
-            </h1>
-            {posts.length === 0 ? (
-                <p>No posts available</p>
-            ) : (
-                <ul className="posts-list">
-                    {posts.map((post) => (
-                        <li key={post.post_id} className="post-item">
-                            <h2 className="font-dotgothic text-white text-2xl">
-                                {post.post_title}
-                            </h2>
-                            <p className="font-dotgothic">
-                                {new Date(post.created_at).toLocaleString()}
-                            </p>
-
-                            {/* Render the file based on type */}
-                            {renderFile(post)}
-
-                            {/* Download button for all files */}
-                            <a
-                            onClick={() => handleDownload(post)}
+        <header>
+            <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
+        </header>  
+        <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
+            <Link to="/profile" className="text-white">{name}</Link>
+        </h2>
+        </div>
+            <div className="posts-container">
+            <Link to="/create-post">
+                <button className="font-dotgothic custom-button">Add a Post</button>
+            </Link>
+                <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">
+                    Class Example
+                </h1>
+                {media.length === 0 ? (
+                    <p>No posts available</p>
+                    ) : (
+                    <ul className="posts-list">
+                        {media.map((item) => (
+                        <li key={item.id} className="post-item">
+                            <h2 className="font-dotgothic text-white text-2xl">{item.name}</h2>
+                            <div>
+                            <iframe
+                                src={getFileUrl(item.name)}
+                                title={item.name}
+                                className="post-frame"
+                            />
+                            </div>
+                            <button
+                            onClick={() => handleDownload(`${name}/${item.name}`, item.post_title)}
                             className="download-button"
-                            style={{ cursor: 'pointer' }}
                             >
                             Download
-                            </a>
+                            </button>
                         </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-        </div>
+                        ))}
+                    </ul>
+                )}
+            </div>
+            </div>
+            </Fragment>
     );
-};
 
 export default ViewPosts;

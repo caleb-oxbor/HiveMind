@@ -12,7 +12,6 @@ const CreatePost = ({setCreated, setAuth}) => {
     const [newPost, setNewPost] = useState(null);
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
-    const [media, setMedia] = useState([[]]);
     const navigate = useNavigate();
     const post_id = uuidv4();
 
@@ -33,7 +32,6 @@ const CreatePost = ({setCreated, setAuth}) => {
 
       useEffect(() => {
         getName();
-        getMedia();
       }, []);
     
       
@@ -59,7 +57,8 @@ const CreatePost = ({setCreated, setAuth}) => {
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "application/vnd.ms-powerpoint",
         "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        "text/html"
+        "text/html",
+        "text/plain"
     ];
 
     const handleFileChange = (e) => {
@@ -92,7 +91,6 @@ const CreatePost = ({setCreated, setAuth}) => {
         }
 
         if(data){
-          getMedia();
           console.log("got media");
         }else{
           console.log(error);
@@ -112,26 +110,6 @@ const CreatePost = ({setCreated, setAuth}) => {
         return classFilePath; 
     };
     
-    const getMedia = async () => {
-      const{data, error} = await supabase
-        .storage
-        .from('userPosts')
-        .list(name + '/',{
-          limit: 10,
-          offset: 0,
-          sortBy: {
-            column: 'name', order:
-              'asc'
-          }
-        });
-      
-      if(data){
-        setMedia(data);
-      }else{
-        console.log('meow: ',error);
-      }
-
-    };
 
     const onSubmitForm = async (e) => {
         e.preventDefault();
@@ -159,9 +137,9 @@ const CreatePost = ({setCreated, setAuth}) => {
         setError("Failed to create post metadata.");
       } else {
         toast.success("Post created successfully!");
-        // setCreated(true); 
-        // navigate("/dashboard", { replace: true }); 
-        // navigate("/view-posts", {replace: true}); 
+        setCreated(true); 
+        navigate("/dashboard", { replace: true }); 
+        navigate("/view-posts", {replace: true}); 
       }
     };
 
