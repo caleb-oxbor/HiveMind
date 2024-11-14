@@ -14,6 +14,7 @@ const CreatePost = ({setCreated, setAuth}) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const post_id = uuidv4();
+  const classID = 2;
 
   const getName = async () => {
       try {
@@ -74,7 +75,7 @@ const CreatePost = ({setCreated, setAuth}) => {
   
   const uploadFileToSupabase = async () => {
     const userFilePath = `${name}/${post_id}`;
-    const classFilePath = `classID/${post_id}`;
+    const classFilePath = `${classID}/${post_id}`;
 
     const { data: { user } } = await supabase.auth.getUser();
     console.log("User:", user);
