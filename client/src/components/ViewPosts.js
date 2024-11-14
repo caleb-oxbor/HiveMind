@@ -29,7 +29,7 @@ const ViewPosts = ({ setAuth }) => {
     const logout = async e => {
         e.preventDefault();
         try{ 
-            // await supabase.auth.signOut(); if we want to use supabase auth
+            // await supabase.auth.signOut(); if we want to use supabase auth, but session doesnt exist
             localStorage.removeItem("token");
             setAuth(false);
             toast.success("Logout successfully");

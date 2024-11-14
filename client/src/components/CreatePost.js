@@ -119,7 +119,7 @@ const CreatePost = ({setCreated, setAuth}) => {
         return;
       }
 
-      const id = await fetchUserId();
+      const id = await getUserId();
       console.log("Retrieved user:", id);
       console.log("Error:", error);
   
@@ -154,7 +154,7 @@ const CreatePost = ({setCreated, setAuth}) => {
     }
   };
 
-  const fetchUserId = async () => {
+  const getUserId = async () => {
     try {
       const { data, error } = await supabase
         .from('users') // Replace with your actual table name
@@ -174,9 +174,6 @@ const CreatePost = ({setCreated, setAuth}) => {
     }
   };
   
-
-
-
   return (
   <Fragment>
       <div className="dashboard-container">

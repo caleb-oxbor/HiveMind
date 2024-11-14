@@ -11,7 +11,6 @@ import supabase from '../supabaseClient'
 
 const Dashboard = ({ setAuth }) => {
   const [name, setUsername] = useState("");
-  const [isPosted, setIsPosted] = useState(false);
   const navigate = useNavigate();
 
   //have to check if user posts has given classes ID
@@ -21,19 +20,37 @@ const Dashboard = ({ setAuth }) => {
         .from("posts") // Replace "posts" with your actual table name
         .select("*") // Adjust columns if needed (e.g., 'id' or specific fields)
         .eq("user_id", userID) // Filter by user ID
-        .eq("class_id", classID); // Filter by class ID
+        .eq("course_id", classID); // Filter by class ID
   
       if (error) throw error;
-  
-      if (data.length > 0) {
-        setIsPosted(true); 
-      } else {
-        setIsPosted(false); 
-      }
+
+      return data.length > 0;
+
     } catch (err) {
       console.error("Error checking if user has posted:", err.message);
     }
   };
+
+  const getUserId = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users') // Replace with your actual table name
+        .select('user_id') // Only fetch the user_id
+        .eq('username', name) // Replace with appropriate condition
+        .single(); // Ensures we only fetch one record
+  
+      if (error) {
+        console.error("Error fetching user ID:", error.message);
+        return null;
+      }
+  
+      return data?.user_id; // Return the user_id if found
+    } catch (err) {
+      console.error("Unexpected error querying user ID:", err.message);
+      return null;
+    }
+  };
+  
 
   const getName = async () => {
     try {
@@ -63,9 +80,13 @@ const Dashboard = ({ setAuth }) => {
   };
 
   const handleNavigation = async () => {
-    await checkIsPosted();
+    const userId = await getUserId(); // Get userID
+    const classId = 2; // Replace with actual class ID logic
+
+    const hasPosted = await checkIsPosted(userId, classId);
+
     try {  
-      if (isPosted) {
+      if (hasPosted) {
         navigate("/view-posts", { replace: true }); 
       } else {
         navigate("/class", { replace: true }); 
@@ -105,7 +126,7 @@ const Dashboard = ({ setAuth }) => {
 
         <Link to="/class">
           <button 
-            onClick={[handleNavigation]}
+            onClick={handleNavigation}
             className="mt-10 font-dotgothic custom-button"> Class Example
             </button>
         </Link>
