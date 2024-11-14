@@ -4,11 +4,11 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import supabase from '../supabaseClient'
 
-const ViewPosts = ({ setAuth, classID }) => {
+const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");
     const navigate = useNavigate();
     const [media, setMedia] = useState([[]]);
-
+    const classID = 2;
 
     const getName = async () => {
         try {
@@ -85,7 +85,6 @@ const ViewPosts = ({ setAuth, classID }) => {
         } catch (err) {
           console.error("Download failed:", err.message);
         }
-      };
     };
 
     
@@ -150,5 +149,6 @@ const ViewPosts = ({ setAuth, classID }) => {
             </div>
             </Fragment>
     );
+};
 
 export default ViewPosts;

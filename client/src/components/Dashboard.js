@@ -5,6 +5,8 @@ import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
 import logoutIcon from '../images/logout.png'; 
 import hivemindLogo from '../images/spacebee.png'; 
+import supabase from '../supabaseClient'
+
 
 
 const Dashboard = ({ setAuth }) => {
@@ -32,6 +34,7 @@ const Dashboard = ({ setAuth }) => {
       console.error("Error checking if user has posted:", err.message);
     }
   };
+
   const getName = async () => {
     try {
       const response = await fetch("http://localhost:5000/dashboard/", 
@@ -60,9 +63,8 @@ const Dashboard = ({ setAuth }) => {
   };
 
   const handleNavigation = async () => {
-    try {
-      await checkIsPosted(); 
-  
+    await checkIsPosted();
+    try {  
       if (isPosted) {
         navigate("/view-posts", { replace: true }); 
       } else {
@@ -103,7 +105,7 @@ const Dashboard = ({ setAuth }) => {
 
         <Link to="/class">
           <button 
-            onClick={[handleNavigation, checkIsPosted]}
+            onClick={[handleNavigation]}
             className="mt-10 font-dotgothic custom-button"> Class Example
             </button>
         </Link>
