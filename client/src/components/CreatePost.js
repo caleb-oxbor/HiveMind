@@ -13,6 +13,7 @@ const CreatePost = ({setAuth}) => {
   const [newPost, setNewPost] = useState(null);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
+  const [fileType, setFileType] = useState("");
   const navigate = useNavigate();
   const post_id = uuidv4();
   const classID = 2;
@@ -67,77 +68,62 @@ const CreatePost = ({setAuth}) => {
       const file = e.target.files[0];
       if (file && allowedFileTypes.includes(file.type)) {
           setNewPost(file);
+          setFileType(file.type);
           setError("");
       } else {
           setNewPost(null);
+          setFileType("");
           setError("Unsupported file type. Please upload a valid file.");
       }
   };
   
   const uploadFileToSupabase = async () => {
-    const userFilePath = `${name}/${post_id}`;
-    const classFilePath = `${classID}/${post_id}`;
-    const classPath = `${post_id}`;
-
-    // const { data: { user } } = await supabase.auth.getUser();
-    // console.log("User:", user);
-
-    const { data, error } = await supabase
-      .storage
-      .from('userPosts')
-      .upload(userFilePath, newPost);
-
-    if (error) {
-      console.error("Supabase upload error:", error);
-      setError("File upload failed.");
-      return null;
-    }
-
-    if(data){
-      console.log("got media");
-    }else{
-      console.log(error);
-    }
-
-    const {data2, error2 } = await supabase
-      .storage
-      .from('classPosts')
-      .upload(classFilePath, newPost);
-    
-    if (error2) {
-      console.error("Supabase upload error:", error);
-      setError("File upload failed.");
-      return null;
-    }
-
-    const id = await getUserId();
-    console.log("Retrieved user:", id);
-    console.log("Error:", error);
-    
-    const { data : insertedPost, error : insertedPostError } = await supabase
-      .from('posts')
-        .insert([{
+    try {
+      const userFilePath = `${name}/${post_id}`;
+      const classFilePath = `${classID}/${post_id}`;
+      const fileName = `${post_id}`;
+  
+      // Perform both uploads concurrently
+      const [userUpload, classUpload] = await Promise.all([
+        supabase.storage.from('userPosts').upload(userFilePath, newPost),
+        supabase.storage.from('classPosts').upload(classFilePath, newPost),
+      ]);
+  
+      if (userUpload.error || classUpload.error) {
+        console.error("File upload error:", userUpload.error || classUpload.error);
+        setError("File upload failed.");
+        return;
+      }
+  
+      const id = await getUserId();
+  
+      // Insert metadata after file uploads
+      const { error: insertedPostError } = await supabase.from('posts').insert([
+        {
           user_id: id,
-          course_id: 2, 
-          post_title: title, 
+          course_id: classID,
+          post_title: title,
           created_at: new Date().toISOString(),
           username: name,
-          file_name: classFilePath,
-        }])
-
-
-    if (insertedPostError) {
-      console.error("Failed to save post metadata:", insertedPostError);
-      setError("Failed to create post metadata.");
-    } else {
+          file_name: fileName, // Ensure correct path is saved
+          file_type: fileType,
+        },
+      ]);
+  
+      if (insertedPostError) {
+        console.error("Failed to save post metadata:", insertedPostError);
+        setError("Failed to create post metadata.");
+        return;
+      }
+  
       toast.success("Post created successfully!");
-      // setCreated(true); 
-      navigate("/dashboard", { replace: true }); 
-      navigate("/view-posts", {replace: true}); 
+      navigate("/view-posts", { replace: true }); // Navigate to the view posts page
+    } catch (error) {
+      console.error("Unexpected error:", error.message);
+      setError("An unexpected error occurred.");
     }
-
-      return; 
   };
+  
   
 
   const onSubmitForm = async (e) => {
