@@ -40,46 +40,75 @@ const ViewPosts = ({ setAuth }) => {
       };
 
     const getMedia = async () => {
-        const{data, error} = await supabase
-          .storage
-          .from('classPosts')
-          .list(`${classID}/`,{
+    try {
+        const { data: metadata, error: metadataError } = await supabase
+        .from("posts")
+        .select("user_id, username, post_title, created_at, upvotes, downvotes, file_name")
+        .eq("course_id", classID);
+
+        console.log("Metadata:", metadata);
+    
+        if (metadataError) {
+        console.error("Error fetching metadata:", metadataError);
+        return;
+        }
+    
+        const { data: mediaFiles, error: bucketError } = await supabase
+        .storage
+        .from("classPosts")
+        .list(`${classID}/`, {
             limit: 10,
             offset: 0,
-            sortBy: {column: 'name', order: 'asc'}
-          });
-        
-        if(data){
-          setMedia(data);
-        }else{
-          console.log('meow: ',error);
+            sortBy: { column: "name", order: "asc" },
+        });
+    
+        if (bucketError) {
+        console.error("Error fetching media files:", bucketError);
+        return;
         }
+    
+        // Combine metadata and media files based on the `file_name` field
+        const combinedData = metadata.map((metaItem) => {
+            const file_url = supabase.storage
+              .from("classPosts")
+              .getPublicUrl(`${classID}/${metaItem.file_name}`).data.publicUrl;
+      
+            return {
+              ...metaItem,
+              file_url, // Attach the generated file URL
+            };
+        });
+      
+    
+        setMedia(combinedData);
+    } catch (error) {
+        console.error("Error in getMedia:", error);
+    }
     };
+    
 
-    const getFileUrl = (file_name) =>
-        supabase.storage
-          .from("classPosts")
-          .getPublicUrl(`${classID}/${file_name}`).data.publicUrl;
+const getFileUrl = (file_name) =>
+    supabase.storage
+        .from("classPosts")
+        .getPublicUrl(`${classID}/${file_name}`).data.publicUrl;
 
 
-    const handleDownload = async (file_path, file_name) => {
-        try {    
-            const data = getFileUrl(file_name);
-        
-            const url = window.URL.createObjectURL(data);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = file_name || "download";
-        
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-        
-            window.URL.revokeObjectURL(url);
-            } catch (err) {
-                console.error("Download failed:", err.message);
-        }
-    };
+const handleDownload = async (file_URL) => {
+    try {    
+        const url = window.URL.createObjectURL(file_URL);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = file_URL || "download";
+    
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    
+        window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("Download failed:", err.message);
+    }
+};
 
     
     useEffect(() => {
@@ -119,26 +148,34 @@ const ViewPosts = ({ setAuth }) => {
                     <p>No posts available</p>
                     ) : (
                     <ul className="posts-list">
-                        {media.map((item) => (
-                        <li key={item.id} className="post-item">
-                            <h2 className="font-dotgothic text-white text-2xl">{item.name}</h2>
+                        {media.map((item, index) => (
+                        <li key={index} className="post-item">
+                            <h2 className="font-dotgothic text-white text-2xl">{item.post_title}</h2>
+                            <p className="text-gray-400">Posted by User {item.username}</p>
+                            <p className="text-gray-400">Posted on {new Date(item.created_at).toLocaleString()}</p>
+                            <p className="text-green-500">Upvotes: {item.upvotes}</p>
+                            <p className="text-red-500">Downvotes: {item.downvotes}</p>
+                            {item.file_url ? (
                             <div>
-                            <iframe
-                                src={getFileUrl(item.name)}
-                                title={item.name}
+                                <iframe
+                                src={item.file_url}
+                                title={item.post_title}
                                 className="post-frame"
-                            />
+                                />
+                                <button
+                                onClick={() => handleDownload(item.file_url)}
+                                className="download-button font-dotgothic"
+                                >
+                                Download
+                                </button>
                             </div>
-                            <button
-                            onClick={() => handleDownload(item.post_title)}
-                            className="download-button font-dotgothic"
-                            >
-                            Download
-                            </button>
+                            ) : (
+                            <p className="text-red-500">Media file not found</p>
+                            )}
                         </li>
                         ))}
                     </ul>
-                )}
+                    )}
             </div>
             </div>
             </Fragment>

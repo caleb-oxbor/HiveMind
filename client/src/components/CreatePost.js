@@ -7,7 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import supabase from '../supabaseClient'
 
-const CreatePost = ({setCreated, setAuth}) => {
+//removed setcreate parameter 
+const CreatePost = ({setAuth}) => {
   const [name, setUsername] = useState("");
   const [newPost, setNewPost] = useState(null);
   const [title, setTitle] = useState("");
@@ -76,9 +77,10 @@ const CreatePost = ({setCreated, setAuth}) => {
   const uploadFileToSupabase = async () => {
     const userFilePath = `${name}/${post_id}`;
     const classFilePath = `${classID}/${post_id}`;
+    const classPath = `${post_id}`;
 
-    const { data: { user } } = await supabase.auth.getUser();
-    console.log("User:", user);
+    // const { data: { user } } = await supabase.auth.getUser();
+    // console.log("User:", user);
 
     const { data, error } = await supabase
       .storage
@@ -108,7 +110,33 @@ const CreatePost = ({setCreated, setAuth}) => {
       return null;
     }
 
-      return classFilePath; 
+    const id = await getUserId();
+    console.log("Retrieved user:", id);
+    console.log("Error:", error);
+    
+    const { data : insertedPost, error : insertedPostError } = await supabase
+      .from('posts')
+        .insert([{
+          user_id: id,
+          course_id: 2, 
+          post_title: title, 
+          created_at: new Date().toISOString(),
+          username: name,
+          file_name: classFilePath,
+        }])
+
+
+    if (insertedPostError) {
+      console.error("Failed to save post metadata:", insertedPostError);
+      setError("Failed to create post metadata.");
+    } else {
+      toast.success("Post created successfully!");
+      // setCreated(true); 
+      navigate("/dashboard", { replace: true }); 
+      navigate("/view-posts", {replace: true}); 
+    }
+
+      return; 
   };
   
 
@@ -119,9 +147,8 @@ const CreatePost = ({setCreated, setAuth}) => {
         return;
       }
 
-      const id = await getUserId();
-      console.log("Retrieved user:", id);
-      console.log("Error:", error);
+      uploadFileToSupabase();
+
   
       //not sure if necessary can use later maybe, just want to get working
       // const filePath = await uploadFileToSupabase();
@@ -130,28 +157,7 @@ const CreatePost = ({setCreated, setAuth}) => {
       //     setError("Please select a valid file before submitting. Meow.");
       //     return;
       // }
-      
-      const { data : insertedPost, error : insertedPostError } = await supabase
-      .from('posts')
-        .insert([{
-          user_id: id,
-          course_id: 2, 
-          post_title: title, 
-          created_at: new Date().toISOString(),
-        }])
 
-        uploadFileToSupabase();
-
-
-    if (insertedPostError) {
-      console.error("Failed to save post metadata:", insertedPostError);
-      setError("Failed to create post metadata.");
-    } else {
-      toast.success("Post created successfully!");
-      setCreated(true); 
-      navigate("/dashboard", { replace: true }); 
-      navigate("/view-posts", {replace: true}); 
-    }
   };
 
   const getUserId = async () => {
