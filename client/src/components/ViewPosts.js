@@ -157,18 +157,18 @@ const ViewPosts = ({ setAuth }) => {
                                     <p className="text-green-500">Upvotes: {item.upvotes}</p>
                                     <p className="text-red-500">Downvotes: {item.downvotes}</p>
                                     {item.file_url ? (
-                                        <div className="post-image">
+                                        <div>
                                             {item.file_type.startsWith("image/") ? (
                                                 <img
                                                     src={item.file_url}
                                                     alt={item.post_title}
-                                                    //className="responsive-image"
+                                                    className="post-image"
                                                 />
                                             ) : item.file_type.startsWith("application/") ? (
                                                 <iframe
                                                     src={item.file_url}
                                                     title={item.post_title}
-                                                    //className="responsive-pdf"
+                                                    className="post-pdf"
                                                 />
                                             ) : (
                                                 <p className="text-red-500">Unsupported file format</p>
