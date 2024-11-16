@@ -7,17 +7,26 @@ const path = require("path");
 const supabase = require("../supabaseClient");
 
 
+// router.get('/', authorization, async (req, res) => {
+//   try {
+//     const { data: user, error: userError } = await supabase
+//       .from('users')
+//       .select('username')
+//       .eq('user_id', req.user)
+//       .single();
+    
+//     res.json(user);
+//   }
+//   catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server Error');
+//   }
+// });
+
 router.get('/', authorization, async (req, res) => {
   try {
-    const { data: user, error: userError } = await supabase
-      .from('users')
-      .select('username')
-      .eq('user_id', req.user)
-      .single();
-    
-    res.json(user);
-  }
-  catch (err) {
+    res.json({ username: req.user.username });
+  } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
@@ -65,22 +74,6 @@ router.get('/', authorization, async (req, res) => {
 //       res.status(500).send("Server Error");
 //   }
 // });
-
-router.get('/', authorization, async (req, res) => {
-  try {
-    const { data: user, error: userError } = await supabase
-      .from('users')
-      .select('username')
-      .eq('user_id', req.user)
-      .single();
-    
-    res.json(user);
-  }
-  catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
 
 // router.get("/is-posted", authorization, async (req, res) => {
 //   try {
