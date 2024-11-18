@@ -44,7 +44,7 @@ const CreatePost = ({setCreated, setAuth}) => {
         try{
             localStorage.removeItem("token");
             setAuth(false);
-            toast.success("Logout successfully");
+            toast.success("Logout successful!");
         }
         catch(err){
             console.error(err.message);
@@ -173,9 +173,11 @@ const CreatePost = ({setCreated, setAuth}) => {
     <Fragment>
         <div className="dashboard-container">
         <div className="burger-menu-container">
-            <Menu >
+            <Menu>
                 <Link to="/dashboard">Home</Link>
-                <a onClick={logout}>Logout</a>
+                <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+                <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+          </a>
             </Menu>
         </div>
         <header>

@@ -121,7 +121,16 @@ function App() {
 
 
             {/* Create post Page */}
-            <Route path="/create-post" element={<CreatePost setCreated={setCreated} />} />
+            <Route
+              path="/create-post"
+              element={
+                isAuthenticated ? (
+                  <CreatePost setCreated={setCreated} setAuth={setAuth} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
 
             <Route path="/view-posts" 
               element={

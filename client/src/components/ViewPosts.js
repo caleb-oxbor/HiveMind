@@ -3,6 +3,7 @@ import { slide as Menu } from "react-burger-menu";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import supabase from '../supabaseClient'
+import logoutIcon from '../images/logout.png'; 
 
 const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");
@@ -171,7 +172,9 @@ const ViewPosts = ({ setAuth }) => {
       <div className="burger-menu-container">
         <Menu >
           <Link to="/dashboard">Home</Link>
-          <a onClick={logout}>Logout</a>
+          <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+          <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+          </a>
         </Menu>
       </div>
 
