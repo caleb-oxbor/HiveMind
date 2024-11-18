@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
+import '@react-pdf-viewer/core/lib/styles/index.css';
 
 const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");
@@ -26,6 +27,36 @@ const ViewPosts = ({ setAuth }) => {
         }
     };
 
+    const handleDownload = async (post) => {
+        try {
+            console.log(post.course_id);
+            console.log(post.file_name);
+            const response = await fetch(
+                `http://localhost:5000/download/${post.course_id}/${post.file_name}`,
+                {
+                    method: "GET",
+                    headers: { token: localStorage.token }, // Include auth token if needed
+                }
+            );
+    
+            if (!response.ok) {
+                throw new Error("Failed to download file");
+            }
+    
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = post.post_title || "download";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("Download failed", err);
+        }
+    };
+    
     const logout = () => {
         localStorage.removeItem("token");
         setAuth(false);
@@ -41,7 +72,7 @@ const ViewPosts = ({ setAuth }) => {
             <div>
                 <div className="dashboard-container">
                     <div className="burger-menu-container">
-                        <Menu >
+                        <Menu>
                             <Link to="/dashboard">Home</Link>
                             <a onClick={logout}>Logout</a>
                         </Menu>
@@ -65,38 +96,44 @@ const ViewPosts = ({ setAuth }) => {
                         <p>No posts available</p>
                     ) : (
                         <ul className="posts-list">
-                            {media.map((item, index) => (
-                                <li key={index} className="post-item">
-                                    <h2 className="font-dotgothic text-white text-2xl">{item.post_title}</h2>
-                                    <p className="text-gray-400">Posted by {item.username}</p>
-                                    <p className="text-gray-400">Posted on {new Date(item.created_at).toLocaleString()}</p>
-                                    <p className="text-green-500">Upvotes: {item.upvotes}</p>
-                                    <p className="text-red-500">Downvotes: {item.downvotes}</p>
-                                    {item.file_url ? (
-                                        <div>
-                                            {item.file_type.startsWith("image/") ? (
-                                                <img
-                                                    src={item.file_url}
-                                                    alt={item.post_title}
-                                                    className="post-image"
-                                                />
-                                            ) : item.file_type.startsWith("application/") ? (
-                                                <iframe
-                                                    src={item.file_url}
-                                                    title={item.post_title}
-                                                    className="post-pdf"
-                                                />
-                                            ) : (
-                                                <a href={item.file_url} target="_blank" rel="noopener noreferrer">
-                                                    Download File
+                            {media.map((item, index) => {
+                                return (
+                                    <li key={index} className="post-item">
+                                        <h2 className="font-dotgothic text-white text-2xl">{item.post_title}</h2>
+                                        <p className="text-gray-400">Posted by {item.username}</p>
+                                        <p className="text-gray-400">Posted on {new Date(item.created_at).toLocaleString()}</p>
+                                        <p className="text-green-500">Votes: {item.votes}</p>
+                                        {item.file_url && (
+                                            <div>
+                                                {item.file_type.startsWith("image/") && (
+                                                    <img
+                                                        src={item.file_url}
+                                                        alt={item.post_title}
+                                                        className="post-image"
+                                                    />
+                                                )}
+                                                {item.file_type === "application/pdf" && (
+                                                    <iframe
+                                                        src={item.file_url}
+                                                        title={item.post_title}
+                                                        className="post-pdf"
+                                                    />
+                                                )}
+                                                <a
+                                                    onClick={() => handleDownload(item)}
+                                                    className="download-button"
+                                                    style={{ cursor: "pointer", marginTop: "10px", display: "block" }}
+                                                >
+                                                    Download
                                                 </a>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <p className="text-red-500">Media file not found</p>
-                                    )}
-                                </li>
-                            ))}
+                                            </div>
+                                        )}
+                                        {!item.file_url && (
+                                            <p className="text-red-500">Media file not found</p>
+                                        )}
+                                    </li>
+                                );
+                            })}
                         </ul>
                     )}
                 </div>
@@ -104,7 +141,5 @@ const ViewPosts = ({ setAuth }) => {
         </Fragment>
     );
 };
-
-//need to query from post table to get metadata, and from bucket for viewing post
 
 export default ViewPosts;

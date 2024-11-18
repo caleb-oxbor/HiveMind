@@ -13,8 +13,9 @@ router.get("/", authorization, async (req, res) => {
 
     const { data: metadata, error: metadataError } = await supabase
       .from("posts")
-      .select("user_id, username, post_title, created_at, upvotes, downvotes, file_name, file_type")
-      .eq("course_id", classID);
+      .select("user_id, username, post_title, created_at, votes, file_name, file_type")
+      .eq("course_id", classID)
+      .order("created_at", { ascending: false });
 
     if (metadataError) {
       console.error("Error fetching metadata:", metadataError);
@@ -29,8 +30,13 @@ router.get("/", authorization, async (req, res) => {
       return {
         ...metaItem,
         file_url,
+        course_id: classID,
+        //file_name: metaItem.file_name,
       };
     });
+
+    console.log("Combined data:", combinedData);
+
 
     res.status(200).json(combinedData);
   } catch (error) {
@@ -38,5 +44,6 @@ router.get("/", authorization, async (req, res) => {
     res.status(500).json({ error: "Failed to fetch posts" });
   }
 });
+
 
 module.exports = router;

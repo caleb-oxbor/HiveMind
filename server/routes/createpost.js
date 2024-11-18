@@ -25,8 +25,12 @@ router.post("/", authorization, upload.single("file"), async (req, res) => {
       const classFilePath = `${classID}/${post_id}`;
   
       const [userUpload, classUpload] = await Promise.all([
-        supabase.storage.from("userPosts").upload(userFilePath, buffer),
-        supabase.storage.from("classPosts").upload(classFilePath, buffer),
+        supabase.storage.from("userPosts").upload(userFilePath, buffer, {
+            contentType: file_type,
+        }),
+        supabase.storage.from("classPosts").upload(classFilePath, buffer, {
+            contentType: file_type,
+        }),
       ]);
   
       if (userUpload.error || classUpload.error) {
