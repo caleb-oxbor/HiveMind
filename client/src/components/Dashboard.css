@@ -1,13 +1,40 @@
 .dashboard-container {
-  display: flex;
-  align-items: center; 
-  justify-content: space-between; 
-  width: 100%; 
+  margin-top: 65px;
+  position: relative; /* Allows absolute positioning for child elements */
+  width: 100%;        /* Full-width container */
+
+  display: flex;      /* Flexbox for optional layout adjustments */
+  align-items: center;
   padding-top: 10px;
-  padding-left: 60px;
   padding-bottom: 4px;
   border-bottom: 4px solid white;
-  box-sizing: border-box; 
+  justify-content: center; /* Default alignment for centering if needed */
+  box-sizing: border-box; /* Ensures padding is included in dimensions */
+}
+
+.dashboard-header-left {
+  position: absolute; /* Position relative to the container */
+  bottom: 5px;
+  left: 60px;         /* 60px from the left edge */
+  
+  color: white;       /* Adjust color to fit design */
+}
+
+.dashboard-logo {
+  position: absolute; /* Position relative to the container */
+  left: 50%;          /* Center horizontally */
+  transform: translate(-50%, 0%); /* Center image perfectly */
+  width: 70px;        /* Set size of the logo */
+  height: 70px;       /* Set size of the logo */
+  bottom: 5px;
+}
+
+.dashboard-header-right {
+  position: absolute; /* Position relative to the container */
+  bottom: 15px;         
+  right: 10px;        /* 10px from the right edge */
+  color: white;       /* Adjust color to fit design */
+  margin-top: 35px;
 }
 
 .your-classes-container {
