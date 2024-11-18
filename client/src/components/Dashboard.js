@@ -81,13 +81,13 @@ const Dashboard = ({ setAuth }) => {
 
   return (
     <div>
+
+        <div className="dashboard-container">
         <Menu>
           <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
             <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
           </a>
         </Menu>
-
-        <div className="dashboard-container">
           <header>
             <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
           </header>

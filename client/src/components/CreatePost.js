@@ -4,8 +4,10 @@ import { slide as Menu } from "react-burger-menu";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-
+import './Dashboard.css'
 import supabase from '../supabaseClient'
+import logoutIcon from '../images/logout.png'; 
+import hivemindLogo from '../images/spacebee.png'; 
 
 const CreatePost = ({setCreated, setAuth}) => {
     const [name, setUsername] = useState("");
@@ -177,9 +179,12 @@ const CreatePost = ({setCreated, setAuth}) => {
             </Menu>
         </div>
         <header>
-            <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
+            <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">HiveMind</h1>
         </header>  
-        <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
+
+        <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> 
+
+        <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
         <Link to="/profile" className="text-white">{name}</Link>
       </h2>
         </div>

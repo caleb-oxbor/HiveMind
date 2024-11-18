@@ -3,7 +3,8 @@ import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
-
+import hivemindLogo from '../images/spacebee.png'; 
+import logoutIcon from '../images/logout.png'; 
 
 const Classes = ({ setAuth }) => {
   const [name, setUsername] = useState("");
@@ -46,15 +47,18 @@ const Classes = ({ setAuth }) => {
     <div className="dashboard-container">
       <div className="burger-menu-container">
         <Menu>
-          <Link to="/">Home</Link>
+          <Link to="/dashboard">Home</Link>
           <a onClick={logout}>Logout</a>
         </Menu>
       </div>
 
       <header>
-        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Class Example</h1>
+        <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Class Example</h1>
       </header>
-      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">
+
+      <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" />
+
+      <h2 className="dashboard-header-right font-tiny5 font-bold text-right text-white text-3xl heading-shadow">
       <Link to="/profile" className="text-white">{name}</Link>
       </h2>
     </div>
