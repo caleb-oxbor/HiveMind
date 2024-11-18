@@ -103,12 +103,14 @@ const Dashboard = ({ setAuth }) => {
         <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Your Classes</h1>
       </div>
 
+      <div style={{ display: 'inline-block' }}>
         <Link to="/class">
           <button 
             onClick={handleNavigation}
             className="mt-10 font-dotgothic custom-button"> Class Example
             </button>
         </Link>
+      </div>
     </div>
   );
 };

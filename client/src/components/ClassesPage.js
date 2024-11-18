@@ -64,9 +64,11 @@ const Classes = ({ setAuth }) => {
       <Link to="/profile" className="text-white">{name}</Link>
       </h2>
     </div>
+    <div style={{ display: 'inline-block' }}>
       <Link to="/create-post">
         <button className="mt-10 font-dotgothic custom-button">Create Post</button>
       </Link>
+      </div>
     </div>
   );
 };
