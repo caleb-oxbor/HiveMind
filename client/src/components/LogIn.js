@@ -33,7 +33,7 @@ const LogIn = ({setAuth}) => {
             if (parseRes.token) {
                 localStorage.setItem("token", parseRes.token);
                 setAuth(true);
-                toast.success("Login successful!");
+                toast.success("Login successful!", {pauseOnHover: false});
             }
 
             else{

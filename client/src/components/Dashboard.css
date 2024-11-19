@@ -74,13 +74,22 @@
 .bm-item-list a {
   text-decoration: none; 
   color: white;
-  padding: 10px 0; 
-  transition: color 0.3s ease, text-decoration 0.3s ease; 
+  padding: 1px 1px; 
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+  cursor: pointer;
+  display: inline;
 }
 
 .bm-item-list a:hover {
-  color: #ff80fd; 
-  text-decoration: underline; 
+  color: #ff80fd !important; 
+  text-decoration: underline !important;
+}
+
+.bm-menu a {
+  text-decoration: none; 
+  color: white !important;
+  padding: 10px 0; 
+  transition: color 0.3s ease, text-decoration 0.3s ease; 
 }
 
 a {

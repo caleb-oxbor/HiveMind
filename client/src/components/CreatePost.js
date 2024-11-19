@@ -53,7 +53,7 @@ const CreatePost = ({ setAuth }) => {
     try {
       localStorage.removeItem("token");
       setAuth(false);
-      toast.success("Logout successfully");
+      toast.success("Logout successfully", {pauseOnHover: false});
     }
     catch (err) {
       console.error(err.message);
@@ -105,7 +105,7 @@ const CreatePost = ({ setAuth }) => {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success("Post created successfully!");
+        toast.success("Post created successfully!", {pauseOnHover: false});
         // navigate("/dashboard", { replace: true, state: {classId} });
         console.log("PRE CHECK ID = ", classId);
         navigate("/view-posts", { replace: true, state: {classId} });

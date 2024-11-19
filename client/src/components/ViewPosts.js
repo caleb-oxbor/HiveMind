@@ -140,7 +140,7 @@ const ViewPosts = ({ setAuth }) => {
     const logout = () => {
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logged out successfully!");
+        toast.success("Logged out successfully!", {pauseOnHover: false});
     };
 
     useEffect(() => {
@@ -148,17 +148,20 @@ const ViewPosts = ({ setAuth }) => {
     }, []);
 
     return (
-    <Fragment>
-    <div>
-    <div className="dashboard-container">
-      <div className="burger-menu-container">
-        <Menu >
-          <Link to="/dashboard">Home</Link>
-          <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
-          <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
-          </a>
-        </Menu>
-      </div>
+        <Fragment>
+            <div>
+                <div className="dashboard-container">
+                    <div className="burger-menu-container">
+                        <Menu>
+                            <div className="bm-item-list">
+                                <Link to="/dashboard">Home</Link>
+                                <a onClick={logout} style={{ display: 'flex', alignItems: 'center'}}>
+                                    <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} />
+                                    Logout
+                                </a>
+                            </div>
+                        </Menu>
+                    </div>
 
                     <header>
                         <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>

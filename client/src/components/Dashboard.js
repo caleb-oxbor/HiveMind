@@ -162,7 +162,7 @@ const Dashboard = ({ setAuth }) => {
     try{
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logout successful!");
+        toast.success("Logout successful!", {pauseOnHover: false});
     }
     catch(err){
         console.error(err.message);
@@ -176,7 +176,7 @@ const Dashboard = ({ setAuth }) => {
     const hasPosted = await checkIsPosted(userId, classId);
 
     if (hasPosted === 2){
-      toast.error("Select a class!");
+      toast.error("Select a class!", {pauseOnHover: false});
       return;
     }
 
@@ -224,9 +224,11 @@ const Dashboard = ({ setAuth }) => {
 
         <div className="dashboard-container">
         <Menu>
-          <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
-          </a>
+          <div className="bm-item-list">
+            <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+              <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+            </a>
+          </div>
         </Menu>
           <header>
             <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>

@@ -36,7 +36,7 @@ const Classes = ({ setAuth }) => {
     try{
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logout successfully");
+        toast.success("Logout successfully", {pauseOnHover: false});
     }
     catch(err){
         console.error(err.message);
