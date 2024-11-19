@@ -1,14 +1,20 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
+import { useContext } from "react";
+import { ClassContext } from "../contexts/ClassContext";
 import hivemindLogo from '../images/spacebee.png'; 
 import logoutIcon from '../images/logout.png'; 
 
 const Classes = ({ setAuth }) => {
   const [name, setUsername] = useState("");
+  const navigate = useNavigate();
 
+  const { classId } = useContext(ClassContext);
+
+  console.log("Classes ClassID = ", classId);
     
   const getName = async () => {
     try {
@@ -35,6 +41,11 @@ const Classes = ({ setAuth }) => {
     catch(err){
         console.error(err.message);
     }
+  };
+
+  const handleNavigation = async () =>{
+    console.log("PASS IN CLASS ID CHECK = ", classId);
+    navigate("/create-post", { replace: true}); 
   };
 
 
@@ -66,7 +77,11 @@ const Classes = ({ setAuth }) => {
     </div>
     <div style={{ display: 'inline-block' }}>
       <Link to="/create-post">
-        <button className="mt-10 font-dotgothic custom-button">Create Post</button>
+      
+      <button 
+          onClick={handleNavigation}
+          className="mt-10 font-dotgothic custom-button"> Create Post
+          </button>
       </Link>
       </div>
     </div>

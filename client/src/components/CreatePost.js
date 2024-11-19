@@ -1,28 +1,35 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { slide as Menu } from "react-burger-menu";
-import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
+
 import './Dashboard.css'
 import logoutIcon from '../images/logout.png'; 
 import hivemindLogo from '../images/spacebee.png'; 
 import supabase from '../supabaseClient'
 
+import { useContext } from "react";
+import { ClassContext } from "../contexts/ClassContext";
+
+
 //removed setcreate parameter 
 const CreatePost = ({ setAuth }) => {
-    const [name, setUsername] = useState("");
-    const [newPost, setNewPost] = useState(null);
-    const [title, setTitle] = useState("");
-    const [error, setError] = useState("");
-    const [fileType, setFileType] = useState("");
-    const navigate = useNavigate();
-    const post_id = uuidv4();
-    const classID = 2;
+  const [name, setUsername] = useState("");
+  const [newPost, setNewPost] = useState(null);
+  const [title, setTitle] = useState("");
+  const [error, setError] = useState("");
+  const [fileType, setFileType] = useState("");
+  const navigate = useNavigate();
+  const post_id = uuidv4();
+
+  const { classId } = useContext(ClassContext);
+
+  console.log("Class ID in Post:", classId);
 
   const getName = async () => {
     try {
-      console.log(localStorage.token);
+      // console.log(localStorage.token);
       const response = await fetch("http://localhost:5000/dashboard/",
         {
           method: "GET",
@@ -86,7 +93,7 @@ const CreatePost = ({ setAuth }) => {
       formData.append("file", newPost);
       formData.append("post_title", title);
       formData.append("post_id", post_id);
-      formData.append("classID", classID);
+      formData.append("classID", classId);
       formData.append("file_type", fileType);
 
       const response = await fetch("http://localhost:5000/create-post/", {
@@ -99,8 +106,9 @@ const CreatePost = ({ setAuth }) => {
 
       if (response.ok) {
         toast.success("Post created successfully!");
-        navigate("/dashboard", { replace: true });
-        navigate("/view-posts", { replace: true });
+        // navigate("/dashboard", { replace: true, state: {classId} });
+        console.log("PRE CHECK ID = ", classId);
+        navigate("/view-posts", { replace: true, state: {classId} });
       } else {
         setError(result.error || "File upload failed.");
       }
