@@ -2,15 +2,73 @@ import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
-// import './Profile.css'
-
+import logoutIcon from '../images/logout.png'; 
+import hivemindLogo from '../images/spacebee.png'; 
+import "./ProfilePage.css";
 
 const Profile = ({ setAuth }) => {
   const [name, setUsername] = useState("");
-  const [posts, setPosts] = useState([]);
-  const [userId, setUserId] = useState("");
+  const [userEmail, setEmail] = useState("");
+  const [media, setMedia] = useState({});
 
-    
+  const fetchPosts = async () => {
+    try {
+        const response = await fetch("http://localhost:5000/profile/profile-posts", {
+            method: "GET",
+            headers: { token: localStorage.token },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch posts");
+        }
+
+        const data = await response.json();
+
+        const groupedMetadata = data.reduce((acc, metaItem) => {
+          const courseName = metaItem.course_name;
+          if (!acc[courseName]) {
+            acc[courseName] = [];
+          }
+          acc[courseName].push(metaItem);
+          return acc;
+        }, {});
+
+        setMedia(groupedMetadata);
+    } catch (err) {
+        console.error("Error fetching posts:", err.message);
+    }
+  };
+
+  const handleDownload = async (metaItem) => {
+      try {
+          console.log(metaItem.course_id);
+          console.log(metaItem.file_name);
+          const response = await fetch(
+              `http://localhost:5000/download/${metaItem.course_id}/${metaItem.file_name}`,
+              {
+                  method: "GET",
+                  headers: { token: localStorage.token }, // Include auth token if needed
+              }
+          );
+
+          if (!response.ok) {
+              throw new Error("Failed to download file");
+          }
+
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = metaItem.post_title || "download";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+      } catch (err) {
+          console.error("Download failed", err);
+      }
+  };
+
   const getName = async () => {
     try {
       const response = await fetch("http://localhost:5000/profile", 
@@ -20,11 +78,11 @@ const Profile = ({ setAuth }) => {
         });
 
       const parseData = await response.json();
-      console.log(parseData);
-      console.log(setAuth);
+      // console.log(parseData);
+
       setUsername(parseData.username);
-      setUserId(parseData.user_id);
-      // console.log("current user ID: ", parseData.user_id);
+      setEmail(parseData.email);
+
     } catch (err) {
       console.error(err.message);
     }
@@ -42,210 +100,99 @@ const Profile = ({ setAuth }) => {
     }
   };
 
-
   useEffect(() => {
     getName();
+    fetchPosts();
   }, []);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-        try {
-            const response = await fetch("http://localhost:5000/dashboard/posts", {
-                headers: { token: localStorage.token },
-            });
+  return (
+    <div>
+        <Menu>
+          <Link to="/dashboard">Home</Link>
+          <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+          </a>
+        </Menu>
 
-            if (response.ok) {
-                const data = await response.json();
-                setPosts(data); // Store posts in state
-            } else {
-                console.error("Failed to fetch posts");
-            }
-        } catch (err) {
-            console.error(err.message);
-        }
-    };
+        <div className="dashboard-container">
 
-    fetchPosts();
-}, []);
+          <header>
+            <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Profile</h1>
+          </header>
 
+          <div className="logo-container">
+            <img src={hivemindLogo} alt="Hivemind Logo" style={{ width: '70px', height: '70px' }} /> 
+          </div>
 
-const getFileUrl = (filePath) => `http://localhost:5000/${filePath}`;
+        </div>
+        
+        <div className="info-header">
+            <h1 className="font-tiny5 font-bold text-left text-white text-5xl heading-shadow">Your Information</h1>
+            <div className="info-box">
+                <div className="profile-photo">Insert Profile Photo Here</div>
 
-const renderFile = (post) => {
-    const fileUrl = getFileUrl(post.post_content);
+                <div className="user-details">
+                    <div className="key">Username:</div>
+                    <div className="label">{name}</div>
+                    <div className="key">Email:</div>
+                    <div className="label">{userEmail}</div>        
+                </div>
+            </div>
+        </div>
 
-    if (post.post_type.startsWith("image/")) {
-        return <img src={fileUrl} alt={post.post_title} className="post-image" />;
-    } 
-    else if (post.post_type === "application/pdf") {
-        return (
-            <iframe
-                src={fileUrl}
-                title={post.post_title}
-                className="post-pdf"
-            />
-        );
-    } 
-    else if (post.post_type.startsWith("video/")) {
-        return (
-            <video controls className="post-video">
-                <source src={fileUrl} type={post.post_type} />
-                Your browser does not support the video tag.
-            </video>
-        );
-    } 
-    else if (post.post_type.startsWith("audio/")) {
-        return (
-            <audio controls className="post-audio">
-                <source src={fileUrl} type={post.post_type} />
-                Your browser does not support the audio element.
-            </audio>
-        );
-    } 
-    else if (post.post_type === "application/msword" || post.post_type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-        // Word document
-        return (
-            <iframe
-                src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                title={post.post_title}
-                className="post-doc"
-            />
-        );
-    } 
-    else if (post.post_type === "application/vnd.ms-excel" || post.post_type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-        // Excel document
-        return (
-            <iframe
-                src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                title={post.post_title}
-                className="post-doc"
-            />
-        );
-    } 
-    else if (post.post_type === "application/vnd.ms-powerpoint" || post.post_type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
-        // PowerPoint presentation
-        return (
-            <iframe
-                src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                title={post.post_title}
-                className="post-doc"
-            />
-        );
-    } 
-    else if (post.post_type === "text/html") {
-        // HTML file
-        return (
-            <iframe
-                src={fileUrl}
-                title={post.post_title}
-                className="post-html"
-            />
-        );
-    } 
-    else {
-        return (
-            <p>
-                Unsupported file type. <a href={fileUrl} download>Download the file</a> to view it.
-            </p>
-        );
-    }
-};
-
-const handleDownload = async (post) => {
-    try {
-        const response = await fetch(getFileUrl(post.post_content), {
-            headers: { token: localStorage.token },
-        });
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = post.post_title || 'download';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-    } catch (err) {
-        console.error('Download failed', err);
-    }
-};
-
-const userPosts = posts.filter(post => post.user_id === userId);
-
-return (
-<div>
-<div className="dashboard-container">
-  <div className="burger-menu-container">
-    <Menu >
-      <Link to="/dashboard">Home</Link>
-      <a onClick={logout}>Logout</a>
-    </Menu>
-  </div>
-
-  <header>
-    <h1 className="font-tiny5 font-bold text-left text-white text-5xl">Profile</h1>
-  </header>  
-  <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
-    <Link to="/profile" className="text-white">{name}</Link>
-  </h2>
-  </div>
-    <div className="posts-container">
-        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">
-            View Your Posts
-        </h1>
-        {userPosts.length === 0 ? (
+        <div className="posts-container">
+          {Object.keys(media).length === 0 ? (
             <p>No posts available</p>
-        ) : (
-            <ul className="posts-list">
-                {userPosts.map((post) => (
-                    <li key={post.post_id} className="post-item">
-                        <h2 className="font-dotgothic text-white text-2xl">
-                            {post.post_title}
-                        </h2>
-                        <p className="font-dotgothic">
-                            {new Date(post.created_at).toLocaleString()}
-                        </p>
-
-                        {/* Render the file based on type */}
-                        {renderFile(post)}
-
-                        {/* Download button for all files */}
-                        <a
-                        onClick={() => handleDownload(post)}
-                        className="download-button"
-                        style={{ cursor: 'pointer' }}
-                        >
-                        Download
-                        </a>
+          ) : (
+            Object.keys(media).map((course) => (
+              <div key={course}>
+                <h2 className="font-tiny5 font-bold text-left text-white text-5xl heading-shadow">{course}</h2>
+                <ul className="posts-list">
+                  {media[course].map((item, index) => (
+                    <li key={index} className="post-item">
+                      <h2 className="font-dotgothic text-white text-2xl">{item.post_title}</h2>
+                      <p className="text-gray-400">Posted by {item.username}</p>
+                      <p className="text-gray-400">Posted on {new Date(item.created_at).toLocaleString()}</p>
+                      <p className="text-green-500">Votes: {item.votes}</p>
+                      {item.file_url && (
+                        <div>
+                          {item.file_type.startsWith("image/") && (
+                            <img
+                              src={item.file_url}
+                              alt={item.post_title}
+                              className="post-image"
+                            />
+                          )}
+                          {item.file_type === "application/pdf" && (
+                            <iframe
+                              src={item.file_url}
+                              title={item.post_title}
+                              className="post-pdf"
+                            />
+                          )}
+                          <a
+                            onClick={() => handleDownload(item)}
+                            className="download-button"
+                            style={{ cursor: "pointer", marginTop: "10px", display: "block" }}
+                          >
+                            Download
+                          </a>
+                        </div>
+                      )}
+                      {!item.file_url && (
+                        <p className="text-red-500">Media file not found</p>
+                      )}
                     </li>
-                ))}
-            </ul>
-        )}
-    </div>
-    </div>
-);
+                  ))}
+                </ul>
+              </div>
+            ))
+          )}
+        </div>
 
-  // return (
-  //   <div className="dashboard-container">
-  //     <div className="burger-menu-container">
-  //       <Menu >
-  //         <Link to="/dashboard">Home</Link>
-  //         <a onClick={logout}>Logout</a>
-  //       </Menu>
-  //     </div>
 
-  //     <header>
-  //       <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Profile</h1>
-  //     </header>
-
-  //     <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">
-  //       <Link to="/profile" className="text-white">{name}</Link>
-  //     </h2>
-
- 
-  //   </div>
-  // );
+  </div>
+  );
 };
 
 export default Profile;
