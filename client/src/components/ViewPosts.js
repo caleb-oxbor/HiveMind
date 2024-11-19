@@ -74,7 +74,7 @@ const ViewPosts = ({ setAuth }) => {
                     headers: { token: localStorage.token,
                         "Content-Type": "application/json",
                      },
-                body: JSON.stringify({ classID: post.course_id, postID: post.file_name }),
+                body: JSON.stringify({ postID: post.file_name }),
             });
 
             if (!response.ok) {
@@ -109,7 +109,7 @@ const ViewPosts = ({ setAuth }) => {
                     headers: { token: localStorage.token,
                         "Content-Type": "application/json",
                      },
-                body: JSON.stringify({ classID: post.course_id, postID: post.file_name }),
+                body: JSON.stringify({ postID: post.file_name }),
             });
 
             if (!response.ok) {

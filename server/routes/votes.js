@@ -4,9 +4,9 @@ const supabase = require("../supabaseClient");
 const authorization = require("../middleware/authorization");
 
 router.post("/upvote", authorization, async (req, res) => {
-    const { classID, postID } = req.body;
+    const {postID}  = req.body;
 
-    console.log("Upvote request received:", { classID, postID });
+    console.log("Upvote request received:", postID );
 
     try {
         const { data: post, error: fetchError } = await supabase
@@ -40,9 +40,9 @@ router.post("/upvote", authorization, async (req, res) => {
 });
 
 router.post("/downvote", authorization, async (req, res) => {
-    const { classID, postID } = req.body;
+    const {postID}  = req.body;
 
-    console.log("Downvote request received:", { classID, postID });
+    console.log("Downvote request received:", postID );
 
     try {
         const { data: post, error: fetchError } = await supabase
