@@ -182,9 +182,9 @@ const Dashboard = ({ setAuth }) => {
 
     try {  
       if (hasPosted === 1) {
-        navigate("/view-posts", { replace: true, state: {classId} }); 
+        navigate("/view-posts", { replace: true}); 
       } else {
-        navigate("/class", { replace: true, state: {classId} }); 
+        navigate("/class", { replace: true}); 
       }
     } catch (err) {
       console.error("Failed to navigate:", err.message);
@@ -249,7 +249,11 @@ const Dashboard = ({ setAuth }) => {
               <h2 className="class-name">{classItem.courseName}</h2>
               <button 
                 className="view-class-button" 
-                onClick={() => navigate("/view-posts", { state: { classId: classItem.courseId } })}>
+                onClick={() => {
+                  setClassId(classItem.courseId)
+                  navigate("/view-posts", {replace: true})
+                }
+                }>
                 View Posts
               </button>
             </div>
