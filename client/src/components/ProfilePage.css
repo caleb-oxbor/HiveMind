@@ -63,3 +63,40 @@
   text-align: left;
 }
 
+.dashboard-container {
+  margin-top: 65px;
+  position: relative; 
+  width: 100%;        
+
+  display: flex;      
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 4px;
+  border-bottom: 4px solid white;
+  justify-content: left; 
+  box-sizing: border-box; 
+}
+
+.dashboard-header-left {
+  position: absolute; 
+  bottom: 1px;
+  left: 60px;        
+  color: white;       
+}
+
+.dashboard-logo {
+  position: absolute; 
+  left: 50%;          
+  transform: translate(-50%, 0%);
+  width: 70px;        
+  height: 70px;       
+  bottom: 5px;
+}
+
+.dashboard-header-right {
+  position: absolute; 
+  bottom: 15px;         
+  right: 10px;       
+  color: white;       
+  margin-top: 35px;
+}

@@ -5,7 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import supabase from '../supabaseClient'
 import logoutIcon from '../images/logout.png'; 
 import '@react-pdf-viewer/core/lib/styles/index.css';
-
+import './Dashboard.css'
+import hivemindLogo from '../images/spacebee.png'; 
 import { useContext } from "react";
 import { ClassContext } from "../contexts/ClassContext";
 
@@ -137,11 +138,32 @@ const ViewPosts = ({ setAuth }) => {
         }
     };
 
+    const getName = async () => {
+        console.log("getName called");
+        try {
+          const response = await fetch("http://localhost:5000/dashboard/", 
+            {
+            method: "GET",
+            headers: {token: localStorage.token }
+            });
+    
+          const parseData = await response.json();
+          console.log("Fetched name:", parseData.username);
+          setUsername(parseData.username);
+        } catch (err) {
+          console.error(err.message);
+        }
+      };
+
     const logout = () => {
         localStorage.removeItem("token");
         setAuth(false);
         toast.success("Logged out successfully!", {pauseOnHover: false});
     };
+
+    useEffect(() => {
+        getName();
+      }, []);
 
     useEffect(() => {
         fetchPosts();
@@ -164,9 +186,12 @@ const ViewPosts = ({ setAuth }) => {
                     </div>
 
                     <header>
-                        <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
+                        <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">HiveMind</h1>
                     </header>
-                    <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
+
+                    <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> 
+
+                    <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
                         <Link to="/profile" className="text-white">{name}</Link>
                     </h2>
                 </div>
