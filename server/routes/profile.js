@@ -6,10 +6,11 @@ const path = require("path");
 
 router.get('/', authorization, async (req, res) => {
   try {
+
     const { data: user, error: userError } = await supabase
       .from('users')
       .select('username, email')
-      .eq('user_id', req.user)
+      .eq('user_id', req.user.user_id)
       .single();
 
     res.json(user);

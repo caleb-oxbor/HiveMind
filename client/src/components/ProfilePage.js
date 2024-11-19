@@ -2,6 +2,8 @@ import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
+import logoutIcon from '../images/logout.png'; 
+import hivemindLogo from '../images/spacebee.png'; 
 import "./ProfilePage.css";
 
 const Profile = ({ setAuth }) => {
@@ -17,8 +19,11 @@ const Profile = ({ setAuth }) => {
         });
 
       const parseData = await response.json();
+      console.log(parseData);
+
       setUsername(parseData.username);
       setEmail(parseData.email);
+
     } catch (err) {
       console.error(err.message);
     }
@@ -42,17 +47,22 @@ const Profile = ({ setAuth }) => {
 
   return (
     <div>
-        <div className="dashboard-container">
-            <div className="burger-menu-container">
-                <Menu >
-                <Link to="/dashboard">Home</Link>
-                <a onClick={logout}>Logout</a>
-                </Menu>
-            </div>
+        <Menu>
+          <Link to="/dashboard">Home</Link>
+          <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+          </a>
+        </Menu>
 
-            <header className="profile-header">
-                <h1 className="font-tiny5 font-bold text-center text-white text-7xl heading-shadow">Profile</h1>
-            </header>
+        <div className="dashboard-container">
+
+          <header>
+            <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Profile</h1>
+          </header>
+
+          <div className="logo-container">
+            <img src={hivemindLogo} alt="Hivemind Logo" style={{ width: '70px', height: '70px' }} /> 
+          </div>
 
         </div>
         
@@ -73,7 +83,7 @@ const Profile = ({ setAuth }) => {
 
         </div>
 
-    </div>
+  </div>
   );
 };
 

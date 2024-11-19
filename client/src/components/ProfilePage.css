@@ -1,6 +1,14 @@
 .profile-header{
-  text-align: center;
+  text-align: left;
   width: 100%; 
+  padding-left: 30px;
+}
+
+.logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-right: 250px;
 }
 
 .info-header{
@@ -35,22 +43,22 @@
 .user-details{
   position: absolute;
   left: 300px;
-  top: 50px;
+  top: 100px;
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 10px 15px;
+  gap: 30px 20px;
   align-items: center;
 }
 
 .key{
   font-weight: bold;
-  font-size: large;
+  font-size: larger;
   text-align: right;
 }
 
 .label{
   font-weight: lighter;
-  font-size: large;
+  font-size: larger;
   text-align: left;
 }
 
