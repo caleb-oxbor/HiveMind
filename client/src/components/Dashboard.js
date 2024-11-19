@@ -7,16 +7,18 @@ import logoutIcon from '../images/logout.png';
 import hivemindLogo from '../images/spacebee.png'; 
 import supabase from '../supabaseClient'
 import Select from "react-select";
+import { useContext } from "react";
+import { ClassContext } from "../contexts/ClassContext";
 
 
 const Dashboard = ({ setAuth }) => {
   const [name, setUsername] = useState("");
-  const [classId, setSelectedOption] = useState();
   const [options, setOptions] = useState([]);
   const navigate = useNavigate();
+  const { classId, setClassId } = useContext(ClassContext);
 
   const handleSelect = (selectedOption) =>{
-    setSelectedOption(selectedOption.value);
+    setClassId(selectedOption.value);
   }
 
   const getOptions = async () => {

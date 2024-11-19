@@ -1,17 +1,20 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { toast } from "react-toastify";
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '@react-pdf-viewer/core/lib/styles/index.css';
+
+import { useContext } from "react";
+import { ClassContext } from "../contexts/ClassContext";
 
 
 const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");
     const [media, setMedia] = useState([[]]);
-    const location = useLocation();
-    const classId = location.state?.classId;
 
-    console.log("View Posts ClassID = ", classId);
+    const { classId } = useContext(ClassContext);
+
+    console.log("Class ID in viewposts:", classId);
 
     const fetchPosts = async () => {
         try {

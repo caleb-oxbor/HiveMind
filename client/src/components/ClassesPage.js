@@ -1,17 +1,17 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
+import { useContext } from "react";
+import { ClassContext } from "../contexts/ClassContext";
 
 
 const Classes = ({ setAuth }) => {
   const [name, setUsername] = useState("");
   const navigate = useNavigate();
 
-
-  const location = useLocation();
-  const classId = location.state?.classId;
+  const { classId } = useContext(ClassContext);
 
   console.log("Classes ClassID = ", classId);
     
@@ -44,7 +44,7 @@ const Classes = ({ setAuth }) => {
 
   const handleNavigation = async () =>{
     console.log("PASS IN CLASS ID CHECK = ", classId);
-    navigate("/create-post", {state: {classId} }); 
+    navigate("/create-post", { replace: true}); 
   };
 
 

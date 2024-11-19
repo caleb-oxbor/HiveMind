@@ -1,8 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { slide as Menu } from "react-burger-menu";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
+
+import { useContext } from "react";
+import { ClassContext } from "../contexts/ClassContext";
+
 
 //removed setcreate parameter 
 const CreatePost = ({ setAuth }) => {
@@ -14,10 +18,9 @@ const CreatePost = ({ setAuth }) => {
   const navigate = useNavigate();
   const post_id = uuidv4();
 
-  const location = useLocation();
-  console.log("Full Location State in CreatePost:", location.state);
-  const classId = location.state?.classId;
-  console.log("CREATE POSTS ID = ", classId);
+  const { classId } = useContext(ClassContext);
+
+  console.log("Class ID in Post:", classId);
 
   const getName = async () => {
     try {
