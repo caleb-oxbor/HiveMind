@@ -23,7 +23,7 @@ router.get('/', authorization, async (req, res) => {
 
 router.get("/profile-posts", authorization, async (req, res) => {
   const username = req.user.username;
-  console.log("Fetching posts for username: ", username);
+  // console.log("Fetching posts for username: ", username);
   try {
 
     if (!username) {
@@ -32,8 +32,9 @@ router.get("/profile-posts", authorization, async (req, res) => {
 
     const { data: metadata, error: metadataError } = await supabase
       .from("posts")
-      .select("post_title, created_at, votes, file_name, file_type, username")
+      .select("*")
       .eq("username", username)
+      .order("course_id", { ascending: true })
       .order("created_at", { ascending: false });
 
     if (metadataError) {
@@ -41,7 +42,21 @@ router.get("/profile-posts", authorization, async (req, res) => {
       return res.status(500).json({ error: "Failed to fetch posts" });
     }
 
-    console.log("Fetched posts: ", metadata);
+    const courseIds = [...new Set(metadata.map(metaItem => metaItem.course_id))];
+    const { data: courses, error: coursesError } = await supabase
+      .from("courses")
+      .select("course_id, course_name")
+      .in("course_id", courseIds);
+
+    if (coursesError) {
+      console.error("Error fetching course data: ", coursesError);
+      return res.status(500).json({ error: "Failed to fetch courses" });
+    }
+
+    const courseIdToName = courses.reduce((acc, course) => {
+      acc[course.course_id] = course.course_name;
+      return acc;
+    }, {});
 
     const combinedData = metadata.map((metaItem) => {
       const file_url = supabase.storage
@@ -51,6 +66,7 @@ router.get("/profile-posts", authorization, async (req, res) => {
       return {
         ...metaItem,
         file_url,
+        course_name: courseIdToName[metaItem.course_id],
       };
     });
 

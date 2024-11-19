@@ -9,7 +9,7 @@ import "./ProfilePage.css";
 const Profile = ({ setAuth }) => {
   const [name, setUsername] = useState("");
   const [userEmail, setEmail] = useState("");
-  const [media, setMedia] = useState([[]]);
+  const [media, setMedia] = useState({});
 
   const fetchPosts = async () => {
     try {
@@ -23,18 +23,28 @@ const Profile = ({ setAuth }) => {
         }
 
         const data = await response.json();
-        setMedia(data);
+
+        const groupedMetadata = data.reduce((acc, metaItem) => {
+          const courseName = metaItem.course_name;
+          if (!acc[courseName]) {
+            acc[courseName] = [];
+          }
+          acc[courseName].push(metaItem);
+          return acc;
+        }, {});
+
+        setMedia(groupedMetadata);
     } catch (err) {
         console.error("Error fetching posts:", err.message);
     }
   };
 
-  const handleDownload = async (post) => {
+  const handleDownload = async (metaItem) => {
       try {
-          console.log(post.course_id);
-          console.log(post.file_name);
+          console.log(metaItem.course_id);
+          console.log(metaItem.file_name);
           const response = await fetch(
-              `http://localhost:5000/download/${post.course_id}/${post.file_name}`,
+              `http://localhost:5000/download/${metaItem.course_id}/${metaItem.file_name}`,
               {
                   method: "GET",
                   headers: { token: localStorage.token }, // Include auth token if needed
@@ -49,7 +59,7 @@ const Profile = ({ setAuth }) => {
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = post.post_title || "download";
+          a.download = metaItem.post_title || "download";
           document.body.appendChild(a);
           a.click();
           a.remove();
@@ -131,54 +141,55 @@ const Profile = ({ setAuth }) => {
         </div>
 
         <div className="posts-container">
-          <h1 className="font-tiny5 font-bold text-left text-white text-5xl heading-shadow">
-              Class Example
-          </h1>
-          {media.length === 0 ? (
-              <p>No posts available</p>
+          {Object.keys(media).length === 0 ? (
+            <p>No posts available</p>
           ) : (
-              <ul className="posts-list">
-                  {media.map((item, index) => {
-                      return (
-                          <li key={index} className="post-item">
-                              <h2 className="font-dotgothic text-white text-2xl">{item.post_title}</h2>
-                              <p className="text-gray-400">Posted by {item.username}</p>
-                              <p className="text-gray-400">Posted on {new Date(item.created_at).toLocaleString()}</p>
-                              <p className="text-green-500">Votes: {item.votes}</p>
-                              {item.file_url && (
-                                  <div>
-                                      {item.file_type.startsWith("image/") && (
-                                          <img
-                                              src={item.file_url}
-                                              alt={item.post_title}
-                                              className="post-image"
-                                          />
-                                      )}
-                                      {item.file_type === "application/pdf" && (
-                                          <iframe
-                                              src={item.file_url}
-                                              title={item.post_title}
-                                              className="post-pdf"
-                                          />
-                                      )}
-                                      <a
-                                          onClick={() => handleDownload(item)}
-                                          className="download-button"
-                                          style={{ cursor: "pointer", marginTop: "10px", display: "block" }}
-                                      >
-                                          Download
-                                      </a>
-                                  </div>
-                              )}
-                              {!item.file_url && (
-                                  <p className="text-red-500">Media file not found</p>
-                              )}
-                          </li>
-                      );
-                  })}
-              </ul>
+            Object.keys(media).map((course) => (
+              <div key={course}>
+                <h2 className="font-tiny5 font-bold text-left text-white text-5xl heading-shadow">{course}</h2>
+                <ul className="posts-list">
+                  {media[course].map((item, index) => (
+                    <li key={index} className="post-item">
+                      <h2 className="font-dotgothic text-white text-2xl">{item.post_title}</h2>
+                      <p className="text-gray-400">Posted by {item.username}</p>
+                      <p className="text-gray-400">Posted on {new Date(item.created_at).toLocaleString()}</p>
+                      <p className="text-green-500">Votes: {item.votes}</p>
+                      {item.file_url && (
+                        <div>
+                          {item.file_type.startsWith("image/") && (
+                            <img
+                              src={item.file_url}
+                              alt={item.post_title}
+                              className="post-image"
+                            />
+                          )}
+                          {item.file_type === "application/pdf" && (
+                            <iframe
+                              src={item.file_url}
+                              title={item.post_title}
+                              className="post-pdf"
+                            />
+                          )}
+                          <a
+                            onClick={() => handleDownload(item)}
+                            className="download-button"
+                            style={{ cursor: "pointer", marginTop: "10px", display: "block" }}
+                          >
+                            Download
+                          </a>
+                        </div>
+                      )}
+                      {!item.file_url && (
+                        <p className="text-red-500">Media file not found</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
           )}
-      </div>
+        </div>
+
 
   </div>
   );
