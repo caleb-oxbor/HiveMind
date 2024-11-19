@@ -1,8 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { slide as Menu } from "react-burger-menu";
-import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
 //removed setcreate parameter 
@@ -14,11 +13,15 @@ const CreatePost = ({ setAuth }) => {
   const [fileType, setFileType] = useState("");
   const navigate = useNavigate();
   const post_id = uuidv4();
-  const classID = 2;
+
+  const location = useLocation();
+  const classId = location.state?.classId;
+
+  console.log("CREATE POSTS ID = ", classId);
 
   const getName = async () => {
     try {
-      console.log(localStorage.token);
+      // console.log(localStorage.token);
       const response = await fetch("http://localhost:5000/dashboard/",
         {
           method: "GET",
@@ -82,7 +85,7 @@ const CreatePost = ({ setAuth }) => {
       formData.append("file", newPost);
       formData.append("post_title", title);
       formData.append("post_id", post_id);
-      formData.append("classID", classID);
+      formData.append("classID", classId);
       formData.append("file_type", fileType);
 
       const response = await fetch("http://localhost:5000/create-post/", {
@@ -95,8 +98,9 @@ const CreatePost = ({ setAuth }) => {
 
       if (response.ok) {
         toast.success("Post created successfully!");
-        navigate("/dashboard", { replace: true });
-        navigate("/view-posts", { replace: true });
+        // navigate("/dashboard", { replace: true, state: {classId} });
+        console.log("PRE CHECK ID = ", classId);
+        navigate("/view-posts", { replace: true, state: {classId} });
       } else {
         setError(result.error || "File upload failed.");
       }

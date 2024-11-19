@@ -6,28 +6,60 @@ import './Dashboard.css'
 import logoutIcon from '../images/logout.png'; 
 import hivemindLogo from '../images/spacebee.png'; 
 import supabase from '../supabaseClient'
-
+import Select from "react-select";
 
 
 const Dashboard = ({ setAuth }) => {
   const [name, setUsername] = useState("");
+  const [classId, setSelectedOption] = useState();
+  const [options, setOptions] = useState([]);
   const navigate = useNavigate();
 
+  const handleSelect = (selectedOption) =>{
+    setSelectedOption(selectedOption.value);
+  }
+
+  const getOptions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("courses") // Replace "posts" with your actual table name
+        .select("course_name, course_code, course_id") // Adjust columns if needed (e.g., 'id' or specific fields)
+  
+      if (error) throw error;
+
+      const formattedOptions = data.map((course) => ({
+        value: `${course.course_id}`, // Combine course_code and course_name
+        label: `${course.course_code}: ${course.course_name}` // Same format for label
+      }));
+     
+      setOptions(formattedOptions);
+
+    } catch (err) {
+      console.error("Error checking if user has posted:", err.message);
+    }
+  }
+
   //have to check if user posts has given classes ID
-  const checkIsPosted = async (userID, classID) => {
+  const checkIsPosted = async (userID, classId) => {
     try {
       const { data, error } = await supabase
         .from("posts") // Replace "posts" with your actual table name
         .select("*") // Adjust columns if needed (e.g., 'id' or specific fields)
         .eq("user_id", userID) // Filter by user ID
-        .eq("course_id", classID); // Filter by class ID
+        .eq("course_id", classId); // Filter by class ID
   
       if (error) throw error;
 
-      return data.length > 0;
+      // console.log(data.length);
+
+      if(data.length > 0)
+        return 1;
+      else
+        return 0;
 
     } catch (err) {
       console.error("Error checking if user has posted:", err.message);
+      return 2;
     }
   };
 
@@ -81,15 +113,24 @@ const Dashboard = ({ setAuth }) => {
 
   const handleNavigation = async () => {
     const userId = await getUserId(); // Get userID
-    const classId = 2; // Replace with actual class ID logic
+    const classID = classId;
 
-    const hasPosted = await checkIsPosted(userId, classId);
+    console.log("Dashboard Class ID:", classID);
+
+    const hasPosted = await checkIsPosted(userId, classID);
+
+    if (hasPosted === 2){
+      toast.error("Select a class!");
+      return;
+    }
+
+    // console.log("hasposted value", hasPosted);
 
     try {  
-      if (hasPosted) {
-        navigate("/view-posts", { replace: true }); 
+      if (hasPosted === 1) {
+        navigate("/view-posts", { replace: true, state: {classId} }); 
       } else {
-        navigate("/class", { replace: true }); 
+        navigate("/class", { replace: true, state: {classId} }); 
       }
     } catch (err) {
       console.error("Failed to navigate:", err.message);
@@ -98,6 +139,7 @@ const Dashboard = ({ setAuth }) => {
 
   useEffect(() => {
     getName();
+    getOptions();
   }, []);
 
   return (
@@ -124,12 +166,20 @@ const Dashboard = ({ setAuth }) => {
         <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Your Classes</h1>
       </div>
 
-        <Link to="/class">
-          <button 
-            onClick={handleNavigation}
-            className="mt-10 font-dotgothic custom-button"> Class Example
-            </button>
-        </Link>
+
+
+      <div className="your-classes-container">
+        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Select Class</h1>
+      </div>
+      <Select
+        options = {options}
+        value = {options.find(option => option.value === classId)}
+        onChange= {handleSelect}
+      ></Select>
+        <button 
+          onClick={handleNavigation}
+          className="mt-10 font-dotgothic custom-button"> Class Example
+          </button>
     </div>
   );
 };

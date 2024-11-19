@@ -1,13 +1,19 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
 
 
 const Classes = ({ setAuth }) => {
   const [name, setUsername] = useState("");
+  const navigate = useNavigate();
 
+
+  const location = useLocation();
+  const classId = location.state?.classId;
+
+  console.log("Classes ClassID = ", classId);
     
   const getName = async () => {
     try {
@@ -36,6 +42,11 @@ const Classes = ({ setAuth }) => {
     }
   };
 
+  const handleNavigation = async () =>{
+    console.log("PASS IN CLASS ID CHECK = ", classId);
+    navigate("/create-post", { replace: true, state: {classId} }); 
+  };
+
 
   useEffect(() => {
     getName();
@@ -57,7 +68,11 @@ const Classes = ({ setAuth }) => {
       <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">{name}</h2>
     </div>
       <Link to="/create-post">
-        <button className="mt-10 font-dotgothic custom-button">Create Post</button>
+      
+      <button 
+          onClick={handleNavigation}
+          className="mt-10 font-dotgothic custom-button"> Create Post
+          </button>
       </Link>
     </div>
   );
