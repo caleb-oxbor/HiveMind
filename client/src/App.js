@@ -21,6 +21,7 @@ import Classes from './components/ClassesPage';
 
 import Profile from './components/ProfilePage';
 
+import { ClassProvider } from "./contexts/ClassContext"; 
 
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
     <Fragment>
       <Router>
         <ToastContainer style={{ zIndex: 9999 }}/>
+        <ClassProvider>
         <div className='container'>
           <Routes>
             {/* Welcome Page */}
@@ -141,6 +143,7 @@ function App() {
             <Route path="/class" element={<Classes />} />
           </Routes>
         </div>
+        </ClassProvider>
       </Router>
     </Fragment>
   );

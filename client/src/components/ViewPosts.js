@@ -4,14 +4,21 @@ import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 
+import { useContext } from "react";
+import { ClassContext } from "../contexts/ClassContext";
+
+
 const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");
     const [media, setMedia] = useState([[]]);
-    // const classID = 2;
+
+    const { classId } = useContext(ClassContext);
+
+    console.log("Class ID in viewposts:", classId);
 
     const fetchPosts = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/view-posts/?classID=2`, {
+            const response = await fetch(`http://localhost:5000/view-posts/?classID=${classId}`, {
                 method: "GET",
                 headers: { token: localStorage.token },
             });
@@ -29,8 +36,8 @@ const ViewPosts = ({ setAuth }) => {
 
     const handleDownload = async (post) => {
         try {
-            console.log(post.course_id);
-            console.log(post.file_name);
+            // console.log(post.course_id);
+            // console.log(post.file_name);
             const response = await fetch(
                 `http://localhost:5000/download/${post.course_id}/${post.file_name}`,
                 {
