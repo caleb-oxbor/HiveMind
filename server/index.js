@@ -28,6 +28,9 @@
  //download route
  app.use("/download", require("./routes/download"));
 
+ //upvote/downvote
+ app.use("/votes", require("./routes/votes"));
+
  app.use("/uploads", express.static(path.join(__dirname, "uploads")));
  app.use("/profile", require("./routes/profile"));
 
