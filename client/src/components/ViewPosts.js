@@ -1,172 +1,76 @@
-import React, { useEffect, useState} from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import supabase from '../supabaseClient'
 import logoutIcon from '../images/logout.png'; 
+import '@react-pdf-viewer/core/lib/styles/index.css';
 
 const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");
-    const [posts, setPosts] = useState([]);
-    const navigate = useNavigate();
+    const [media, setMedia] = useState([[]]);
+    // const classID = 2;
 
-    const getName = async () => {
+    const fetchPosts = async () => {
         try {
-          const response = await fetch("http://localhost:5000/dashboard/", 
-            {
-            method: "GET",
-            headers: {token: localStorage.token }
+            const response = await fetch(`http://localhost:5000/view-posts/?classID=2`, {
+                method: "GET",
+                headers: { token: localStorage.token },
             });
-    
-          const parseData = await response.json();
-          setUsername(parseData.username);
-        } catch (err) {
-          console.error(err.message);
-        }
-      };
 
-      useEffect(() => {
-        getName();
-      }, []);
-    
-      
-      const logout = async e => {
-        e.preventDefault();
-        try{
-            localStorage.removeItem("token");
-            setAuth(false);
-            toast.success("Logout successfully");
-        }
-        catch(err){
-            console.error(err.message);
-        }
-      };
-
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await fetch("http://localhost:5000/dashboard/posts", {
-                    headers: { token: localStorage.token },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setPosts(data); // Store posts in state
-                } else {
-                    console.error("Failed to fetch posts");
-                }
-            } catch (err) {
-                console.error(err.message);
+            if (!response.ok) {
+                throw new Error("Failed to fetch posts");
             }
-        };
 
-        fetchPosts();
-    }, []);
-
-    const getFileUrl = (filePath) => `http://localhost:5000/${filePath}`;
-
-    const renderFile = (post) => {
-        const fileUrl = getFileUrl(post.post_content);
-
-        if (post.post_type.startsWith("image/")) {
-            return <img src={fileUrl} alt={post.post_title} className="post-image" />;
-        } 
-        else if (post.post_type === "application/pdf") {
-            return (
-                <iframe
-                    src={fileUrl}
-                    title={post.post_title}
-                    className="post-pdf"
-                />
-            );
-        } 
-        else if (post.post_type.startsWith("video/")) {
-            return (
-                <video controls className="post-video">
-                    <source src={fileUrl} type={post.post_type} />
-                    Your browser does not support the video tag.
-                </video>
-            );
-        } 
-        else if (post.post_type.startsWith("audio/")) {
-            return (
-                <audio controls className="post-audio">
-                    <source src={fileUrl} type={post.post_type} />
-                    Your browser does not support the audio element.
-                </audio>
-            );
-        } 
-        else if (post.post_type === "application/msword" || post.post_type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-            // Word document
-            return (
-                <iframe
-                    src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                    title={post.post_title}
-                    className="post-doc"
-                />
-            );
-        } 
-        else if (post.post_type === "application/vnd.ms-excel" || post.post_type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-            // Excel document
-            return (
-                <iframe
-                    src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                    title={post.post_title}
-                    className="post-doc"
-                />
-            );
-        } 
-        else if (post.post_type === "application/vnd.ms-powerpoint" || post.post_type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
-            // PowerPoint presentation
-            return (
-                <iframe
-                    src={`https://docs.google.com/gview?url=${fileUrl}&embedded=true`}
-                    title={post.post_title}
-                    className="post-doc"
-                />
-            );
-        } 
-        else if (post.post_type === "text/html") {
-            // HTML file
-            return (
-                <iframe
-                    src={fileUrl}
-                    title={post.post_title}
-                    className="post-html"
-                />
-            );
-        } 
-        else {
-            return (
-                <p>
-                    Unsupported file type. <a href={fileUrl} download>Download the file</a> to view it.
-                </p>
-            );
+            const data = await response.json();
+            setMedia(data);
+        } catch (err) {
+            console.error("Error fetching posts:", err.message);
         }
     };
 
     const handleDownload = async (post) => {
         try {
-            const response = await fetch(getFileUrl(post.post_content), {
-                headers: { token: localStorage.token },
-            });
+            console.log(post.course_id);
+            console.log(post.file_name);
+            const response = await fetch(
+                `http://localhost:5000/download/${post.course_id}/${post.file_name}`,
+                {
+                    method: "GET",
+                    headers: { token: localStorage.token }, // Include auth token if needed
+                }
+            );
+    
+            if (!response.ok) {
+                throw new Error("Failed to download file");
+            }
     
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
+            const a = document.createElement("a");
             a.href = url;
-            a.download = post.post_title || 'download';
+            a.download = post.post_title || "download";
             document.body.appendChild(a);
             a.click();
             a.remove();
             window.URL.revokeObjectURL(url);
         } catch (err) {
-            console.error('Download failed', err);
+            console.error("Download failed", err);
         }
     };
     
+    const logout = () => {
+        localStorage.removeItem("token");
+        setAuth(false);
+        toast.success("Logged out successfully!");
+    };
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
 
     return (
+    <Fragment>
     <div>
     <div className="dashboard-container">
       <div className="burger-menu-container">
@@ -178,50 +82,67 @@ const ViewPosts = ({ setAuth }) => {
         </Menu>
       </div>
 
-      <header>
-        <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
-      </header>  
-      <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
-        <Link to="/profile" className="text-white">{name}</Link>
-      </h2>
-      </div>
-        <div className="posts-container">
-        <Link to="/create-post">
-            <button className="font-dotgothic custom-button">Add a Post</button>
-        </Link>
-            <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">
-                Class Example
-            </h1>
-            {posts.length === 0 ? (
-                <p>No posts available</p>
-            ) : (
-                <ul className="posts-list">
-                    {posts.map((post) => (
-                        <li key={post.post_id} className="post-item">
-                            <h2 className="font-dotgothic text-white text-2xl">
-                                {post.post_title}
-                            </h2>
-                            <p className="font-dotgothic">
-                                {new Date(post.created_at).toLocaleString()}
-                            </p>
-
-                            {/* Render the file based on type */}
-                            {renderFile(post)}
-
-                            {/* Download button for all files */}
-                            <a
-                            onClick={() => handleDownload(post)}
-                            className="download-button"
-                            style={{ cursor: 'pointer' }}
-                            >
-                            Download
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-        </div>
+                    <header>
+                        <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
+                    </header>
+                    <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
+                        <Link to="/profile" className="text-white">{name}</Link>
+                    </h2>
+                </div>
+                <div className="posts-container">
+                    <Link to="/create-post">
+                        <button className="font-dotgothic custom-button">Add a Post</button>
+                    </Link>
+                    <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">
+                        Class Example
+                    </h1>
+                    {media.length === 0 ? (
+                        <p>No posts available</p>
+                    ) : (
+                        <ul className="posts-list">
+                            {media.map((item, index) => {
+                                return (
+                                    <li key={index} className="post-item">
+                                        <h2 className="font-dotgothic text-white text-2xl">{item.post_title}</h2>
+                                        <p className="text-gray-400">Posted by {item.username}</p>
+                                        <p className="text-gray-400">Posted on {new Date(item.created_at).toLocaleString()}</p>
+                                        <p className="text-green-500">Votes: {item.votes}</p>
+                                        {item.file_url && (
+                                            <div>
+                                                {item.file_type.startsWith("image/") && (
+                                                    <img
+                                                        src={item.file_url}
+                                                        alt={item.post_title}
+                                                        className="post-image"
+                                                    />
+                                                )}
+                                                {item.file_type === "application/pdf" && (
+                                                    <iframe
+                                                        src={item.file_url}
+                                                        title={item.post_title}
+                                                        className="post-pdf"
+                                                    />
+                                                )}
+                                                <a
+                                                    onClick={() => handleDownload(item)}
+                                                    className="download-button"
+                                                    style={{ cursor: "pointer", marginTop: "10px", display: "block" }}
+                                                >
+                                                    Download
+                                                </a>
+                                            </div>
+                                        )}
+                                        {!item.file_url && (
+                                            <p className="text-red-500">Media file not found</p>
+                                        )}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    )}
+                </div>
+            </div>
+        </Fragment>
     );
 };
 

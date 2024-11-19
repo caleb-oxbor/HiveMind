@@ -5,33 +5,52 @@ import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
 import logoutIcon from '../images/logout.png'; 
 import hivemindLogo from '../images/spacebee.png'; 
+import supabase from '../supabaseClient'
+
 
 
 const Dashboard = ({ setAuth }) => {
   const [name, setUsername] = useState("");
-  const [isPosted, setIsPosted] = useState(false);
   const navigate = useNavigate();
 
-  const getPost = async () => {
+  //have to check if user posts has given classes ID
+  const checkIsPosted = async (userID, classID) => {
     try {
-        const response = await fetch("http://localhost:5000/dashboard/is-posted",
-        {
-            method: "GET",
-            headers: {token: localStorage.token }
-        });
+      const { data, error } = await supabase
+        .from("posts") // Replace "posts" with your actual table name
+        .select("*") // Adjust columns if needed (e.g., 'id' or specific fields)
+        .eq("user_id", userID) // Filter by user ID
+        .eq("course_id", classID); // Filter by class ID
+  
+      if (error) throw error;
 
-        const data = await response.json();
+      return data.length > 0;
 
-        if (response.ok && data.isPosted) {
-          setIsPosted(true);
-        } else {
-          setIsPosted(false);
-        }
-
-    } catch (err){
-        console.error(err.message);
+    } catch (err) {
+      console.error("Error checking if user has posted:", err.message);
     }
-  }
+  };
+
+  const getUserId = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users') // Replace with your actual table name
+        .select('user_id') // Only fetch the user_id
+        .eq('username', name) // Replace with appropriate condition
+        .single(); // Ensures we only fetch one record
+  
+      if (error) {
+        console.error("Error fetching user ID:", error.message);
+        return null;
+      }
+  
+      return data?.user_id; // Return the user_id if found
+    } catch (err) {
+      console.error("Unexpected error querying user ID:", err.message);
+      return null;
+    }
+  };
+  
 
   const getName = async () => {
     try {
@@ -61,10 +80,13 @@ const Dashboard = ({ setAuth }) => {
   };
 
   const handleNavigation = async () => {
-    try {
-      await getPost(); 
-  
-      if (isPosted) {
+    const userId = await getUserId(); // Get userID
+    const classId = 2; // Replace with actual class ID logic
+
+    const hasPosted = await checkIsPosted(userId, classId);
+
+    try {  
+      if (hasPosted) {
         navigate("/view-posts", { replace: true }); 
       } else {
         navigate("/class", { replace: true }); 
@@ -76,7 +98,6 @@ const Dashboard = ({ setAuth }) => {
 
   useEffect(() => {
     getName();
-    getPost();
   }, []);
 
   return (

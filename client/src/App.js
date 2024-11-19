@@ -52,27 +52,27 @@ function App() {
     }
   }
 
-  async function isCreated() {
-    try {
-      const response = await fetch("http://localhost:5000/dashboard/is-posted", {
-        method: "GET",
-        headers: {token : localStorage.token }
-      });
+  // async function isCreated() {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/dashboard/is-posted", {
+  //       method: "GET",
+  //       headers: {token : localStorage.token }
+  //     });
 
-      const parseRes = await response.json();
-      setCreatedPost(parseRes); 
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
+  //     const parseRes = await response.json();
+  //     setCreatedPost(parseRes); 
+  //   } catch (err) {
+  //     console.error(err.message);
+  //   }
+  // }
 
   useEffect(() => {
     isAuth();
   }, []);
 
-  useEffect(() => {
-    isCreated();
-  }, []);
+  // useEffect(() => {
+  //   isCreated();
+  // }, []);
   
   return (
     <Fragment>
@@ -125,7 +125,7 @@ function App() {
               path="/create-post"
               element={
                 isAuthenticated ? (
-                  <CreatePost setCreated={setCreated} setAuth={setAuth} />
+                  <CreatePost setAuth={setAuth} />
                 ) : (
                   <Navigate to="/login" />
                 )

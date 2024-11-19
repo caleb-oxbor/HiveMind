@@ -127,7 +127,7 @@ router.post("/register",validInfo, async (req, res) => {
         //console.log(newUser)
 
         // generating jwt token
-        const token = jwtGenerator(newUser?.user_id);
+        const token = jwtGenerator(newUser?.user_id, newUser?.username);
 
         res.json({ token, username: newUser?.username });
     } catch (err) {
@@ -170,7 +170,8 @@ router.post("/login", validInfo, async(req, res) => {
             return res.status(401).json("Password or Email is incorrect");
         }
 
-        const token = jwtGenerator(user.user_id); // Use the correct field for user ID
+        const token = jwtGenerator(user.user_id, user.username); // Use the correct field for user ID
+        console.log("user_id: " + user.user_id);
         res.json({ token });
     } catch (err) {
         console.error(err.message);
