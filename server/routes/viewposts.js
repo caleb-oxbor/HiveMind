@@ -35,7 +35,7 @@ router.get("/", authorization, async (req, res) => {
       };
     });
 
-    console.log("Combined data:", combinedData);
+    // console.log("Combined data:", combinedData);
 
 
     res.status(200).json(combinedData);

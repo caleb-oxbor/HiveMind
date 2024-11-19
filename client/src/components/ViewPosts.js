@@ -38,11 +38,11 @@ const ViewPosts = ({ setAuth }) => {
                     headers: { token: localStorage.token }, // Include auth token if needed
                 }
             );
-    
+
             if (!response.ok) {
                 throw new Error("Failed to download file");
             }
-    
+
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
@@ -56,7 +56,78 @@ const ViewPosts = ({ setAuth }) => {
             console.error("Download failed", err);
         }
     };
-    
+
+    const handleUpvote = async (post) => {
+        setMedia((prevMedia) =>
+            prevMedia.map((item) =>
+                item.file_name === post.file_name
+                    ? { ...item, votes: item.votes + 1 }
+                    : item
+            )
+        );
+
+        try {
+            const response = await fetch( 
+                "http://localhost:5000/votes/upvote",
+                {
+                    method: "POST",
+                    headers: { token: localStorage.token,
+                        "Content-Type": "application/json",
+                     },
+                body: JSON.stringify({ postID: post.file_name }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to cast upvote");
+            }
+        }catch (err) {
+            console.error("Voting failed", err);
+            setMedia((prevMedia) =>
+                prevMedia.map((item) =>
+                    item.file_name === post.file_name
+                        ? { ...item, votes: item.votes - 1 }
+                        : item
+                )
+            );
+        }
+    };
+
+    const handleDownvote = async (post) => {
+        setMedia((prevMedia) =>
+            prevMedia.map((item) =>
+                item.file_name === post.file_name
+                    ? { ...item, votes: item.votes - 1 }
+                    : item
+            )
+        );
+
+        try {
+            const response = await fetch( 
+                "http://localhost:5000/votes/downvote",
+                {
+                    method: "POST",
+                    headers: { token: localStorage.token,
+                        "Content-Type": "application/json",
+                     },
+                body: JSON.stringify({ postID: post.file_name }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to cast upvote");
+            }
+
+        }catch (err) {
+            console.error("Voting failed", err);
+            setMedia((prevMedia) =>
+                prevMedia.map((item) =>
+                    item.file_name === post.file_name
+                        ? { ...item, votes: item.votes + 1 }
+                        : item
+                )
+            );
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem("token");
         setAuth(false);
@@ -100,9 +171,8 @@ const ViewPosts = ({ setAuth }) => {
                                 return (
                                     <li key={index} className="post-item">
                                         <h2 className="font-dotgothic text-white text-2xl">{item.post_title}</h2>
-                                        <p className="text-gray-400">Posted by {item.username}</p>
-                                        <p className="text-gray-400">Posted on {new Date(item.created_at).toLocaleString()}</p>
-                                        <p className="text-green-500">Votes: {item.votes}</p>
+                                        <p className="font-dotgothic text-gray-400">{item.username}</p>
+                                        <p className="font-dotgothic text-gray-400">{new Date(item.created_at).toLocaleString()}</p>
                                         {item.file_url && (
                                             <div>
                                                 {item.file_type.startsWith("image/") && (
@@ -119,6 +189,21 @@ const ViewPosts = ({ setAuth }) => {
                                                         className="post-pdf"
                                                     />
                                                 )}
+                                                <div className="flex items-center space-x-4 mt-2">
+                                                    <button onClick={() => handleUpvote(item)}
+                                                        className="p-2 border rounded-full hover:bg-gray-100">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                                                        </svg>
+                                                    </button>
+                                                    <span className="text-2xl font-bold text-white font-dotgothic">{item.votes}</span>
+                                                    <button onClick={() => handleDownvote(item)}
+                                                        className="p-2 border rounded-full hover:bg-gray-100">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                                 <a
                                                     onClick={() => handleDownload(item)}
                                                     className="download-button"
