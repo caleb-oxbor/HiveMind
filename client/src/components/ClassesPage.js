@@ -44,7 +44,7 @@ const Classes = ({ setAuth }) => {
 
   const handleNavigation = async () =>{
     console.log("PASS IN CLASS ID CHECK = ", classId);
-    navigate("/create-post", { replace: true, state: {classId} }); 
+    navigate("/create-post", {state: {classId} }); 
   };
 
 

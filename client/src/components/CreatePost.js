@@ -15,8 +15,8 @@ const CreatePost = ({ setAuth }) => {
   const post_id = uuidv4();
 
   const location = useLocation();
+  console.log("Full Location State in CreatePost:", location.state);
   const classId = location.state?.classId;
-
   console.log("CREATE POSTS ID = ", classId);
 
   const getName = async () => {
