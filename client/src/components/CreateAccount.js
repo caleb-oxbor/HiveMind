@@ -32,7 +32,7 @@ const CreateAccount = ({setAuth}) => {
                 headers: {"Content-Type": "application/json"},
                 body:  JSON.stringify(body)
             });
-console.log(response)
+            console.log(response)
 
             const parseRes = await response.json();
 
