@@ -12,8 +12,13 @@ module.exports = async(req, res, next) => {
 
         const payload = jwt.verify(jwtToken, process.env.jwtSecret);
 
-        req.user = payload.user;
-        //console.log("Payload content:", JSON.stringify(payload, null, 2));
+        req.user = {
+            username: payload.username,
+            user_id: payload.user_id,
+        }
+
+        // console.log(req.user);
+        // console.log("Payload content:", JSON.stringify(payload, null, 2));
 
         next();
 
