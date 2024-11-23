@@ -2,12 +2,12 @@ import React, { Fragment, useEffect, useState, useRef, useContext } from "react"
 import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
-import './Dashboard.css'
 import logoutIcon from '../images/logout.png'; 
 import hivemindLogo from '../images/spacebee.png'; 
 import supabase from '../supabaseClient'
 import Select from "react-select";
 import { ClassContext } from "../contexts/ClassContext";
+import './Dashboard.css'
 
 
 const Dashboard = ({ setAuth }) => {
@@ -222,6 +222,9 @@ const Dashboard = ({ setAuth }) => {
   return (
     <div>
 
+        <div className="dark-overlay"></div>
+        <div className="dashboard-logo"><img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> </div>
+
         <div className="dashboard-container">
         <Menu>
           <div className="bm-item-list">
@@ -234,7 +237,7 @@ const Dashboard = ({ setAuth }) => {
             <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
           </header>
 
-          <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> 
+          
 
           <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
             <Link to="/profile" className="text-white">{name}</Link>
@@ -266,7 +269,7 @@ const Dashboard = ({ setAuth }) => {
 
 
       <div className="your-classes-container">
-        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Select Class</h1>
+        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Add a Class</h1>
       </div>
       <Select
         options = {options}

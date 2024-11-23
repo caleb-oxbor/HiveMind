@@ -130,6 +130,10 @@ const CreatePost = ({ setAuth }) => {
 
   return (
     <Fragment>
+
+      <div className="dark-overlay"></div>
+      <div className="dashboard-logo"><img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> </div>
+
       <div className="dashboard-container">
         <div className="burger-menu-container">
             <Menu>
@@ -143,13 +147,11 @@ const CreatePost = ({ setAuth }) => {
             <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">HiveMind</h1>
         </header>  
 
-        <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> 
-
         <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
         <Link to="/profile" className="text-white">{name}</Link>
       </h2>
         </div>
-        <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-3 heading-shadow">Create Post</h1>
+        <h1 className="create-post-banner font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-3 heading-shadow">Create Post</h1>
         <form onSubmit={onSubmitForm}>
             <input type="text" 
                 placeholder="Add a Title" 

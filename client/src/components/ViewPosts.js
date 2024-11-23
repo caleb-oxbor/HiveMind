@@ -172,6 +172,10 @@ const ViewPosts = ({ setAuth }) => {
     return (
         <Fragment>
             <div>
+
+                <div className="dark-overlay"></div>
+                <div className="dashboard-logo"><img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> </div>
+
                 <div className="dashboard-container">
                     <div className="burger-menu-container">
                         <Menu>
@@ -188,8 +192,6 @@ const ViewPosts = ({ setAuth }) => {
                     <header>
                         <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">HiveMind</h1>
                     </header>
-
-                    <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> 
 
                     <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
                         <Link to="/profile" className="text-white">{name}</Link>

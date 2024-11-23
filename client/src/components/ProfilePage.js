@@ -107,6 +107,9 @@ const Profile = ({ setAuth }) => {
 
   return (
     <div>
+
+        <div className="dark-overlay"></div>
+
         <div className="dashboard-container">
         <Menu>
           <Link to="/dashboard">Home</Link>
