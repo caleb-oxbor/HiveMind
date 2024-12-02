@@ -1,9 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { toast } from "react-toastify";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import supabase from '../supabaseClient'
+import logoutIcon from '../images/logout.png'; 
 import '@react-pdf-viewer/core/lib/styles/index.css';
-
+import './Dashboard.css'
+import hivemindLogo from '../images/spacebee.png'; 
 import { useContext } from "react";
 import { ClassContext } from "../contexts/ClassContext";
 
@@ -135,11 +138,32 @@ const ViewPosts = ({ setAuth }) => {
         }
     };
 
+    const getName = async () => {
+        console.log("getName called");
+        try {
+          const response = await fetch("http://localhost:5000/dashboard/", 
+            {
+            method: "GET",
+            headers: {token: localStorage.token }
+            });
+    
+          const parseData = await response.json();
+          console.log("Fetched name:", parseData.username);
+          setUsername(parseData.username);
+        } catch (err) {
+          console.error(err.message);
+        }
+      };
+
     const logout = () => {
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logged out successfully!");
+        toast.success("Logged out successfully!", {pauseOnHover: false});
     };
+
+    useEffect(() => {
+        getName();
+      }, []);
 
     useEffect(() => {
         fetchPosts();
@@ -148,18 +172,28 @@ const ViewPosts = ({ setAuth }) => {
     return (
         <Fragment>
             <div>
+
+                <div className="dark-overlay"></div>
+                <div className="dashboard-logo"><img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> </div>
+
                 <div className="dashboard-container">
                     <div className="burger-menu-container">
                         <Menu>
-                            <Link to="/dashboard">Home</Link>
-                            <a onClick={logout}>Logout</a>
+                            <div className="bm-item-list">
+                                <Link to="/dashboard">Home</Link>
+                                <a onClick={logout} style={{ display: 'flex', alignItems: 'center'}}>
+                                    <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} />
+                                    Logout
+                                </a>
+                            </div>
                         </Menu>
                     </div>
 
                     <header>
-                        <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
+                        <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">HiveMind</h1>
                     </header>
-                    <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
+
+                    <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
                         <Link to="/profile" className="text-white">{name}</Link>
                     </h2>
                 </div>

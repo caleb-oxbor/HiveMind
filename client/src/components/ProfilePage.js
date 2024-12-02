@@ -107,6 +107,10 @@ const Profile = ({ setAuth }) => {
 
   return (
     <div>
+
+        <div className="dark-overlay"></div>
+
+        <div className="dashboard-container">
         <Menu>
           <Link to="/dashboard">Home</Link>
           <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
@@ -114,15 +118,17 @@ const Profile = ({ setAuth }) => {
           </a>
         </Menu>
 
-        <div className="dashboard-container">
-
           <header>
-            <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Profile</h1>
+            <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Profile</h1>
           </header>
 
-          <div className="logo-container">
+          <div className="dashboard-logo">
             <img src={hivemindLogo} alt="Hivemind Logo" style={{ width: '70px', height: '70px' }} /> 
           </div>
+
+          <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
+            <Link to="/profile" className="text-white">{name}</Link>
+          </h2>
 
         </div>
         

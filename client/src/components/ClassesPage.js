@@ -5,7 +5,8 @@ import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
 import { useContext } from "react";
 import { ClassContext } from "../contexts/ClassContext";
-
+import hivemindLogo from '../images/spacebee.png'; 
+import logoutIcon from '../images/logout.png'; 
 
 const Classes = ({ setAuth }) => {
   const [name, setUsername] = useState("");
@@ -35,7 +36,7 @@ const Classes = ({ setAuth }) => {
     try{
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logout successfully");
+        toast.success("Logout successfully", {pauseOnHover: false});
     }
     catch(err){
         console.error(err.message);
@@ -56,24 +57,37 @@ const Classes = ({ setAuth }) => {
     <div>
     <div className="dashboard-container">
       <div className="burger-menu-container">
-        <Menu >
-          <Link to="/">Home</Link>
-          <a onClick={logout}>Logout</a>
+        <Menu>
+          <Link to="/dashboard">Home</Link>
+          <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+          </a>
         </Menu>
       </div>
 
       <header>
-        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Class Example</h1>
+        <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Class Example</h1>
       </header>
-      <h2 className="font-tiny5 font-bold text-right text-white text-3xl heading-shadow">{name}</h2>
+
+      <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" />
+
+      <h2 className="dashboard-header-right font-tiny5 font-bold text-right text-white text-3xl heading-shadow">
+      <Link to="/profile" className="text-white">{name}</Link>
+      </h2>
     </div>
+    <div className="create-to-join-button">
+    <div style={{ display: 'inline-block' }}>
       <Link to="/create-post">
       
+    
+
       <button 
           onClick={handleNavigation}
-          className="mt-10 font-dotgothic custom-button"> Create Post
+          className="mt-10 font-dotgothic custom-button"> Create Post to Access Course
           </button>
       </Link>
+      </div>
+      </div>
     </div>
   );
 };

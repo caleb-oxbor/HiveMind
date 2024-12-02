@@ -2,12 +2,12 @@ import React, { Fragment, useEffect, useState, useRef, useContext } from "react"
 import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
-import './Dashboard.css'
 import logoutIcon from '../images/logout.png'; 
 import hivemindLogo from '../images/spacebee.png'; 
 import supabase from '../supabaseClient'
 import Select from "react-select";
 import { ClassContext } from "../contexts/ClassContext";
+import './Dashboard.css'
 
 
 const Dashboard = ({ setAuth }) => {
@@ -162,7 +162,7 @@ const Dashboard = ({ setAuth }) => {
     try{
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logout successfully");
+        toast.success("Logout successful!", {pauseOnHover: false});
     }
     catch(err){
         console.error(err.message);
@@ -176,7 +176,7 @@ const Dashboard = ({ setAuth }) => {
     const hasPosted = await checkIsPosted(userId, classId);
 
     if (hasPosted === 2){
-      toast.error("Select a class!");
+      toast.error("Select a class!", {pauseOnHover: false});
       return;
     }
 
@@ -221,20 +221,25 @@ const Dashboard = ({ setAuth }) => {
 
   return (
     <div>
-        <Menu>
-          <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
-          </a>
-        </Menu>
+
+        <div className="dark-overlay"></div>
+        <div className="dashboard-logo"><img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> </div>
 
         <div className="dashboard-container">
+        <Menu>
+          <div className="bm-item-list">
+            <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+              <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+            </a>
+          </div>
+        </Menu>
           <header>
-            <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
+            <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Dashboard</h1>
           </header>
 
-          <img src={hivemindLogo} alt="Hivemind Logo" style={{ width: '70px', height: '70px' }} /> 
+          
 
-          <h2 className="font-tiny5 font-bold text-right text-white text-5xl heading-shadow">
+          <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
             <Link to="/profile" className="text-white">{name}</Link>
           </h2>
         </div>
@@ -264,7 +269,7 @@ const Dashboard = ({ setAuth }) => {
 
 
       <div className="your-classes-container">
-        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Select Class</h1>
+        <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Add a Class</h1>
       </div>
       <Select
         options = {options}

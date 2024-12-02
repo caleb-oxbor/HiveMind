@@ -4,6 +4,11 @@ import { slide as Menu } from "react-burger-menu";
 import { useNavigate, Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 
+import './Dashboard.css'
+import logoutIcon from '../images/logout.png'; 
+import hivemindLogo from '../images/spacebee.png'; 
+import supabase from '../supabaseClient'
+
 import { useContext } from "react";
 import { ClassContext } from "../contexts/ClassContext";
 
@@ -48,7 +53,7 @@ const CreatePost = ({ setAuth }) => {
     try {
       localStorage.removeItem("token");
       setAuth(false);
-      toast.success("Logout successfully");
+      toast.success("Logout successfully", {pauseOnHover: false});
     }
     catch (err) {
       console.error(err.message);
@@ -100,7 +105,7 @@ const CreatePost = ({ setAuth }) => {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success("Post created successfully!");
+        toast.success("Post created successfully!", {pauseOnHover: false});
         // navigate("/dashboard", { replace: true, state: {classId} });
         console.log("PRE CHECK ID = ", classId);
         navigate("/view-posts", { replace: true, state: {classId} });
@@ -125,37 +130,44 @@ const CreatePost = ({ setAuth }) => {
 
   return (
     <Fragment>
+
+      <div className="dark-overlay"></div>
+      <div className="dashboard-logo"><img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> </div>
+
       <div className="dashboard-container">
         <div className="burger-menu-container">
-          <Menu >
-            <Link to="/dashboard">Home</Link>
-            <a onClick={logout}>Logout</a>
-          </Menu>
+            <Menu>
+                <Link to="/dashboard">Home</Link>
+                <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
+                <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} /> Logout
+          </a>
+            </Menu>
         </div>
         <header>
-          <h1 className="font-tiny5 font-bold text-left text-white text-5xl">HiveMind</h1>
-        </header>
-        <h2 className="font-tiny5 font-bold text-right text-white text-2xl heading-shadow">
-          <Link to="/profile" className="text-white">{name}</Link>
-        </h2>
-      </div>
-      <h1 className="font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-3 heading-shadow">Create Post</h1>
-      <form onSubmit={onSubmitForm}>
-        <input type="text"
-          placeholder="Add a Title"
-          className="form-control font-dotgothic mb-3"
-          value={title}
-          onChange={e => setTitle(e.target.value)} />
-        <input type="file"
-          className="form-control font-dotgothic"
-          onChange={handleFileChange} />
-        {error && (
-          <div className="alert alert-danger mt-3">
-            Error: <strong>{error}</strong>
-          </div>
-        )}
-        <button className="mt-10 font-dotgothic custom-button">Submit</button>
-      </form>
+            <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">HiveMind</h1>
+        </header>  
+
+        <h2 className="dashboard-header-right font-tiny5 font-bold text-left text-white text-3xl heading-shadow">
+        <Link to="/profile" className="text-white">{name}</Link>
+      </h2>
+        </div>
+        <h1 className="create-post-banner font-tiny5 font-bold text-center text-white text-8xl mt-10 mb-3 heading-shadow">Create Post</h1>
+        <form onSubmit={onSubmitForm}>
+            <input type="text" 
+                placeholder="Add a Title" 
+                className="form-control font-dotgothic mb-3"
+                value={title}
+                onChange={e => setTitle(e.target.value)}/>
+            <input type="file" 
+                className="form-control font-dotgothic"
+                onChange={handleFileChange} />
+            {error && (
+                <div className="alert alert-danger mt-3">
+                    Error: <strong>{error}</strong>
+                </div>
+            )}
+            <button className="mt-10 font-dotgothic custom-button">Submit</button>
+        </form>
 
     </Fragment>
   );

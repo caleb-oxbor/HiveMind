@@ -123,8 +123,26 @@ function App() {
 
 
             {/* Create post Page */}
-            <Route path="/create-post" element={<CreatePost />} />
-            <Route path="/view-posts" element={<ViewPosts />} />
+            <Route
+              path="/create-post"
+              element={
+                isAuthenticated ? (
+                  <CreatePost setAuth={setAuth} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+
+            <Route path="/view-posts" 
+              element={
+              isAuthenticated ? (
+              <ViewPosts setAuth={setAuth} />
+              ) : (
+              <Navigate to="/login" />
+              )
+              }
+            />
 
             {/* Profile Page */}
             <Route
@@ -140,7 +158,15 @@ function App() {
 
 
             {/* Add other routes here */}
-            <Route path="/class" element={<Classes />} />
+            <Route path="/class" 
+              element={
+                isAuthenticated ? (
+                  <Classes setAuth={setAuth} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+              />
           </Routes>
         </div>
         </ClassProvider>

@@ -29,12 +29,11 @@ const LogIn = ({setAuth}) => {
             });
 
             const parseRes = await response.json();
-            console.log(parseRes);
 
             if (parseRes.token) {
                 localStorage.setItem("token", parseRes.token);
                 setAuth(true);
-                toast.success("Login successful!");
+                toast.success("Login successful!", {pauseOnHover: false});
             }
 
             else{
@@ -77,7 +76,7 @@ const LogIn = ({setAuth}) => {
 
                 <button className="btn custom-button font-dotgothic">Login</button>
             </form>
-            <Link to="/register" className="font-dotgothic mt-2">Don't have account? Register here.</Link>
+            <Link to="/register" className="font-dotgothic mt-2">New user? Register here.</Link>
         </div>
         </Fragment>
     );
