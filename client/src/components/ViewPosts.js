@@ -3,10 +3,10 @@ import { slide as Menu } from "react-burger-menu";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import supabase from '../supabaseClient'
-import logoutIcon from '../images/logout.png'; 
+import logoutIcon from '../images/logout.png';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import './Dashboard.css'
-import hivemindLogo from '../images/spacebee.png'; 
+import hivemindLogo from '../images/spacebee.png';
 import { useContext } from "react";
 import { ClassContext } from "../contexts/ClassContext";
 
@@ -14,6 +14,8 @@ import { ClassContext } from "../contexts/ClassContext";
 const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");
     const [media, setMedia] = useState([[]]);
+    const [loadingVotes, setLoadingVotes] = useState({});
+
 
     const { classId } = useContext(ClassContext);
 
@@ -30,14 +32,36 @@ const ViewPosts = ({ setAuth }) => {
                 throw new Error("Failed to fetch posts");
             }
 
-            const data = await response.json();
-            setMedia(data);
+            const postData = await response.json();
+            const votesResponse = await fetch("http://localhost:5000/votes", {
+                method: "GET",
+                headers: { token: localStorage.token },
+            });
+
+            if (!votesResponse.ok) {
+                throw new Error("Failed to fetch user votes");
+            }
+
+
+            const userVotes = await votesResponse.json();
+
+            const updatedPosts = postData.map((post) => {
+                const userVote = userVotes.find((vote) => vote.post_id === post.file_name);
+                return {
+                    ...post,
+                    userVote: userVote ? userVote.vote_type : null, // 'upvote' or 'downvote'
+                };
+            });
+
+            setMedia(updatedPosts);
+
         } catch (err) {
             console.error("Error fetching posts:", err.message);
         }
     };
 
     const handleDownload = async (post) => {
+        setLoadingVotes((prev) => ({ ...prev, [post.file_name]: true }));
         try {
             // console.log(post.course_id);
             // console.log(post.file_name);
@@ -64,106 +88,119 @@ const ViewPosts = ({ setAuth }) => {
             window.URL.revokeObjectURL(url);
         } catch (err) {
             console.error("Download failed", err);
+        } finally {
+            setLoadingVotes((prev) => ({ ...prev, [post.file_name]: false }));
         }
     };
 
     const handleUpvote = async (post) => {
-        setMedia((prevMedia) =>
-            prevMedia.map((item) =>
-                item.file_name === post.file_name
-                    ? { ...item, votes: item.votes + 1 }
-                    : item
-            )
-        );
-
+        setLoadingVotes((prev) => ({ ...prev, [post.file_name]: true }));
         try {
-            const response = await fetch( 
+            const response = await fetch(
                 "http://localhost:5000/votes/upvote",
                 {
                     method: "POST",
-                    headers: { token: localStorage.token,
+                    headers: {
+                        token: localStorage.token,
                         "Content-Type": "application/json",
-                     },
-                body: JSON.stringify({ postID: post.file_name }),
-            });
+                    },
+                    body: JSON.stringify({ postID: post.file_name }),
+                });
 
             if (!response.ok) {
                 throw new Error("Failed to cast upvote");
             }
-        }catch (err) {
+
+            const { votes } = await response.json();
+            setMedia((prevMedia) =>
+                prevMedia.map((item) =>
+                    item.file_name === post.file_name
+                        ? { ...item, votes, userVote: "upvote" }
+                        : item
+                )
+            );
+
+        } catch (err) {
             console.error("Voting failed", err);
             setMedia((prevMedia) =>
                 prevMedia.map((item) =>
                     item.file_name === post.file_name
-                        ? { ...item, votes: item.votes - 1 }
+                        ? { ...item, votes: item.votes - 1, userVote: null }
                         : item
                 )
             );
+        } finally {
+            setLoadingVotes((prev) => ({ ...prev, [post.file_name]: false }));
         }
     };
 
     const handleDownvote = async (post) => {
-        setMedia((prevMedia) =>
-            prevMedia.map((item) =>
-                item.file_name === post.file_name
-                    ? { ...item, votes: item.votes - 1 }
-                    : item
-            )
-        );
-
+        setLoadingVotes((prev) => ({ ...prev, [post.file_name]: true }));
         try {
-            const response = await fetch( 
+            const response = await fetch(
                 "http://localhost:5000/votes/downvote",
                 {
                     method: "POST",
-                    headers: { token: localStorage.token,
+                    headers: {
+                        token: localStorage.token,
                         "Content-Type": "application/json",
-                     },
-                body: JSON.stringify({ postID: post.file_name }),
-            });
+                    },
+                    body: JSON.stringify({ postID: post.file_name }),
+                });
 
             if (!response.ok) {
-                throw new Error("Failed to cast upvote");
+                throw new Error("Failed to cast downvote");
             }
 
-        }catch (err) {
+            const { votes } = await response.json();
+            setMedia((prevMedia) =>
+                prevMedia.map((item) =>
+                    item.file_name === post.file_name
+                        ? { ...item, votes, userVote: "downvote" }
+                        : item
+                )
+            );
+
+        } catch (err) {
             console.error("Voting failed", err);
             setMedia((prevMedia) =>
                 prevMedia.map((item) =>
                     item.file_name === post.file_name
-                        ? { ...item, votes: item.votes + 1 }
+                        ? { ...item, votes: item.votes + 1, userVote: null }
                         : item
                 )
             );
+        } finally {
+            setLoadingVotes((prev) => ({ ...prev, [post.file_name]: false }));
         }
     };
 
     const getName = async () => {
         console.log("getName called");
         try {
-          const response = await fetch("http://localhost:5000/dashboard/", 
-            {
-            method: "GET",
-            headers: {token: localStorage.token }
-            });
-    
-          const parseData = await response.json();
-          console.log("Fetched name:", parseData.username);
-          setUsername(parseData.username);
+            const response = await fetch("http://localhost:5000/dashboard/",
+                {
+                    method: "GET",
+                    headers: { token: localStorage.token }
+                });
+
+            const parseData = await response.json();
+            console.log("Fetched name:", parseData.username);
+            setUsername(parseData.username);
         } catch (err) {
-          console.error(err.message);
+            console.error(err.message);
         }
-      };
+    };
 
     const logout = () => {
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logged out successfully!", {pauseOnHover: false});
+        toast.success("Logged out successfully!", { pauseOnHover: false });
     };
 
     useEffect(() => {
         getName();
-      }, []);
+    }, []);
 
     useEffect(() => {
         fetchPosts();
@@ -181,7 +218,7 @@ const ViewPosts = ({ setAuth }) => {
                         <Menu>
                             <div className="bm-item-list">
                                 <Link to="/dashboard">Home</Link>
-                                <a onClick={logout} style={{ display: 'flex', alignItems: 'center'}}>
+                                <a onClick={logout} style={{ display: 'flex', alignItems: 'center' }}>
                                     <img src={logoutIcon} alt="Logout Icon" style={{ marginRight: '5px', verticalAlign: 'middle', width: '24px', height: '24px' }} />
                                     Logout
                                 </a>
@@ -231,26 +268,39 @@ const ViewPosts = ({ setAuth }) => {
                                                     />
                                                 )}
                                                 <div className="flex items-center space-x-4 mt-2">
-                                                    <button onClick={() => handleUpvote(item)}
-                                                        className="p-2 border rounded-full hover:bg-gray-100">
+                                                    <button
+                                                        onClick={() => handleUpvote(item)}
+                                                        disabled={loadingVotes[item.file_name]}
+                                                        className={`p-2 border rounded-full ${item.userVote === "upvote" ? "bg-green-500 text-white" : "hover:bg-gray-100"
+                                                            }`}
+                                                    >
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
                                                         </svg>
                                                     </button>
-                                                    <span className="text-2xl font-bold text-white font-dotgothic">{item.votes}</span>
-                                                    <button onClick={() => handleDownvote(item)}
-                                                        className="p-2 border rounded-full hover:bg-gray-100">
+                                                    <button
+                                                        onClick={() => handleDownvote(item)}
+                                                        disabled={loadingVotes[item.file_name]}
+                                                        className={`p-2 border rounded-full ${item.userVote === "downvote" ? "bg-red-500 text-white" : "hover:bg-gray-100"
+                                                            }`}
+                                                    >
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                                                         </svg>
                                                     </button>
+
                                                 </div>
                                                 <a
                                                     onClick={() => handleDownload(item)}
-                                                    className="download-button"
-                                                    style={{ cursor: "pointer", marginTop: "10px", display: "block" }}
+                                                    className={`download-button ${loadingVotes[item.file_name] ? "opacity-50 cursor-not-allowed" : ""}`}
+                                                    style={{
+                                                        cursor: loadingVotes[item.file_name] ? "not-allowed" : "pointer",
+                                                        marginTop: "10px",
+                                                        display: "block",
+                                                    }}
+                                                    disabled={loadingVotes[item.file_name]} // Optional
                                                 >
-                                                    Download
+                                                    {loadingVotes[item.file_name] ? "Downloading..." : "Download"}
                                                 </a>
                                             </div>
                                         )}
