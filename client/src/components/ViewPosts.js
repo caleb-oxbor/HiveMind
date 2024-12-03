@@ -14,8 +14,7 @@ import { ClassContext } from "../contexts/ClassContext";
 const ViewPosts = ({ setAuth }) => {
     const [name, setUsername] = useState("");
     const [media, setMedia] = useState([[]]);
-    const [loadingVotes, setLoadingVotes] = useState({});
-
+    const [loadingActions, setLoadingActions] = useState({});
 
     const { classId } = useContext(ClassContext);
 
@@ -32,36 +31,15 @@ const ViewPosts = ({ setAuth }) => {
                 throw new Error("Failed to fetch posts");
             }
 
-            const postData = await response.json();
-            const votesResponse = await fetch("http://localhost:5000/votes", {
-                method: "GET",
-                headers: { token: localStorage.token },
-            });
-
-            if (!votesResponse.ok) {
-                throw new Error("Failed to fetch user votes");
-            }
-
-
-            const userVotes = await votesResponse.json();
-
-            const updatedPosts = postData.map((post) => {
-                const userVote = userVotes.find((vote) => vote.post_id === post.file_name);
-                return {
-                    ...post,
-                    userVote: userVote ? userVote.vote_type : null, // 'upvote' or 'downvote'
-                };
-            });
-
-            setMedia(updatedPosts);
-
+            const data = await response.json();
+            setMedia(data);
         } catch (err) {
             console.error("Error fetching posts:", err.message);
         }
     };
 
     const handleDownload = async (post) => {
-        setLoadingVotes((prev) => ({ ...prev, [post.file_name]: true }));
+        setLoadingActions((prev) => ({ ...prev, [post.file_name]: true }));
         try {
             // console.log(post.course_id);
             // console.log(post.file_name);
@@ -89,12 +67,12 @@ const ViewPosts = ({ setAuth }) => {
         } catch (err) {
             console.error("Download failed", err);
         } finally {
-            setLoadingVotes((prev) => ({ ...prev, [post.file_name]: false }));
+            setLoadingActions((prev) => ({ ...prev, [post.file_name]: false }));
         }
     };
 
     const handleUpvote = async (post) => {
-        setLoadingVotes((prev) => ({ ...prev, [post.file_name]: true }));
+        setLoadingActions((prev) => ({ ...prev, [post.file_name]: true }));
         try {
             const response = await fetch(
                 "http://localhost:5000/votes/upvote",
@@ -110,32 +88,23 @@ const ViewPosts = ({ setAuth }) => {
             if (!response.ok) {
                 throw new Error("Failed to cast upvote");
             }
-
-            const { votes } = await response.json();
             setMedia((prevMedia) =>
                 prevMedia.map((item) =>
                     item.file_name === post.file_name
-                        ? { ...item, votes, userVote: "upvote" }
+                        ? { ...item, votes: item.votes + 1 }
                         : item
                 )
             );
 
         } catch (err) {
             console.error("Voting failed", err);
-            setMedia((prevMedia) =>
-                prevMedia.map((item) =>
-                    item.file_name === post.file_name
-                        ? { ...item, votes: item.votes - 1, userVote: null }
-                        : item
-                )
-            );
         } finally {
-            setLoadingVotes((prev) => ({ ...prev, [post.file_name]: false }));
+            setLoadingActions((prev) => ({ ...prev, [post.file_name]: false }));
         }
     };
 
     const handleDownvote = async (post) => {
-        setLoadingVotes((prev) => ({ ...prev, [post.file_name]: true }));
+        setLoadingActions((prev) => ({ ...prev, [post.file_name]: true }));
         try {
             const response = await fetch(
                 "http://localhost:5000/votes/downvote",
@@ -149,29 +118,20 @@ const ViewPosts = ({ setAuth }) => {
                 });
 
             if (!response.ok) {
-                throw new Error("Failed to cast downvote");
+                throw new Error("Failed to cast upvote");
             }
-
-            const { votes } = await response.json();
             setMedia((prevMedia) =>
                 prevMedia.map((item) =>
                     item.file_name === post.file_name
-                        ? { ...item, votes, userVote: "downvote" }
+                        ? { ...item, votes: item.votes - 1 }
                         : item
                 )
             );
 
         } catch (err) {
             console.error("Voting failed", err);
-            setMedia((prevMedia) =>
-                prevMedia.map((item) =>
-                    item.file_name === post.file_name
-                        ? { ...item, votes: item.votes + 1, userVote: null }
-                        : item
-                )
-            );
         } finally {
-            setLoadingVotes((prev) => ({ ...prev, [post.file_name]: false }));
+            setLoadingActions((prev) => ({ ...prev, [post.file_name]: false }));
         }
     };
 
@@ -268,39 +228,31 @@ const ViewPosts = ({ setAuth }) => {
                                                     />
                                                 )}
                                                 <div className="flex items-center space-x-4 mt-2">
-                                                    <button
-                                                        onClick={() => handleUpvote(item)}
-                                                        disabled={loadingVotes[item.file_name]}
-                                                        className={`p-2 border rounded-full ${item.userVote === "upvote" ? "bg-green-500 text-white" : "hover:bg-gray-100"
-                                                            }`}
-                                                    >
+                                                    <button onClick={() => handleUpvote(item)}
+                                                        className="p-2 border rounded-full hover:bg-gray-100">
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
                                                         </svg>
                                                     </button>
-                                                    <button
-                                                        onClick={() => handleDownvote(item)}
-                                                        disabled={loadingVotes[item.file_name]}
-                                                        className={`p-2 border rounded-full ${item.userVote === "downvote" ? "bg-red-500 text-white" : "hover:bg-gray-100"
-                                                            }`}
-                                                    >
+                                                    <span className="text-2xl font-bold text-white font-dotgothic">{item.votes}</span>
+                                                    <button onClick={() => handleDownvote(item)}
+                                                        className="p-2 border rounded-full hover:bg-gray-100">
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                                                         </svg>
                                                     </button>
-
                                                 </div>
                                                 <a
                                                     onClick={() => handleDownload(item)}
-                                                    className={`download-button ${loadingVotes[item.file_name] ? "opacity-50 cursor-not-allowed" : ""}`}
+                                                    className={`download-button ${loadingActions[item.file_name] ? "opacity-50 cursor-not-allowed" : ""}`}
                                                     style={{
-                                                        cursor: loadingVotes[item.file_name] ? "not-allowed" : "pointer",
+                                                        cursor: loadingActions[item.file_name] ? "not-allowed" : "pointer",
                                                         marginTop: "10px",
                                                         display: "block",
                                                     }}
-                                                    disabled={loadingVotes[item.file_name]} // Optional
+                                                    disabled={loadingActions[item.file_name]} 
                                                 >
-                                                    {loadingVotes[item.file_name] ? "Downloading..." : "Download"}
+                                                    {loadingActions[item.file_name] ? "Downloading..." : "Download"}
                                                 </a>
                                             </div>
                                         )}
