@@ -32,7 +32,7 @@ const ViewPosts = ({ setAuth }) => {
             }
 
             const userVotes = await response.json();
-            console.log("user votes", userVotes);
+            // console.log("user votes", userVotes);
             return userVotes;
         } catch (err) {
             console.error("Error fetching user votes:", err.message);
@@ -59,9 +59,9 @@ const ViewPosts = ({ setAuth }) => {
                 return { ...post,  userVote: userVote?.vote_type || null };
             });
 
-            postsWithVotes.forEach(post => {
-                console.log("post vote: ", post.userVote); 
-            });
+            // postsWithVotes.forEach(post => {
+            //     console.log("post vote: ", post.userVote); 
+            // });
 
             setMedia(postsWithVotes);
 
@@ -167,7 +167,7 @@ const ViewPosts = ({ setAuth }) => {
                 });
 
             const parseData = await response.json();
-            console.log("Fetched name:", parseData.username);
+            // console.log("Fetched name:", parseData.username);
             setUsername(parseData.username);
         } catch (err) {
             console.error(err.message);
@@ -242,7 +242,7 @@ const ViewPosts = ({ setAuth }) => {
                                                         className="post-image"
                                                     />
                                                 )}
-                                                {item.file_type === "application/pdf" && (
+                                                {(item.file_type === "application/pdf") && (
                                                     <iframe
                                                         src={item.file_url}
                                                         title={item.post_title}
