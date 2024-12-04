@@ -32,6 +32,100 @@ router.get('/', authorization, async (req, res) => {
   }
 });
 
+router.get("/courses", authorization, async (req, res) => {
+  try {
+      const { data, error } = await supabase
+          .from("courses")
+          .select("course_name, course_code, course_id");
+
+      if (error) {
+          console.error("Error fetching courses:", error);
+          return res.status(500).json({ error: "Failed to fetch course options" });
+      }
+
+      const formattedOptions = data.map((course) => ({
+          value: `${course.course_id}`,
+          label: `${course.course_code}: ${course.course_name}`
+      }));
+
+      res.status(200).json(formattedOptions);
+  } catch (err) {
+      console.error("Unexpected error fetching course options:", err.message);
+      res.status(500).json({ error: "Failed to fetch course options" });
+  }
+});
+
+router.get("/check-is-posted", authorization, async (req, res) => {
+  const { userID, classID } = req.query;
+
+  try {
+      if (!userID || !classID) {
+          return res.status(400).json({ error: "User ID and Class ID are required" });
+      }
+
+      const { data, error } = await supabase
+          .from("posts") 
+          .select("user_id, course_id") 
+          .eq("user_id", userID)
+          .eq("course_id", classID);
+
+      if (error) {
+          console.error("Error checking if user has posted:", error);
+          return res.status(500).json({ error: "Failed to check post status" });
+      }
+
+      const isPosted = data.length > 0 ? 1 : 0;
+      res.status(200).json({ isPosted });
+
+  } catch (err) {
+      console.error("Unexpected error checking post status:", err.message);
+      res.status(500).json({ error: "Failed to check post status" });
+  }
+});
+
+
+router.get("/user-classes", authorization, async (req, res) => {
+  const { userID } = req.query;
+
+  try {
+      const { data: posts, error: postsError } = await supabase
+          .from("posts")
+          .select("course_id")
+          .eq("user_id", userID);
+
+      if (postsError) {
+          console.error("Error fetching user's posts:", postsError);
+          return res.status(500).json({ error: "Failed to fetch user's posts" });
+      }
+
+      const uniqueClassIds = [...new Set(posts.map((post) => post.course_id))];
+
+      const { data: courses, error: coursesError } = await supabase
+          .from("courses")
+          .select("course_id, course_name")
+          .in("course_id", uniqueClassIds);
+
+      if (coursesError) {
+          console.error("Error fetching course details:", coursesError);
+          return res.status(500).json({ error: "Failed to fetch course details" });
+      }
+
+      const classesWithNames = uniqueClassIds.map((classId) => {
+          const course = courses.find((course) => course.course_id === classId);
+          return {
+              courseId: classId,
+              courseName: course ? course.course_name : "Unknown Course",
+          };
+      });
+
+      res.status(200).json(classesWithNames);
+  } catch (err) {
+      console.error("Unexpected error fetching user classes:", err.message);
+      res.status(500).json({ error: "Failed to fetch user classes" });
+  }
+});
+
+
 // const storage = multer.diskStorage({
 //   destination: (req, file, cb) => {
 //       cb(null, "uploads/"); // Save files in 'uploads/' directory

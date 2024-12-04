@@ -60,11 +60,21 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 85px;
-  justify-content: center;
+  padding-top: 95px;
+  align-items: center;  
+  box-sizing: border-box;
+  gap: 20px;
+}
+
+.add-classes-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 40px;
   align-items: center;  
   box-sizing: border-box;
 }
+
 
 .posts-container {
   display: flex;
@@ -139,34 +149,86 @@ a {
 .classes-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 30px;
 }
 
 .class-box {
-  background-color: #f9f9f9;
+  background-color: #030000;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
   text-align: center;
+  color: #ddd;
   width: 200px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
 }
 
 .class-name {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .view-class-button {
-  background-color: #007bff;
-  color: white;
+  background-color: #bf00ff;
+  color: rgb(5, 3, 3);
   padding: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
+.add-class-button {
+  background-color: #bf00ff;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  color: #000000;
+  width: 150px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-class-button:hover {
+  background-color: #de04ff;
+}
+
 .view-class-button:hover {
-  background-color: #0056b3;
+  background-color: #de04ff;
+}
+
+.add-classes-wrapper {
+  display: flex; 
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  gap: 20px; /* Add gap between items */
+  margin-top: 30px; /* Optional: Add some space from the top */
+  margin-bottom: 30px; /* Optional: Add space from the bottom */
+}
+
+.add-class-heading {
+  text-align: center; /* Center align text */
+  margin-bottom: 10px; /* Space below the heading */
+}
+
+.add-class-select {
+  width: 425px; /* Set select box width */
+  max-width: 100%; /* Ensure responsiveness */
+}
+
+.add-class-button {
+  padding: 10px 20px; /* Adjust button padding */
+  font-size: 1.2rem; /* Adjust button font size */
+  border: none;
+  border-radius: 5px;
+  background-color: #bf00ff; /* Button color */
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-class-button:hover {
+  background-color: #de04ff;
 }
