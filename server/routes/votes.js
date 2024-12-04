@@ -9,7 +9,7 @@
         try {
             const { data: votes, error } = await supabase
                 .from("votes")
-                .select("*")
+                .select("post_id, vote_type")
                 .eq("user_id", userID);
 
             if (error) {

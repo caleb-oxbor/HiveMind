@@ -18,7 +18,28 @@ const ViewPosts = ({ setAuth }) => {
 
     const { classId } = useContext(ClassContext);
 
-    console.log("Class ID in viewposts:", classId);
+    // console.log("Class ID in viewposts:", classId);
+
+    const fetchUserVotes = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/votes", {
+                method: "GET",
+                headers: { token: localStorage.token },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch user votes");
+            }
+
+            const userVotes = await response.json();
+            console.log("user votes", userVotes);
+            return userVotes;
+        } catch (err) {
+            console.error("Error fetching user votes:", err.message);
+            return [];
+        }
+    };
+
 
     const fetchPosts = async () => {
         try {
@@ -31,8 +52,19 @@ const ViewPosts = ({ setAuth }) => {
                 throw new Error("Failed to fetch posts");
             }
 
-            const data = await response.json();
-            setMedia(data);
+            const posts = await response.json();
+            const userVotes = await fetchUserVotes();
+            const postsWithVotes = posts.map(post => {
+                const userVote = userVotes.find(vote => vote.post_id === post.file_name);
+                return { ...post,  userVote: userVote?.vote_type || null };
+            });
+
+            postsWithVotes.forEach(post => {
+                console.log("post vote: ", post.userVote); 
+            });
+
+            setMedia(postsWithVotes);
+
         } catch (err) {
             console.error("Error fetching posts:", err.message);
         }
@@ -88,13 +120,8 @@ const ViewPosts = ({ setAuth }) => {
             if (!response.ok) {
                 throw new Error("Failed to cast upvote");
             }
-            setMedia((prevMedia) =>
-                prevMedia.map((item) =>
-                    item.file_name === post.file_name
-                        ? { ...item, votes: item.votes + 1 }
-                        : item
-                )
-            );
+
+            await fetchPosts();
 
         } catch (err) {
             console.error("Voting failed", err);
@@ -120,13 +147,8 @@ const ViewPosts = ({ setAuth }) => {
             if (!response.ok) {
                 throw new Error("Failed to cast upvote");
             }
-            setMedia((prevMedia) =>
-                prevMedia.map((item) =>
-                    item.file_name === post.file_name
-                        ? { ...item, votes: item.votes - 1 }
-                        : item
-                )
-            );
+
+            await fetchPosts();
 
         } catch (err) {
             console.error("Voting failed", err);
@@ -228,15 +250,18 @@ const ViewPosts = ({ setAuth }) => {
                                                     />
                                                 )}
                                                 <div className="flex items-center space-x-4 mt-2">
-                                                    <button onClick={() => handleUpvote(item)}
-                                                        className="p-2 border rounded-full hover:bg-gray-100">
+                                                    <button
+                                                        onClick={() => handleUpvote(item)}
+                                                        disabled={loadingActions[item.file_name || item.userVote === "upvote"]}
+                                                        className={`p-2 border rounded-full hover:bg-gray-100 ${item.userVote === "upvote" ? "bg-green-500 text-white" : "hover:bg-gray-100"}`}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
                                                         </svg>
                                                     </button>
                                                     <span className="text-2xl font-bold text-white font-dotgothic">{item.votes}</span>
                                                     <button onClick={() => handleDownvote(item)}
-                                                        className="p-2 border rounded-full hover:bg-gray-100">
+                                                        disabled={loadingActions[item.file_name || item.userVote === "upvote"]}
+                                                        className={`p-2 border rounded-full hover:bg-gray-100 ${item.userVote === "downvote" ? "bg-red-500 text-white" : "hover:bg-gray-100"}`}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                                                         </svg>
@@ -250,7 +275,7 @@ const ViewPosts = ({ setAuth }) => {
                                                         marginTop: "10px",
                                                         display: "block",
                                                     }}
-                                                    disabled={loadingActions[item.file_name]} 
+                                                    disabled={loadingActions[item.file_name]}
                                                 >
                                                     {loadingActions[item.file_name] ? "Downloading..." : "Download"}
                                                 </a>
