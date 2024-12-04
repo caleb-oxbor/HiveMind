@@ -106,7 +106,7 @@ const Profile = ({ setAuth }) => {
   }, []);
 
   return (
-    <div className="full-bg">
+    <div>
 
         <div className="dark-overlay"></div>
 

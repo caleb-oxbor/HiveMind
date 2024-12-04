@@ -220,7 +220,7 @@ const Dashboard = ({ setAuth }) => {
 
 
   return (
-    <div className="full-bg">
+    <div>
 
         <div className="dark-overlay"></div>
         <div className="dashboard-logo"><img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" /> </div>
