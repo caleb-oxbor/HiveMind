@@ -8,13 +8,17 @@ After creating an account with a @ufl.edu email, users are assigned a random use
 2. Clone the HiveMind repository or download the ZIP from this page.
 3. Place the API keys into a .env file in the client folder and a .env file in the server folder.
 4. Open your terminal and navigate to the HiveMind project. Input these commands:<br>
+  ```
   cd server<br>
   npm install<br>
   npm start<br>
+  ```
 5. Open another instance of your terminal (do not close the other one) and navigate to the HiveMind project again. Input these commands:<br>
+  ```
   cd client<br>
   npm install<br>
   npm start<br>
+  ```
 6. Visit http://localhost:3000/
 
 # Tech Stack
