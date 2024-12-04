@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react"; //import all frontend libraries
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
@@ -6,12 +6,12 @@ import logoutIcon from '../images/logout.png';
 import hivemindLogo from '../images/spacebee.png'; 
 import "./ProfilePage.css";
 
-const Profile = ({ setAuth }) => {
-  const [name, setUsername] = useState("");
+const Profile = ({ setAuth }) => { 
+  const [name, setUsername] = useState(""); //initialize functions
   const [userEmail, setEmail] = useState("");
   const [media, setMedia] = useState({});
 
-  const fetchPosts = async () => {
+  const fetchPosts = async () => { //call backend
     try {
         const response = await fetch("http://localhost:5000/profile/profile-posts", {
             method: "GET",
@@ -22,9 +22,9 @@ const Profile = ({ setAuth }) => {
             throw new Error("Failed to fetch posts");
         }
 
-        const data = await response.json();
+        const data = await response.json(); //collect post data
 
-        const groupedMetadata = data.reduce((acc, metaItem) => {
+        const groupedMetadata = data.reduce((acc, metaItem) => { //add course if not already.
           const courseName = metaItem.course_name;
           if (!acc[courseName]) {
             acc[courseName] = [];
@@ -39,7 +39,7 @@ const Profile = ({ setAuth }) => {
     }
   };
 
-  const handleDownload = async (metaItem) => {
+  const handleDownload = async (metaItem) => { //init download button.
       try {
           console.log(metaItem.course_id);
           console.log(metaItem.file_name);
@@ -47,7 +47,7 @@ const Profile = ({ setAuth }) => {
               `http://localhost:5000/download/${metaItem.course_id}/${metaItem.file_name}`,
               {
                   method: "GET",
-                  headers: { token: localStorage.token }, // Include auth token if needed
+                  headers: { token: localStorage.token }, //include auth token if needed
               }
           );
 
@@ -56,7 +56,7 @@ const Profile = ({ setAuth }) => {
           }
 
           const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
+          const url = window.URL.createObjectURL(blob); //call downlaod func
           const a = document.createElement("a");
           a.href = url;
           a.download = metaItem.post_title || "download";
@@ -69,9 +69,9 @@ const Profile = ({ setAuth }) => {
       }
   };
 
-  const getName = async () => {
+  const getName = async () => { //collect user data
     try {
-      const response = await fetch("http://localhost:5000/profile", 
+      const response = await fetch("http://localhost:5000/profile", //call backend
         {
         method: "GET",
         headers: {token: localStorage.token }
@@ -88,7 +88,7 @@ const Profile = ({ setAuth }) => {
     }
   };
   
-  const logout = async e => {
+  const logout = async e => { //implement logout function
     e.preventDefault();
     try{
         localStorage.removeItem("token");
@@ -100,10 +100,15 @@ const Profile = ({ setAuth }) => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => { //call functions
     getName();
     fetchPosts();
   }, []);
+
+// Lines 116-121: Format burger menu
+// Lines 124-136: Format top page bar
+// Lines 139-151: Create divs for user info box, init labels and keys for username, email etc.
+// Lines 154-202: Display post information, filter by username who posted, order by class name.
 
   return (
     <div>
