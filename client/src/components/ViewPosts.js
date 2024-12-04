@@ -17,6 +17,8 @@ const ViewPosts = ({ setAuth }) => {
     const [loadingActions, setLoadingActions] = useState({});
 
     const { classId } = useContext(ClassContext);
+    const { className } = useContext(ClassContext);
+
 
     // console.log("Class ID in viewposts:", classId);
 
@@ -221,7 +223,7 @@ const ViewPosts = ({ setAuth }) => {
                         <button className="font-dotgothic custom-button">Add a Post</button>
                     </Link>
                     <h1 className="font-tiny5 font-bold text-left text-white text-7xl heading-shadow">
-                        Class Example
+                        { className } 
                     </h1>
                     {media.length === 0 ? (
                         <p>No posts available</p>

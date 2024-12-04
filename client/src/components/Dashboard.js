@@ -17,9 +17,13 @@ const Dashboard = ({ setAuth }) => {
   const [classes, setClasses] = useState([]);
   const navigate = useNavigate();
   const { classId, setClassId } = useContext(ClassContext);
+  const { className, setClassName } = useContext(ClassContext);
+
 
   const handleSelect = (selectedOption) =>{
     setClassId(selectedOption.value);
+    const courseCode = selectedOption.label.split(":")[0].trim();
+    setClassName(courseCode);
   }
 
   // const getOptions = async () => {
