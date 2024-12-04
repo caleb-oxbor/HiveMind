@@ -13,7 +13,7 @@ const Classes = ({ setAuth }) => {
   const navigate = useNavigate();
 
   const { classId } = useContext(ClassContext);
-  const { className } = useContext(ClassContext);
+  const { classCode } = useContext(ClassContext);
 
 
   console.log("Classes ClassID = ", classId);
@@ -68,7 +68,7 @@ const Classes = ({ setAuth }) => {
       </div>
 
       <header>
-        <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">{className}</h1>
+        <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">{classCode}</h1>
       </header>
 
       <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" />
