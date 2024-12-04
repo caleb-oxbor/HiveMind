@@ -7,22 +7,23 @@ body {
     margin:0;
     padding:0;
     position:relative;
-    background-image: 
-        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-        url("../images/hivebackgroundpurple.jpg");
+    background-color:#2b1136;;
     background-size:cover;
-    overflow:auto;
+    overflow: auto;
+    overflow-x: hidden;
 }
 
 .fullscreen-background {
     background-color: transparent;
-    /* background-image: 
+    background-image: 
         linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-        url("../images/hivebackgroundpurple.jpg"); */
+        url("../images/hivebackgroundpurple.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    width: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -30,7 +31,7 @@ body {
     align-items: center;
     color: white;
     text-align: center;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .heading-shadow {
