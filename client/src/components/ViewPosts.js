@@ -252,16 +252,16 @@ const ViewPosts = ({ setAuth }) => {
                                                 <div className="flex items-center space-x-4 mt-2">
                                                     <button
                                                         onClick={() => handleUpvote(item)}
-                                                        disabled={loadingActions[item.file_name || item.userVote === "upvote"]}
-                                                        className={`p-2 border rounded-full hover:bg-gray-100 ${item.userVote === "upvote" ? "bg-green-500 text-white" : "hover:bg-gray-100"}`}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        disabled={loadingActions[item.file_name] || item.userVote === "upvote"}
+                                                        className={`p-2 border rounded-full ${item.userVote === "upvote" ? "bg-gray-500 text-white" : "hover:bg-gray-500 hover:text-white"}`}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> 
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
                                                         </svg>
                                                     </button>
                                                     <span className="text-2xl font-bold text-white font-dotgothic">{item.votes}</span>
                                                     <button onClick={() => handleDownvote(item)}
-                                                        disabled={loadingActions[item.file_name || item.userVote === "upvote"]}
-                                                        className={`p-2 border rounded-full hover:bg-gray-100 ${item.userVote === "downvote" ? "bg-red-500 text-white" : "hover:bg-gray-100"}`}>
+                                                        disabled={loadingActions[item.file_name] || item.userVote === "downvote"}
+                                                        className={`p-2 border rounded-full ${item.userVote === "downvote" ? "bg-gray-500 text-white" : "hover:bg-gray-100 hover:text-white"}`}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                                                         </svg>
