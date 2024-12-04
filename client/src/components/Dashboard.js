@@ -17,9 +17,16 @@ const Dashboard = ({ setAuth }) => {
   const [classes, setClasses] = useState([]);
   const navigate = useNavigate();
   const { classId, setClassId } = useContext(ClassContext);
+  const { className, setClassName } = useContext(ClassContext);
+  const { classCode, setClassCode } = useContext(ClassContext);
+
 
   const handleSelect = (selectedOption) =>{
     setClassId(selectedOption.value);
+    const courseCode = selectedOption.label.split(":")[0].trim();
+    setClassCode(courseCode);
+    const className = selectedOption.label.split(":")[1].trim();
+    setClassName(className);
   }
 
   // const getOptions = async () => {
@@ -334,6 +341,8 @@ const fetchUserClasses = async () => {
                     className="view-class-button" 
                     onClick={() => {
                       setClassId(classItem.courseId);
+                      const courseName = classItem.courseName;
+                      setClassName(courseName);
                       navigate("/view-posts", { replace: true });
                     }}
                   >

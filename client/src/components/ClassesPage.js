@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
-import { useContext } from "react";
+import { useContext } from "react"; //
 import { ClassContext } from "../contexts/ClassContext";
 import hivemindLogo from '../images/spacebee.png'; 
 import logoutIcon from '../images/logout.png'; 
@@ -13,6 +13,8 @@ const Classes = ({ setAuth }) => {
   const navigate = useNavigate();
 
   const { classId } = useContext(ClassContext);
+  const { classCode } = useContext(ClassContext);
+
 
   console.log("Classes ClassID = ", classId);
     
@@ -66,7 +68,7 @@ const Classes = ({ setAuth }) => {
       </div>
 
       <header>
-        <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">Class Example</h1>
+        <h1 className="dashboard-header-left font-tiny5 font-bold text-left text-white text-7xl heading-shadow">{classCode}</h1>
       </header>
 
       <img src={hivemindLogo} alt="Hivemind Logo" className="dashboard-logo" />
