@@ -71,7 +71,7 @@
                         return res.status(400).json({ error: "Post not found" });
                     }
             
-                    const newVotes = (post.votes || 0) + 1;
+                    const newVotes = (post.votes || 0) + 2;
             
                     const { error: updateError } = await supabase
                         .from("posts")
@@ -184,7 +184,7 @@
                         return res.status(400).json({ error: "Post not found" });
                     }
             
-                    const newVotes = (post.votes || 0) - 1;
+                    const newVotes = (post.votes || 0) - 2;
                     console.log("new votes:", newVotes);
             
                     const { error: updateError } = await supabase
