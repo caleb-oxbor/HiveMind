@@ -1,6 +1,5 @@
 import './App.css';
 import React, { Fragment, useState, useEffect } from "react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
@@ -53,27 +52,9 @@ function App() {
     }
   }
 
-  // async function isCreated() {
-  //   try {
-  //     const response = await fetch("http://localhost:5000/dashboard/is-posted", {
-  //       method: "GET",
-  //       headers: {token : localStorage.token }
-  //     });
-
-  //     const parseRes = await response.json();
-  //     setCreatedPost(parseRes); 
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // }
-
   useEffect(() => {
     isAuth();
   }, []);
-
-  // useEffect(() => {
-  //   isCreated();
-  // }, []);
   
   return (
     <Fragment>

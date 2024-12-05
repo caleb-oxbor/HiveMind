@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from 'react-router-dom';
 import { slide as Menu } from "react-burger-menu";
 import './Dashboard.css'
-import { useContext } from "react"; //
+import { useContext } from "react";
 import { ClassContext } from "../contexts/ClassContext";
 import hivemindLogo from '../images/spacebee.png'; 
 import logoutIcon from '../images/logout.png'; 
@@ -38,7 +38,7 @@ const Classes = ({ setAuth }) => {
     try{
         localStorage.removeItem("token");
         setAuth(false);
-        toast.success("Logout successfully", {pauseOnHover: false});
+        toast.success("Logged out successfully!", {pauseOnHover: false});
     }
     catch(err){
         console.error(err.message);

@@ -3,12 +3,9 @@ import { toast } from "react-toastify";
 import { slide as Menu } from "react-burger-menu";
 import { useNavigate, Link } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-
 import './Dashboard.css'
 import logoutIcon from '../images/logout.png'; 
 import hivemindLogo from '../images/spacebee.png'; 
-import supabase from '../supabaseClient'
-
 import { useContext } from "react";
 import { ClassContext } from "../contexts/ClassContext";
 
