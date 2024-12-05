@@ -27,7 +27,7 @@ Backend - Express, Node.js<br>
 Frontend - React, CSS<br>
 
 # The Team
-Caleb Oxborough - Product Manager<br>
-Jake West - Scrum Master<br>
-Alina Garib - Development Team Member<br>
-Zack Dayeh - Development Team Member<br>
+[Caleb Oxborough](https://www.linkedin.com/in/caleb-oxborough/) - Product Manager<br>
+[Jake West](https://www.linkedin.com/in/jakewest-/) - Scrum Master<br>
+[Alina Garib](https://www.linkedin.com/in/alina-garib/) - Development Team Member<br>
+[Zack Dayeh](https://www.linkedin.com/in/zachary-dayeh/) - Development Team Member<br>
