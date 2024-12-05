@@ -1,8 +1,6 @@
 const router = require("express").Router();
-const pool = require("../db");
 const authorization = require("../middleware/authorization");
 const supabase = require("../supabaseClient");
-const path = require("path");
 
 router.get('/', authorization, async (req, res) => {
   try {

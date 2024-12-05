@@ -29,29 +29,6 @@ const Dashboard = ({ setAuth }) => {
     setClassName(className);
   }
 
-  // const getOptions = async () => {
-  //   console.log("getOptions called");
-
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("courses")
-  //       .select("course_name, course_code, course_id") 
-  
-  //     if (error) throw error;
-
-  //     const formattedOptions = data.map((course) => ({
-  //       value: `${course.course_id}`, 
-  //       label: `${course.course_code}: ${course.course_name}` 
-  //     }));
-     
-  //     console.log("Options: ", formattedOptions);
-  //     setOptions(formattedOptions);
-
-  //   } catch (err) {
-  //     console.error("Error checking if user has posted:", err.message);
-  //   }
-  // }
-
   const getOptions = async () => {
     console.log("getOptions called");
 
@@ -73,49 +50,6 @@ const Dashboard = ({ setAuth }) => {
     }
 };
 
-  // const fetchUserClasses = async () => {
-
-
-  //   console.log("getClasses called");
-  //   try {
-
-  //     if (!userId) {
-  //       console.error("User ID is invalid. Cannot fetch user classes.");
-  //       return;
-  //     }
-
-  //     const { data: posts, error: postsError } = await supabase
-  //       .from("posts")
-  //       .select("course_id") 
-  //       .eq("user_id", userId);
-  
-  //     if (postsError) throw postsError;
-  
-  //     const uniqueClassIds = [...new Set(posts.map(post => post.course_id))];
-  
-  //     console.log("Class IDs: ", uniqueClassIds);
-
-  //     const { data: courses, error: coursesError } = await supabase
-  //       .from("courses")
-  //       .select("course_id, course_name")
-  //       .in("course_id", uniqueClassIds);
-  
-  //     if (coursesError) throw coursesError;
-  
-  //     const classesWithNames = uniqueClassIds.map(classId => {
-  //       const course = courses.find(course => course.course_id === classId);
-  //       return {
-  //         courseId: classId,
-  //         courseName: course ? course.course_name : "Unknown Course",
-  //       };
-  //     });
-  
-  //     console.log("Classes with names: ", classesWithNames);
-  //     setClasses(classesWithNames); 
-  //   } catch (err) {
-  //     console.error("Error fetching user classes:", err.message);
-  //   }
-  // };
 
   // Dashboard.js
 const fetchUserClasses = async () => {
@@ -144,30 +78,6 @@ const fetchUserClasses = async () => {
   }
 };
 
-
-  //have to check if user posts has given classes ID
-  // const checkIsPosted = async (userID, classId) => {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("posts") // Replace "posts" with your actual table name
-  //       .select("user_id, course_id") // Adjust columns if needed (e.g., 'id' or specific fields)
-  //       .eq("user_id", userID) // Filter by user ID
-  //       .eq("course_id", classId); // Filter by class ID
-  
-  //     if (error) throw error;
-
-  //       console.log("POSTING DATA: ", data);
-
-  //     if(data.length > 0)
-  //       return 1;
-  //     else
-  //       return 0;
-
-  //   } catch (err) {
-  //     console.error("Error checking if user has posted:", err.message);
-  //     return 2;
-  //   }
-  // };
 
   const checkIsPosted = async (userID, classId) => {
     try {
@@ -214,8 +124,6 @@ const fetchUserClasses = async () => {
       return null;
     }
   };
-
-
   
 
   const getName = async () => {
@@ -353,8 +261,6 @@ const fetchUserClasses = async () => {
             </div>
           )}
         </div>
-
-
 
 
     <div className="add-classes-wrapper">
