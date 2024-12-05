@@ -9,15 +9,15 @@ After creating an account with a @ufl.edu email, users are assigned a random use
 3. Place the API keys into a .env file in the client folder and a .env file in the server folder.
 4. Open your terminal and navigate to the HiveMind project. Input these commands:<br>
   ```
-  cd server<br>
-  npm install<br>
-  npm start<br>
+  cd server
+  npm install
+  npm start
   ```
 5. Open another instance of your terminal (do not close the other one) and navigate to the HiveMind project again. Input these commands:<br>
   ```
-  cd client<br>
-  npm install<br>
-  npm start<br>
+  cd client
+  npm install
+  npm start
   ```
 6. Visit http://localhost:3000/
 
@@ -25,3 +25,9 @@ After creating an account with a @ufl.edu email, users are assigned a random use
 Database - Supabase<br>
 Backend - Express, Node.js<br>
 Frontend - React, CSS<br>
+
+# The Team
+Caleb Oxborough - Product Manager<br>
+Jake West - Scrum Master<br>
+Alina Garib - Development Team Member<br>
+Zack Dayeh - Development Team Member<br>
