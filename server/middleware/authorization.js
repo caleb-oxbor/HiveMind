@@ -17,9 +17,6 @@ module.exports = async(req, res, next) => {
             user_id: payload.user_id,
         }
 
-        // console.log(req.user);
-        // console.log("Payload content:", JSON.stringify(payload, null, 2));
-
         next();
 
     }catch (err) {

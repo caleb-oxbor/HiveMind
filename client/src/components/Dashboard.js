@@ -21,6 +21,7 @@ const Dashboard = ({ setAuth }) => {
   const { classCode, setClassCode } = useContext(ClassContext);
 
 
+  //When a class is selected, the context must be updated for all pages to be able to access
   const handleSelect = (selectedOption) =>{
     setClassId(selectedOption.value);
     const courseCode = selectedOption.label.split(":")[0].trim();
@@ -29,32 +30,9 @@ const Dashboard = ({ setAuth }) => {
     setClassName(className);
   }
 
-  // const getOptions = async () => {
-  //   console.log("getOptions called");
 
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("courses")
-  //       .select("course_name, course_code, course_id") 
-  
-  //     if (error) throw error;
-
-  //     const formattedOptions = data.map((course) => ({
-  //       value: `${course.course_id}`, 
-  //       label: `${course.course_code}: ${course.course_name}` 
-  //     }));
-     
-  //     console.log("Options: ", formattedOptions);
-  //     setOptions(formattedOptions);
-
-  //   } catch (err) {
-  //     console.error("Error checking if user has posted:", err.message);
-  //   }
-  // }
-
+  //Function to get all classes from database
   const getOptions = async () => {
-    console.log("getOptions called");
-
     try {
         const response = await fetch("http://localhost:5000/dashboard/courses", {
             method: "GET",
@@ -66,62 +44,17 @@ const Dashboard = ({ setAuth }) => {
         }
 
         const formattedOptions = await response.json();
-        console.log("Options: ", formattedOptions);
         setOptions(formattedOptions);
     } catch (err) {
         console.error("Error fetching course options:", err.message);
     }
 };
 
-  // const fetchUserClasses = async () => {
-
-
-  //   console.log("getClasses called");
-  //   try {
-
-  //     if (!userId) {
-  //       console.error("User ID is invalid. Cannot fetch user classes.");
-  //       return;
-  //     }
-
-  //     const { data: posts, error: postsError } = await supabase
-  //       .from("posts")
-  //       .select("course_id") 
-  //       .eq("user_id", userId);
-  
-  //     if (postsError) throw postsError;
-  
-  //     const uniqueClassIds = [...new Set(posts.map(post => post.course_id))];
-  
-  //     console.log("Class IDs: ", uniqueClassIds);
-
-  //     const { data: courses, error: coursesError } = await supabase
-  //       .from("courses")
-  //       .select("course_id, course_name")
-  //       .in("course_id", uniqueClassIds);
-  
-  //     if (coursesError) throw coursesError;
-  
-  //     const classesWithNames = uniqueClassIds.map(classId => {
-  //       const course = courses.find(course => course.course_id === classId);
-  //       return {
-  //         courseId: classId,
-  //         courseName: course ? course.course_name : "Unknown Course",
-  //       };
-  //     });
-  
-  //     console.log("Classes with names: ", classesWithNames);
-  //     setClasses(classesWithNames); 
-  //   } catch (err) {
-  //     console.error("Error fetching user classes:", err.message);
-  //   }
-  // };
-
-  // Dashboard.js
+//Function to get which classes a user is in
 const fetchUserClasses = async () => {
-  console.log("getClasses called");
 
   try {
+    //userID must be set first
       if (!userId) {
           console.error("User ID is invalid. Cannot fetch user classes.");
           return;
@@ -137,7 +70,6 @@ const fetchUserClasses = async () => {
       }
 
       const classesWithNames = await response.json();
-      console.log("Classes with names: ", classesWithNames);
       setClasses(classesWithNames);
   } catch (err) {
       console.error("Error fetching user classes:", err.message);
@@ -145,30 +77,7 @@ const fetchUserClasses = async () => {
 };
 
 
-  //have to check if user posts has given classes ID
-  // const checkIsPosted = async (userID, classId) => {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from("posts") // Replace "posts" with your actual table name
-  //       .select("user_id, course_id") // Adjust columns if needed (e.g., 'id' or specific fields)
-  //       .eq("user_id", userID) // Filter by user ID
-  //       .eq("course_id", classId); // Filter by class ID
-  
-  //     if (error) throw error;
-
-  //       console.log("POSTING DATA: ", data);
-
-  //     if(data.length > 0)
-  //       return 1;
-  //     else
-  //       return 0;
-
-  //   } catch (err) {
-  //     console.error("Error checking if user has posted:", err.message);
-  //     return 2;
-  //   }
-  // };
-
+  //Function to see whether a user has already posted to a selected class
   const checkIsPosted = async (userID, classId) => {
     try {
         const response = await fetch(`http://localhost:5000/dashboard/check-is-posted?userID=${userID}&classID=${classId}`, {
@@ -181,7 +90,6 @@ const fetchUserClasses = async () => {
         }
 
         const { isPosted } = await response.json();
-        console.log("Post Status:", isPosted);
         return isPosted;
     } catch (err) {
         console.error("Error checking post status:", err.message);
@@ -189,6 +97,7 @@ const fetchUserClasses = async () => {
     }
 };
 
+  //Function to get the user's userID
   const getUserId = async () => {
     if (name == "") {
       console.error("User name is not set. Cannot fetch user ID.");
@@ -217,7 +126,7 @@ const fetchUserClasses = async () => {
 
 
   
-
+  //Function to get user's username
   const getName = async () => {
     console.log("getName called");
     try {
@@ -235,6 +144,7 @@ const fetchUserClasses = async () => {
     }
   };
   
+  //Function to logout by removing the locally stored JWT token and setting auth to false
   const logout = async e => {
     e.preventDefault();
     try{
@@ -247,18 +157,20 @@ const fetchUserClasses = async () => {
     }
   };
 
+
   const handleNavigation = async () => {
 
-    console.log("Dashboard Class ID:", classId);
-
+    //Seeing if a user has posted to the class selected
     const hasPosted = await checkIsPosted(userId, classId);
 
+    //Option for if they haven't selected any class
     if (hasPosted === 2){
       toast.error("Select a class!", {pauseOnHover: false});
       return;
     }
 
     try {  
+      //If they have posted, go to view post, otherwise go to class page to be able to post
       if (hasPosted === 1) {
         navigate("/view-posts", { replace: true}); 
       } else {
@@ -269,20 +181,22 @@ const fetchUserClasses = async () => {
     }
   };
 
+  //Functionality to make sure useEffect is only called once
   const initialized = useRef(false);
-
 
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
       const initialize = async () => {
-        console.log("Initializing...");
         await getName();
         await getOptions();
       };
       initialize();
     }
   }, []);
+
+  //getName and getOptions must be awaited upon because getUserID 
+  //and fetchUserClasses rely on them.
 
   useEffect(() => {
     if (name) {
@@ -332,15 +246,15 @@ const fetchUserClasses = async () => {
                 You have yet to contribute to a hive. Do so below.
               </h2>
             </div>
-          ) : (
+          ) : ( // If not empty, display them
             <div className="classes-grid">
               {classes.map((classItem) => (
                 <div key={classItem.courseId} className="class-box">
                   <h2 className="class-name">{classItem.courseName}</h2>
                   <button 
                     className="view-class-button" 
-                    onClick={() => {
-                      setClassId(classItem.courseId);
+                    onClick={() => { 
+                      setClassId(classItem.courseId); // Update context with class being accessed
                       const courseName = classItem.courseName;
                       setClassName(courseName);
                       navigate("/view-posts", { replace: true });

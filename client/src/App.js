@@ -45,6 +45,7 @@ function App() {
 
       const parseRes = await response.json();
 
+      //Upon successful verification, user is authenticated
       parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
 
     } 
@@ -53,27 +54,11 @@ function App() {
     }
   }
 
-  // async function isCreated() {
-  //   try {
-  //     const response = await fetch("http://localhost:5000/dashboard/is-posted", {
-  //       method: "GET",
-  //       headers: {token : localStorage.token }
-  //     });
-
-  //     const parseRes = await response.json();
-  //     setCreatedPost(parseRes); 
-  //   } catch (err) {
-  //     console.error(err.message);
-  //   }
-  // }
-
+  //Check users authentication status
   useEffect(() => {
     isAuth();
   }, []);
 
-  // useEffect(() => {
-  //   isCreated();
-  // }, []);
   
   return (
     <Fragment>
@@ -89,7 +74,7 @@ function App() {
             <Route
               path="/login"
               element={
-                !isAuthenticated ? (
+                !isAuthenticated ? (  // Checks if authenticated, if they are, auto direct to dashboard
                   <LogIn setAuth={setAuth} />
                 ) : (
                   <Navigate to="/dashboard" />
@@ -113,7 +98,7 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                isAuthenticated ? (
+                isAuthenticated ? ( // does the opposite of login, reroutes to login if not authenticated
                   <Dashboard setAuth={setAuth} />
                 ) : (
                   <Navigate to="/login" />
