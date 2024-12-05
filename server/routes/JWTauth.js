@@ -27,26 +27,9 @@ async function generateRandomUsername() {
     let username;
 
     while (!isUnique) {
-        // const { data: adjectiveData, error: adjectiveError } = await supabase
-        //     .from('words')
-        //     .select('word')
-        //     .eq('type', 'adjective')
-        //     .limit(1)
-        //     .single();
+
         const adjective = await getRandomWord('adjective');
         const noun = await getRandomWord('noun');
-
-        // const { data: nounData, error: nounError } = await supabase
-        //     .from('words')
-        //     .select('word')
-        //     .eq('type', 'noun')
-        //     .limit(1)
-        //     .single();
-
-        // const adjective = adjectiveResult.data?.[0]?.word;
-        // const noun = nounResult.data?.[0]?.word;
-        //const adjective = adjectiveData.word;
-        //const noun = nounData.word;
 
         if (!adjective || !noun) {
             throw new Error('No words found in the database');
@@ -54,6 +37,7 @@ async function generateRandomUsername() {
 
         username = adjective + noun;
 
+        // guarantee the username is unique, add numbers to the end if not
         const { data: existingUser } = await supabase
             .from('users')
             .select('*')
@@ -102,8 +86,6 @@ router.post("/register",validInfo, async (req, res) => {
                 throw userError;
             }
 
-            // console.log("made it thru PGSRT105")
-
             if (existingUser) {
                 return res.status(401).json("User already exists 1.");
             }
@@ -123,8 +105,6 @@ router.post("/register",validInfo, async (req, res) => {
             .single();
 
         if (insertError) throw insertError;
-
-        //console.log(newUser)
 
         // generating jwt token
         const token = jwtGenerator(newUser?.user_id, newUser?.username);
@@ -146,10 +126,6 @@ router.post("/login", validInfo, async(req, res) => {
         //console.log("req body:" + email + " " + password);
 
         //2. check if user doesn't exist (throw error if so)
-
-        // const user = await pool.query("SELECT * FROM users WHERE email = $1", [
-        //     email
-        // ]);
 
         const {data: user, error: userError} = await supabase
             .from('users')

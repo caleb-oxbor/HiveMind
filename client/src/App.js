@@ -1,6 +1,5 @@
 import './App.css';
 import React, { Fragment, useState, useEffect } from "react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
@@ -53,6 +52,7 @@ function App() {
       console.error(err.message);
     }
   }
+
 
   //Check users authentication status
   useEffect(() => {

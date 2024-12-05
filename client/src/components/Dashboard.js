@@ -30,7 +30,6 @@ const Dashboard = ({ setAuth }) => {
     setClassName(className);
   }
 
-
   //Function to get all classes from database
   const getOptions = async () => {
     try {
@@ -51,6 +50,7 @@ const Dashboard = ({ setAuth }) => {
 };
 
 //Function to get which classes a user is in
+
 const fetchUserClasses = async () => {
 
   try {
@@ -78,6 +78,7 @@ const fetchUserClasses = async () => {
 
 
   //Function to see whether a user has already posted to a selected class
+
   const checkIsPosted = async (userID, classId) => {
     try {
         const response = await fetch(`http://localhost:5000/dashboard/check-is-posted?userID=${userID}&classID=${classId}`, {
@@ -123,8 +124,6 @@ const fetchUserClasses = async () => {
       return null;
     }
   };
-
-
   
   //Function to get user's username
   const getName = async () => {
@@ -267,8 +266,6 @@ const fetchUserClasses = async () => {
             </div>
           )}
         </div>
-
-
 
 
     <div className="add-classes-wrapper">

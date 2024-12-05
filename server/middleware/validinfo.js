@@ -1,13 +1,13 @@
 module.exports = function async(req, res, next) {
 
-    console.log("Validating info:");
-
     const { email, password, passwordconfirm } = req.body;
+
+    // general email check
     function validEmail(userEmail) {
         const generalEmailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; 
         return generalEmailRegex.test(userEmail);
     }
-    //ufl check
+    // ufl check
     function isUFLEmail(userEmail) {
         const uflEmailRegex = /^\w+([\.-]?\w+)*@ufl\.edu$/; 
         return uflEmailRegex.test(userEmail);

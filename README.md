@@ -1,24 +1,33 @@
 # HiveMind
-The world's greatest website for college students needing to share and collaborate on study material!
+HiveMind is an educational website where students can post study materials to a shared class forum and view content posted by their peers. It strives to promote a positive environment of learning, collaboration, and integrity which can help students excel in their academic careers.
 
-Vision: 
+After creating an account with a @ufl.edu email, users are assigned a random username to preserve anonymity. From there, they can choose what course discussion boards they'd like to join, and once they contribute study material themselves in the form of a file upload, they can view, download, and vote on others' contributions!
 
-HiveMind is a website where college students can collaborate and share their study materials in a safe and easy-to-use environment.
+# Installation Instructions
+1. Install Node.js (https://nodejs.org/en).
+2. Clone the HiveMind repository or download the ZIP from this page.
+3. Place the API keys into a .env file in the client folder and a .env file in the server folder.
+4. Open your terminal and navigate to the HiveMind project. Input these commands:<br>
+  ```
+  cd server
+  npm install
+  npm start
+  ```
+5. Open another instance of your terminal (do not close the other one) and navigate to the HiveMind project again. Input these commands:<br>
+  ```
+  cd client
+  npm install
+  npm start
+  ```
+6. Visit http://localhost:3000/
 
-Functionality: 
-- Students can join a collective class server created by a moderator.
-- Students will create a custom, anonymous avatar. 
-- Teachers can create sections to organize student posts.
-- Students will not have access to other user's posts until they have posted their own work (to prevent cheating).
-- Students may rank (upvote or downvote) other user's posts to rank the quality of work.
-- If a student reaches a certain number of downvotes, your post will be removed, you lose access to other user's posts, and you may resubmit a revised version.
-- Users with high amounts of upvotes will be rewarded with customizable avatar features.
-- Moderators have the ability to remove posts they deem to be cheating, inappropriate, or spam. They will also have the ability to remove students from the class.
-- Users can leave comments on posts to promote discussion.
+# Tech Stack
+Database - Supabase<br>
+Backend - Express, Node.js<br>
+Frontend - React, CSS<br>
 
-Software, Tools and Programming Languages:
-- Node.js
-- PostgreSQL
-- passport.js/firebase
-- React
-- Bootstrap 
+# The Team
+[Caleb Oxborough](https://www.linkedin.com/in/caleb-oxborough/) - Product Manager<br>
+[Jake West](https://www.linkedin.com/in/jakewest-/) - Scrum Master<br>
+[Alina Garib](https://www.linkedin.com/in/alina-garib/) - Development Team Member<br>
+[Zack Dayeh](https://www.linkedin.com/in/zachary-dayeh/) - Development Team Member<br>
