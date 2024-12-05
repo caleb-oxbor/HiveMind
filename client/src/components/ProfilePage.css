@@ -1,10 +1,10 @@
-.profile-header{
+.profile-header{ /*Puts header in top left*/
   text-align: left;
   width: 100%; 
   padding-left: 30px;
 }
 
-.dark-overlay {
+.dark-overlay { /*Darkens background image*/
   position: fixed;
   top: 0;
   left: 0;
@@ -14,14 +14,14 @@
   z-index: 20;
 }
 
-.logo-container {
+.logo-container { /*Centers logo*/
   width: 100%;
   display: flex;
   justify-content: center;
   padding-right: 250px;
 }
 
-.info-header{
+.info-header{ /*Centers div for user info*/
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -32,7 +32,7 @@
   margin: 0 auto;
 }
 
-.info-box{
+.info-box{ /*centers box and sets color for user info*/
   background-color: lavender;
   border-radius: 10px;
   width: 100%;
@@ -41,7 +41,7 @@
   position: relative;
 }
 
-.profile-photo{
+.profile-photo{ /*creates circle for user photo*/
   width: 200px;
   height: 200px;
   border-radius: 50%;
@@ -51,7 +51,7 @@
   justify-content: center;
 }
 
-.user-details{
+.user-details{ /*Creates grid to display user details*/
   position: absolute;
   left: 300px;
   top: 100px;
@@ -61,19 +61,19 @@
   align-items: center;
 }
 
-.key{
+.key{ /*aligns keys (headers)*/
   font-weight: bold;
   font-size: larger;
   text-align: right;
 }
 
-.label{
+.label{ /*aligns labels (user values)*/
   font-weight: lighter;
   font-size: larger;
   text-align: left;
 }
 
-.dashboard-container {
+.dashboard-container { /*Top bar on all pages formatting (and subsequent css headers)*/
   margin-top: 65px;
   position: relative; 
   width: 100%;        

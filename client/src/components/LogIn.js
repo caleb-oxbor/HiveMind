@@ -1,9 +1,9 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react"; //import libraries for frontend.
 import { Link } from "react-router-dom";
 import {toast} from "react-toastify";
 
 
-const LogIn = ({setAuth}) => {
+const LogIn = ({setAuth}) => { //initialize login authentication
 
     const [inputs, setInputs] = useState({
         email: "",
@@ -12,11 +12,11 @@ const LogIn = ({setAuth}) => {
 
     const { email, password } = inputs;
 
-    const onChange = (e) => {
+    const onChange = (e) => { //set variables to compare to database.
         setInputs({ ...inputs, [e.target.name]: e.target.value});
     };
 
-    const onSubmitForm = async(e) => {
+    const onSubmitForm = async(e) => { //submits inputted values, communicates with backend, queries database, confirms login status.
         e.preventDefault();
         try {
 
@@ -46,7 +46,9 @@ const LogIn = ({setAuth}) => {
             console.error(err.message);
         }
     };
-
+//Create divs to add visual elements in html.
+//Lines 54-56, 80: creates links that route to necessary pages.
+//Lines 60-80: Calls submit function, create boxes for inputs.
     return (
         <Fragment>
             <div className="fullscreen-background">  

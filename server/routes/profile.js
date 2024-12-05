@@ -7,7 +7,7 @@ const path = require("path");
 router.get('/', authorization, async (req, res) => {
   try {
 
-    const { data: user, error: userError } = await supabase
+    const { data: user, error: userError } = await supabase //query supabase to collect all user data
       .from('users')
       .select('username, email')
       .eq('user_id', req.user.user_id)
@@ -22,7 +22,7 @@ router.get('/', authorization, async (req, res) => {
 });
 
 router.get("/profile-posts", authorization, async (req, res) => {
-  const username = req.user.username;
+  const username = req.user.username; //sets username
   // console.log("Fetching posts for username: ", username);
   try {
 
@@ -30,7 +30,7 @@ router.get("/profile-posts", authorization, async (req, res) => {
       return res.status(400).json({ error: "Username is required" });
     }
 
-    const { data: metadata, error: metadataError } = await supabase
+    const { data: metadata, error: metadataError } = await supabase //query multiple tables for filtering
       .from("posts")
       .select("*")
       .eq("username", username)
@@ -42,7 +42,7 @@ router.get("/profile-posts", authorization, async (req, res) => {
       return res.status(500).json({ error: "Failed to fetch posts" });
     }
 
-    const courseIds = [...new Set(metadata.map(metaItem => metaItem.course_id))];
+    const courseIds = [...new Set(metadata.map(metaItem => metaItem.course_id))]; //use user table info to query course table info
     const { data: courses, error: coursesError } = await supabase
       .from("courses")
       .select("course_id, course_name")
@@ -53,7 +53,7 @@ router.get("/profile-posts", authorization, async (req, res) => {
       return res.status(500).json({ error: "Failed to fetch courses" });
     }
 
-    const courseIdToName = courses.reduce((acc, course) => {
+    const courseIdToName = courses.reduce((acc, course) => { //if no course, allocate it
       acc[course.course_id] = course.course_name;
       return acc;
     }, {});
@@ -63,7 +63,7 @@ router.get("/profile-posts", authorization, async (req, res) => {
         .from("userPosts")
         .getPublicUrl(`${username}/${metaItem.file_name}`).data.publicUrl;
 
-      return {
+      return { //export metadata.
         ...metaItem,
         file_url,
         course_name: courseIdToName[metaItem.course_id],
