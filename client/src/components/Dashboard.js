@@ -21,6 +21,7 @@ const Dashboard = ({ setAuth }) => {
   const { classCode, setClassCode } = useContext(ClassContext);
 
 
+  //When a class is selected, the context must be updated for all pages to be able to access
   const handleSelect = (selectedOption) =>{
     setClassId(selectedOption.value);
     const courseCode = selectedOption.label.split(":")[0].trim();
@@ -29,9 +30,8 @@ const Dashboard = ({ setAuth }) => {
     setClassName(className);
   }
 
+  //Function to get all classes from database
   const getOptions = async () => {
-    console.log("getOptions called");
-
     try {
         const response = await fetch("http://localhost:5000/dashboard/courses", {
             method: "GET",
@@ -43,19 +43,18 @@ const Dashboard = ({ setAuth }) => {
         }
 
         const formattedOptions = await response.json();
-        console.log("Options: ", formattedOptions);
         setOptions(formattedOptions);
     } catch (err) {
         console.error("Error fetching course options:", err.message);
     }
 };
 
+//Function to get which classes a user is in
 
-  // Dashboard.js
 const fetchUserClasses = async () => {
-  console.log("getClasses called");
 
   try {
+    //userID must be set first
       if (!userId) {
           console.error("User ID is invalid. Cannot fetch user classes.");
           return;
@@ -71,13 +70,14 @@ const fetchUserClasses = async () => {
       }
 
       const classesWithNames = await response.json();
-      console.log("Classes with names: ", classesWithNames);
       setClasses(classesWithNames);
   } catch (err) {
       console.error("Error fetching user classes:", err.message);
   }
 };
 
+
+  //Function to see whether a user has already posted to a selected class
 
   const checkIsPosted = async (userID, classId) => {
     try {
@@ -91,7 +91,6 @@ const fetchUserClasses = async () => {
         }
 
         const { isPosted } = await response.json();
-        console.log("Post Status:", isPosted);
         return isPosted;
     } catch (err) {
         console.error("Error checking post status:", err.message);
@@ -99,6 +98,7 @@ const fetchUserClasses = async () => {
     }
 };
 
+  //Function to get the user's userID
   const getUserId = async () => {
     if (name == "") {
       console.error("User name is not set. Cannot fetch user ID.");
@@ -125,7 +125,7 @@ const fetchUserClasses = async () => {
     }
   };
   
-
+  //Function to get user's username
   const getName = async () => {
     console.log("getName called");
     try {
@@ -143,6 +143,7 @@ const fetchUserClasses = async () => {
     }
   };
   
+  //Function to logout by removing the locally stored JWT token and setting auth to false
   const logout = async e => {
     e.preventDefault();
     try{
@@ -155,18 +156,20 @@ const fetchUserClasses = async () => {
     }
   };
 
+
   const handleNavigation = async () => {
 
-    console.log("Dashboard Class ID:", classId);
-
+    //Seeing if a user has posted to the class selected
     const hasPosted = await checkIsPosted(userId, classId);
 
+    //Option for if they haven't selected any class
     if (hasPosted === 2){
       toast.error("Select a class!", {pauseOnHover: false});
       return;
     }
 
     try {  
+      //If they have posted, go to view post, otherwise go to class page to be able to post
       if (hasPosted === 1) {
         navigate("/view-posts", { replace: true}); 
       } else {
@@ -177,20 +180,22 @@ const fetchUserClasses = async () => {
     }
   };
 
+  //Functionality to make sure useEffect is only called once
   const initialized = useRef(false);
-
 
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
       const initialize = async () => {
-        console.log("Initializing...");
         await getName();
         await getOptions();
       };
       initialize();
     }
   }, []);
+
+  //getName and getOptions must be awaited upon because getUserID 
+  //and fetchUserClasses rely on them.
 
   useEffect(() => {
     if (name) {
@@ -240,15 +245,15 @@ const fetchUserClasses = async () => {
                 You have yet to contribute to a hive. Do so below.
               </h2>
             </div>
-          ) : (
+          ) : ( // If not empty, display them
             <div className="classes-grid">
               {classes.map((classItem) => (
                 <div key={classItem.courseId} className="class-box">
                   <h2 className="class-name">{classItem.courseName}</h2>
                   <button 
                     className="view-class-button" 
-                    onClick={() => {
-                      setClassId(classItem.courseId);
+                    onClick={() => { 
+                      setClassId(classItem.courseId); // Update context with class being accessed
                       const courseName = classItem.courseName;
                       setClassName(courseName);
                       navigate("/view-posts", { replace: true });

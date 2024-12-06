@@ -44,6 +44,7 @@ function App() {
 
       const parseRes = await response.json();
 
+      //Upon successful verification, user is authenticated
       parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
 
     } 
@@ -52,9 +53,12 @@ function App() {
     }
   }
 
+
+  //Check users authentication status
   useEffect(() => {
     isAuth();
   }, []);
+
   
   return (
     <Fragment>
@@ -70,7 +74,7 @@ function App() {
             <Route
               path="/login"
               element={
-                !isAuthenticated ? (
+                !isAuthenticated ? (  // Checks if authenticated, if they are, auto direct to dashboard
                   <LogIn setAuth={setAuth} />
                 ) : (
                   <Navigate to="/dashboard" />
@@ -94,7 +98,7 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                isAuthenticated ? (
+                isAuthenticated ? ( // does the opposite of login, reroutes to login if not authenticated
                   <Dashboard setAuth={setAuth} />
                 ) : (
                   <Navigate to="/login" />
